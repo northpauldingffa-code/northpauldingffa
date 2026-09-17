@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North Paulding FFA — Agricultural Education at NPHS</title>
+<meta name="description" content="North Paulding FFA (Chapter GA0545) — Agricultural Education at North Paulding High School, Dallas, Georgia. Meeting dates, dues, Area 1 CDE calendar, and chapter resources.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #16264A;
+    --navy-deep: #0E1A34;
+    --gold: #C9962C;
+    --gold-light: #E2B85B;
+    --cream: #F4EFE1;
+    --paper: #FBF8F0;
+    --green: #3C5A40;
+    --rust: #A15C38;
+    --ink: #201C15;
+    --ink-soft: #4A4438;
+    --rule: rgba(22,38,74,0.16);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    color:var(--navy);
+    line-height:1.15;
+    margin:0;
+  }
+
+  a{ color:inherit; }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  img{ max-width:100%; display:block; }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- Top nav ---------- */
+  .topnav{
+    background:var(--navy-deep);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .topnav .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:14px;
+    padding-bottom:14px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .brand{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:1.05rem;
+    color:var(--cream);
+    letter-spacing:0.01em;
+  }
+  .brand span{ color:var(--gold-light); }
+  .navlinks{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    font-size:0.92rem;
+  }
+  .navlinks a{
+    color:rgba(244,239,225,0.82);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    padding-bottom:2px;
+  }
+  .navlinks a:hover{ border-bottom-color:var(--gold-light); color:var(--cream); }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse 800px 400px at 85% -10%, rgba(201,150,44,0.18), transparent 60%),
+      var(--navy);
+    color:var(--cream);
+    padding:74px 0 56px;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1fr 260px;
+    gap:40px;
+    align-items:center;
+  }
+  .hero .brand-row{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+    justify-self:end;
+  }
+  .hero .brand-row img{
+    width:220px;
+    height:auto;
+  }
+  .hero .brand-divider{
+    width:130px;
+    height:1px;
+    background:rgba(244,239,225,0.28);
+  }
+  @media (max-width:860px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero .brand-row{
+      order:-1;
+      flex-direction:row;
+      justify-self:start;
+      margin-bottom:8px;
+      gap:22px;
+    }
+    .hero .brand-row img{ width:120px; }
+    .hero .brand-divider{ width:1px; height:64px; }
+  }
+  @media (max-width:520px){
+    .hero .brand-row img{ width:88px; }
+    .hero .brand-divider{ height:48px; }
+  }
+  .hero .kicker{
+    font-size:0.85rem;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    color:var(--paper);
+    font-size:clamp(2.4rem, 5.4vw, 4rem);
+    max-width:14ch;
+  }
+  .hero .tagline{
+    margin-top:18px;
+    font-size:1.2rem;
+    color:rgba(244,239,225,0.86);
+    max-width:46ch;
+  }
+  .hero .meta-row{
+    margin-top:30px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    border-top:1px solid rgba(244,239,225,0.2);
+    padding-top:22px;
+  }
+  .hero .meta-item{
+    font-size:0.92rem;
+    color:rgba(244,239,225,0.72);
+  }
+  .hero .meta-item strong{
+    display:block;
+    color:var(--cream);
+    font-size:1rem;
+    margin-bottom:2px;
+  }
+
+  /* ---------- Announcement bar ---------- */
+  .announce{
+    background:var(--gold);
+    color:var(--navy-deep);
+  }
+  .announce .wrap{
+    padding:15px 28px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 28px;
+    align-items:center;
+    font-size:0.96rem;
+  }
+  .announce strong{ font-weight:700; }
+  .announce .divider{ opacity:0.5; }
+
+  /* ---------- Layout: main + sidebar ---------- */
+  main{ padding:56px 0 30px; }
+  .layout{
+    display:grid;
+    grid-template-columns:1fr 300px;
+    gap:56px;
+  }
+  section.block{ margin-bottom:58px; }
+  section.block:last-child{ margin-bottom:0; }
+
+  .eyebrow{
+    font-size:0.82rem;
+    color:var(--rust);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  h2.title{
+    font-size:1.7rem;
+    margin-bottom:16px;
+  }
+  .lede{
+    color:var(--ink-soft);
+    max-width:62ch;
+    margin-bottom:22px;
+  }
+
+  /* Alumni callout */
+  .callout{
+    border:1px solid var(--rule);
+    border-left:4px solid var(--green);
+    padding:26px 28px;
+    background:var(--cream);
+  }
+  .callout .when{
+    font-family:'Fraunces', Georgia, serif;
+    font-size:1.25rem;
+    color:var(--green);
+    margin-bottom:4px;
+  }
+  .callout .where{
+    color:var(--ink-soft);
+    font-size:0.95rem;
+    margin-bottom:20px;
+  }
+  .reasons{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px 28px;
+  }
+  .reasons li{
+    border-top:1px solid var(--rule);
+    padding-top:12px;
+  }
+  .reasons li strong{
+    display:block;
+    color:var(--navy);
+    font-size:0.95rem;
+    margin-bottom:3px;
+  }
+  .reasons li span{
+    color:var(--ink-soft);
+    font-size:0.92rem;
+  }
+  .callout .note{
+    margin-top:20px;
+    font-size:0.92rem;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  /* Officers */
+  .officers-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--rule);
+    border:1px solid var(--rule);
+  }
+  .officer-card{
+    background:var(--paper);
+    padding:22px 20px;
+  }
+  .officer-card .role{
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--rust);
+    margin-bottom:6px;
+  }
+  .officer-card .name{
+    font-family:'Fraunces', Georgia, serif;
+    font-size:1.15rem;
+    color:var(--navy);
+  }
+  @media (max-width: 640px){
+    .officers-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width: 420px){
+    .officers-grid{ grid-template-columns:1fr; }
+  }
+
+  /* Alumni */
+  .alumni-row{
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  .alumni-row .callout{ flex:1 1 380px; }
+  .alumni-badge{
+    flex:0 0 180px;
+    display:flex;
+    justify-content:center;
+    padding-top:6px;
+  }
+  .alumni-badge img{
+    width:150px;
+    height:auto;
+  }
+  @media (max-width:640px){
+    .alumni-badge{ flex:0 0 auto; width:100%; padding-top:0; margin-bottom:6px; }
+    .alumni-badge img{ width:110px; }
+  }
+
+  /* Coming soon / PackFresh */
+  .comingsoon{
+    border:1px solid var(--rule);
+    background:var(--navy);
+    color:var(--cream);
+    display:flex;
+    gap:30px;
+    align-items:center;
+    padding:30px 32px;
+    flex-wrap:wrap;
+  }
+  .comingsoon img{
+    width:120px;
+    height:auto;
+    flex:0 0 auto;
+  }
+  .comingsoon .cs-text{ flex:1 1 320px; }
+  .comingsoon .cs-tag{
+    display:inline-block;
+    font-size:0.76rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--navy-deep);
+    background:var(--gold-light);
+    padding:3px 10px;
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .comingsoon h3{
+    color:var(--paper);
+    font-size:1.3rem;
+    margin-bottom:10px;
+  }
+  .comingsoon p{
+    color:rgba(244,239,225,0.82);
+    font-size:0.95rem;
+    max-width:56ch;
+    margin:0;
+  }
+  @media (max-width:640px){
+    .comingsoon{ padding:26px 22px; }
+    .comingsoon img{ width:96px; }
+  }
+
+  /* Dues */
+  .dues-row{
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+    align-items:flex-start;
+  }
+  .dues-text{ flex:1 1 320px; color:var(--ink-soft); }
+  .btn{
+    display:inline-block;
+    background:var(--navy);
+    color:var(--paper);
+    text-decoration:none;
+    padding:11px 22px;
+    font-weight:600;
+    font-size:0.94rem;
+    border:1px solid var(--navy);
+    white-space:nowrap;
+  }
+  .btn:hover{ background:var(--navy-deep); }
+  .btn.alt{
+    background:transparent;
+    color:var(--navy);
+  }
+  .btn.alt:hover{ background:var(--navy); color:var(--paper); }
+
+  /* Calendar timeline */
+  .month-group{
+    margin-bottom:30px;
+  }
+  .month-group:last-child{ margin-bottom:0; }
+  .month-label{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    color:var(--rust);
+    font-size:1rem;
+    margin-bottom:10px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--rule);
+  }
+  .event{
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:18px;
+    padding:13px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .event:last-child{ border-bottom:none; }
+  .event .date{
+    font-weight:700;
+    color:var(--navy);
+    font-size:0.92rem;
+    padding-top:1px;
+  }
+  .event .info .ev-name{
+    font-weight:600;
+    color:var(--ink);
+  }
+  .event .info .ev-loc{
+    color:var(--ink-soft);
+    font-size:0.9rem;
+    margin-top:2px;
+  }
+
+  /* Sidebar */
+  .sidebar-card{
+    border:1px solid var(--rule);
+    padding:22px;
+    background:var(--cream);
+    margin-bottom:26px;
+    position:sticky;
+    top:24px;
+  }
+  .sidebar-card h3{
+    font-size:1.05rem;
+    margin-bottom:14px;
+  }
+  .fact{
+    margin-bottom:12px;
+    font-size:0.92rem;
+  }
+  .fact:last-child{ margin-bottom:0; }
+  .fact .label{
+    display:block;
+    color:var(--rust);
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:2px;
+  }
+  .fact .value{ color:var(--ink); }
+  .fact .value a{ color:var(--navy); text-decoration:underline; text-decoration-color:var(--rule); }
+
+  .linklist{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .linklist li{
+    border-top:1px solid var(--rule);
+  }
+  .linklist li:first-child{ border-top:none; }
+  .linklist a{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:13px 2px;
+    text-decoration:none;
+    color:var(--navy);
+    font-size:0.94rem;
+    font-weight:600;
+  }
+  .linklist a:hover{ color:var(--rust); }
+  .linklist a .arrow{ color:var(--gold); font-weight:400; }
+
+  /* Chapter Life gallery */
+  .gallery-section{
+    background:var(--cream);
+    border-top:1px solid var(--rule);
+    padding:56px 0 64px;
+  }
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    grid-auto-rows:170px;
+    gap:10px;
+  }
+  .gallery-grid figure{
+    margin:0;
+    overflow:hidden;
+    position:relative;
+    background:var(--navy);
+  }
+  .gallery-grid img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .gallery-grid .g-tall{ grid-row:span 2; }
+  .gallery-grid .g-wide{ grid-column:span 2; }
+  @media (max-width:760px){
+    .gallery-grid{ grid-template-columns:repeat(2, 1fr); grid-auto-rows:150px; }
+    .gallery-grid .g-wide{ grid-column:span 2; }
+  }
+  @media (max-width:480px){
+    .gallery-grid{ grid-template-columns:1fr; grid-auto-rows:220px; }
+    .gallery-grid .g-tall{ grid-row:span 1; }
+    .gallery-grid .g-wide{ grid-column:span 1; }
+  }
+
+  /* Footer */
+  footer{
+    background:var(--navy-deep);
+    color:rgba(244,239,225,0.78);
+    padding:44px 0 30px;
+    margin-top:20px;
+  }
+  footer .wrap{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:26px;
+  }
+  footer .f-brand{
+    font-family:'Fraunces', Georgia, serif;
+    color:var(--cream);
+    font-size:1.15rem;
+    margin-bottom:8px;
+  }
+  footer .f-addr{ font-size:0.92rem; line-height:1.7; }
+  footer .f-addr a{ color:rgba(244,239,225,0.78); text-decoration:underline; }
+  footer .f-note{
+    font-size:0.82rem;
+    color:rgba(244,239,225,0.45);
+    margin-top:26px;
+    border-top:1px solid rgba(244,239,225,0.12);
+    padding-top:18px;
+  }
+
+  /* Responsive */
+  @media (max-width: 860px){
+    .layout{ grid-template-columns:1fr; }
+    .sidebar-card{ position:static; }
+    .reasons{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 520px){
+    body{ font-size:16px; }
+    .hero{ padding:54px 0 40px; }
+    .wrap{ padding:0 20px; }
+    .event{ grid-template-columns:76px 1fr; gap:12px; }
+    footer .wrap{ flex-direction:column; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="wrap">
+    <div class="brand">north paulding <span>ffa</span></div>
+    <nav class="navlinks">
+      <a href="#meeting">Meeting</a>
+      <a href="#officers">Officers</a>
+      <a href="#alumni">Alumni &amp; Supporters</a>
+      <a href="#packfresh">PackFresh</a>
+      <a href="#dues">Dues</a>
+      <a href="#calendar">CDE Calendar</a>
+      <a href="#gallery">Chapter Life</a>
+      <a href="#links">Resources</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <div class="kicker">Chapter GA0545 · Area 1, North Region</div>
+      <h1>Agricultural Education &amp; FFA at North Paulding High School</h1>
+      <p class="tagline">Growing student leaders through agriculture, community, and hands-on learning in Dallas, Georgia.</p>
+      <div class="meta-row">
+        <div class="meta-item"><strong>Chartered</strong>2017</div>
+        <div class="meta-item"><strong>Advisor</strong>Matt Townson</div>
+        <div class="meta-item"><strong>Location</strong>300 North Paulding Dr, Dallas, GA</div>
+      </div>
+    </div>
+    <div class="brand-row">
+      <img src="images/ffa-emblem.jpg" alt="National FFA Emblem" style="border-radius:4px;">
+      <div class="brand-divider"></div>
+      <img src="images/north-paulding-logo.png" alt="North Paulding High School logo">
+    </div>
+  </div>
+</header>
+
+<div class="announce" id="meeting">
+  <div class="wrap">
+    <span><strong>Next chapter meeting:</strong> Tentatively October 15 &mdash; AG Room 1435</span>
+    <span class="divider">|</span>
+    <span>Dues are open on RevTrak &mdash; see below</span>
+  </div>
+</div>
+
+<main>
+  <div class="wrap layout">
+    <div class="content">
+
+      <section class="block" id="officers">
+        <div class="eyebrow">2026&ndash;2027</div>
+        <h2 class="title">Chapter Officer Team</h2>
+        <div class="officers-grid">
+          <div class="officer-card"><div class="role">President</div><div class="name">Harper R.</div></div>
+          <div class="officer-card"><div class="role">Vice President</div><div class="name">Maggie G.</div></div>
+          <div class="officer-card"><div class="role">Secretary</div><div class="name">Caroline T.</div></div>
+          <div class="officer-card"><div class="role">Treasurer</div><div class="name">Both W.</div></div>
+          <div class="officer-card"><div class="role">Reporter</div><div class="name">Alannah H.</div></div>
+          <div class="officer-card"><div class="role">Sentinel</div><div class="name">Baylee K.</div></div>
+          <div class="officer-card"><div class="role">Historian</div><div class="name">Lauren H.</div></div>
+        </div>
+      </section>
+
+      <section class="block" id="alumni">
+        <div class="eyebrow">For parents &amp; supporters</div>
+        <h2 class="title">Alumni &amp; Supporters Meeting</h2>
+        <div class="alumni-row">
+          <div class="callout">
+            <div class="when">October 22 &middot; 6:30 PM</div>
+            <div class="where">AG Room, North Paulding High School</div>
+            <ul class="reasons">
+              <li><strong>Student support</strong><span>Scholarships, project funding, CDE prep, and contest travel.</span></li>
+              <li><strong>Program enhancement</strong><span>Shop and greenhouse equipment, hands-on learning resources.</span></li>
+              <li><strong>Mentorship &amp; leadership</strong><span>Guiding future agricultural leaders, volunteering, networking.</span></li>
+              <li><strong>Community impact</strong><span>Strengthening our local agricultural community and the NPHS program.</span></li>
+            </ul>
+            <p class="note">All are welcome &mdash; you do not need to be a past FFA member to join the FFA Alumni &amp; Supporters.</p>
+          </div>
+          <div class="alumni-badge">
+            <img src="images/ffa-alumni.png" alt="National FFA Alumni and Supporters">
+          </div>
+        </div>
+      </section>
+
+      <section class="block" id="packfresh">
+        <div class="eyebrow">Coming soon</div>
+        <h2 class="title">PackFresh</h2>
+        <div class="comingsoon">
+          <img src="images/packfresh-logo.png" alt="PackFresh: Sustainability in Action, North Paulding High School Agriculture/FFA">
+          <div class="cs-text">
+            <span class="cs-tag">In development</span>
+            <h3>Sustainability in action</h3>
+            <p>PackFresh is our student-run hydroponic growing program, producing fresh greens right on campus. More details on how the program works, what's being grown, and how to support it are on the way &mdash; check back soon.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" id="dues">
+        <div class="eyebrow">Chapter dues</div>
+        <h2 class="title">Pay dues on RevTrak</h2>
+        <div class="dues-row">
+          <p class="dues-text">Dues include a chapter t-shirt, with a no-shirt option also available. Non-Ag student supporters are welcome to purchase a chapter t-shirt through the same RevTrak link.</p>
+          <a class="btn" href="https://paulding.revtrak.net/north-paulding-high-school/nphs-ffa/" target="_blank" rel="noopener">Go to NPHS RevTrak</a>
+        </div>
+      </section>
+
+      <section class="block" id="calendar">
+        <div class="eyebrow">2026&ndash;2027 season</div>
+        <h2 class="title">Area 1 CDE &amp; LDE Calendar</h2>
+        <p class="lede">Career and Leadership Development Event dates for North Paulding FFA's Area 1, North Region. Locations and formats are set by the host site &mdash; check with your advisor before travel.</p>
+
+        <div class="month-group">
+          <div class="month-label">September 2026</div>
+          <div class="event"><div class="date">Sep 22</div><div class="info"><div class="ev-name">Land Judging CDE</div><div class="ev-loc">Calhoun Experiment Station, 300 Battey Farm Road NE, Rome, GA</div></div></div>
+          <div class="event"><div class="date">Sep 22</div><div class="info"><div class="ev-name">Tractor Operations CDE</div><div class="ev-loc">Calhoun Experiment Station, 300 Battey Farm Road NE, Rome, GA</div></div></div>
+          <div class="event"><div class="date">Sep 29</div><div class="info"><div class="ev-name">Area 1 CDEs</div><div class="ev-loc">Woodland High School, 800 Old Alabama Rd SE, Cartersville, GA 30120</div></div></div>
+        </div>
+
+        <div class="month-group">
+          <div class="month-label">October 2026</div>
+          <div class="event"><div class="date">Oct 27</div><div class="info"><div class="ev-name">Ag. Sales CDE (Virtual)</div><div class="ev-loc">Hosted by Gordon County College &amp; Career Academy, 398 Beamer Rd SW, Calhoun, GA 30701</div></div></div>
+          <div class="event"><div class="date">Oct 27</div><div class="info"><div class="ev-name">Employability Skills CDE (Virtual)</div><div class="ev-loc">Virtual</div></div></div>
+        </div>
+
+        <div class="month-group">
+          <div class="month-label">November 2026</div>
+          <div class="event"><div class="date">Nov 3</div><div class="info"><div class="ev-name">ATE CDE</div><div class="ev-loc">Pickens High School, 500 Dragon Dr, Jasper, GA 30143</div></div></div>
+          <div class="event"><div class="date">Nov 3</div><div class="info"><div class="ev-name">Floriculture CDE</div><div class="ev-loc">Pickens High School, 500 Dragon Dr, Jasper, GA 30143</div></div></div>
+          <div class="event"><div class="date">Nov 10</div><div class="info"><div class="ev-name">Area 1 CDEs</div><div class="ev-loc">Gordon Central, 335 Warrior Path NE #9266, Calhoun, GA 30701</div></div></div>
+        </div>
+
+        <div class="month-group">
+          <div class="month-label">December 2026</div>
+          <div class="event"><div class="date">Dec 3</div><div class="info"><div class="ev-name">Vet Science CDE</div><div class="ev-loc">Rome High School, 1000 Veterans Memorial Hwy NE, Rome, GA 30161</div></div></div>
+          <div class="event"><div class="date">Dec 3</div><div class="info"><div class="ev-name">Wildlife Management CDE</div><div class="ev-loc">Rome High School, 1000 Veterans Memorial Hwy NE, Rome, GA 30161</div></div></div>
+          <div class="event"><div class="date">Dec 8</div><div class="info"><div class="ev-name">Lawnmower Operations CDE</div><div class="ev-loc">Chattooga County Agricultural Center, 33 Middle School Rd, Summerville, GA 30747</div></div></div>
+        </div>
+
+        <div class="month-group">
+          <div class="month-label">January 2027</div>
+          <div class="event"><div class="date">Jan 28</div><div class="info"><div class="ev-name">Forestry CDE</div><div class="ev-loc">In The Woods, LLC, 2173 Cartersville Hwy, Rockmart, GA 30153</div></div></div>
+          <div class="event"><div class="date">Jan 28</div><div class="info"><div class="ev-name">Livestock Judging CDE</div><div class="ev-loc">Rockmart High School, 990 Cartersville Hwy, Rockmart, GA 30153</div></div></div>
+        </div>
+
+        <div class="month-group">
+          <div class="month-label">February 2027</div>
+          <div class="event"><div class="date">Feb 2</div><div class="info"><div class="ev-name">EMC CDE</div><div class="ev-loc">Amicalola Electric Membership Corporation, 544 GA-515, Jasper, GA 30143</div></div></div>
+          <div class="event"><div class="date">Feb 8</div><div class="info"><div class="ev-name">Area 1 CDEs</div><div class="ev-loc">Pickens High School, 500 Dragon Dr, Jasper, GA 30143</div></div></div>
+        </div>
+
+        <div class="month-group">
+          <div class="month-label">March 2027</div>
+          <div class="event"><div class="date">Mar 2</div><div class="info"><div class="ev-name">Preliminary Speaking CDEs</div><div class="ev-loc">Calhoun High School, 355 S River St, Calhoun, GA 30701</div></div></div>
+          <div class="event"><div class="date">Mar 23</div><div class="info"><div class="ev-name">Area 1 LDEs</div><div class="ev-loc">Gilmer High School, 408 Bobcat Trail, Ellijay, GA 30540</div></div></div>
+        </div>
+      </section>
+
+    </div>
+
+    <aside class="sidebar-nav">
+      <div class="sidebar-card">
+        <h3>Chapter facts</h3>
+        <div class="fact"><span class="label">Address</span><span class="value">300 North Paulding Dr, Dallas, GA 30132</span></div>
+        <div class="fact"><span class="label">Advisor</span><span class="value"><a href="mailto:mtownson@paulding.k12.ga.us">mtownson@paulding.k12.ga.us</a></span></div>
+        <div class="fact"><span class="label">Chapter ID</span><span class="value">GA0545</span></div>
+        <div class="fact"><span class="label">Region</span><span class="value">Area 1, North Region &mdash; Georgia FFA</span></div>
+      </div>
+
+      <div class="sidebar-card" id="links">
+        <h3>Important links</h3>
+        <ul class="linklist">
+          <li><a href="https://paulding.revtrak.net/north-paulding-high-school/nphs-ffa/" target="_blank" rel="noopener">NPHS FFA RevTrak <span class="arrow">&rarr;</span></a></li>
+          <li><a href="https://www.ffa.org" target="_blank" rel="noopener">National FFA <span class="arrow">&rarr;</span></a></li>
+          <li><a href="https://www.georgiaffa.org" target="_blank" rel="noopener">Georgia FFA <span class="arrow">&rarr;</span></a></li>
+          <li><a href="https://www.theaet.com" target="_blank" rel="noopener">The AET Login <span class="arrow">&rarr;</span></a></li>
+          <li><a href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?origin=NeoPortalPage&amp;subpage=design&amp;id=6xNNCmZacEqS8Tktbtujqh6DCDPtBMVNpypJVjzwETNUOVZWQTJIUzdVODdDQldDUTZGRkRDWDNNRC4u" target="_blank" rel="noopener">2026&ndash;2027 CDE Interest Sign-Up <span class="arrow">&rarr;</span></a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<section class="gallery-section" id="gallery">
+  <div class="wrap">
+    <div class="eyebrow">Around the chapter</div>
+    <h2 class="title" style="margin-bottom:22px;">Chapter Life</h2>
+    <div class="gallery-grid">
+      <figure class="g-tall"><img src="images/gallery-poster-writing.jpg" alt="North Paulding FFA officers writing chapter standards on a poster"></figure>
+      <figure class="g-wide"><img src="images/gallery-jackets.jpg" alt="North Paulding FFA members walking in their official jackets"></figure>
+      <figure><img src="images/gallery-flowers.jpg" alt="Zinnias grown in the North Paulding Ag program's garden"></figure>
+      <figure class="g-tall"><img src="images/gallery-hydroponics.jpg" alt="Students gathered at the hydroponics table in the Agriscience Lab"></figure>
+      <figure class="g-wide"><img src="images/gallery-officer-team.jpg" alt="North Paulding FFA officer team holding their 2026-27 standards poster"></figure>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="f-brand">North Paulding FFA</div>
+      <div class="f-addr">
+        300 North Paulding Dr<br>
+        Dallas, GA 30132<br>
+        <a href="mailto:mtownson@paulding.k12.ga.us">mtownson@paulding.k12.ga.us</a>
+      </div>
+    </div>
+    <div>
+      <div class="f-addr">
+        Chapter GA0545 &middot; Established 2017<br>
+        Area 1, North Region &middot; Georgia FFA
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="f-note">&copy; <span id="year"></span> North Paulding FFA. Built for students, families, and supporters of agricultural education at North Paulding High School.</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
