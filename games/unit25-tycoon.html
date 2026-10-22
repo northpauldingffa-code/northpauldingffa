@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landscape Company Tycoon | Unit 25 Annual Bedding Plants</title>
+<!-- North Paulding FFA. Fully self-contained: no outside fonts, scripts, or images. -->
+<style>
+:root{
+  --barn:#6B3226; --barn-d:#4f241b; --green:#3C6255; --green-d:#2c4a40; --tan:#D9C4A3; --cream:#F3ECE1;
+  --ink:#2B2118; --muted:#6E6255; --ok:#2f7a4f; --bad:#a3342a; --gold:#C47A2C; --paper:#ffffff; --line:#e3d6c1;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#efe8dc;color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.45}
+h1,h2,h3,.serif{font-family:Cambria,Georgia,"Times New Roman",serif}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+/* HUD */
+#hud{position:sticky;top:0;z-index:20;background:var(--green);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+#hud .wrap{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:10px 16px}
+#hud .co{font-family:Cambria,Georgia,serif;font-weight:700;font-size:18px;flex:1 1 220px}
+#hud .stat{font-size:15px;white-space:nowrap}
+#hud .stat b{font-size:18px}
+#hud .stars{color:#f3c86b;letter-spacing:1px}
+.progress{height:6px;background:rgba(255,255,255,.25)}
+.progress i{display:block;height:100%;background:var(--tan);width:0;transition:width .3s}
+/* cards */
+.card{background:var(--paper);border-radius:12px;padding:22px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card.cream{background:var(--cream)}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--green);text-transform:uppercase}
+h1{font-size:34px;margin:4px 0 8px;color:var(--ink)}
+h2{font-size:26px;margin:4px 0 10px;color:var(--barn)}
+h3{font-size:20px;margin:0 0 6px;color:var(--barn)}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.btn{display:inline-block;border:0;border-radius:8px;padding:11px 20px;background:var(--barn);color:#fff;font-weight:700}
+.btn:hover{background:var(--barn-d)}
+.btn.green{background:var(--green)} .btn.green:hover{background:var(--green-d)}
+.btn.ghost{background:transparent;color:var(--green);border:2px solid var(--green)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+label.f{display:block;font-weight:700;margin:12px 0 4px}
+input[type=text],input[type=number],input[type=password],select{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:8px;background:#fff;width:100%;max-width:420px}
+input:focus,select:focus{outline:none;border-color:var(--green)}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{text-align:left;background:var(--cream);border:2px solid transparent;border-radius:10px;padding:12px 14px;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:#dcefe2;border-color:var(--ok)}
+.opt.wrong{background:#f6dcd8;border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;display:none}
+.fb.show{display:block}
+.fb.good{background:#dcefe2;border-left:0}
+.fb.bad{background:#f6dcd8}
+.fb b.t{display:block;font-size:18px;margin-bottom:2px}
+.client{display:flex;gap:14px;align-items:flex-start}
+.avatar{flex:0 0 52px;height:52px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Cambria,Georgia,serif;font-weight:700;font-size:22px}
+.bubble{background:var(--cream);border-radius:12px;padding:12px 14px;flex:1}
+.pill{display:inline-block;background:var(--cream);border-radius:999px;padding:3px 10px;font-size:13px;color:var(--green);font-weight:700;margin:2px 4px 2px 0}
+/* match */
+.match{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-top:12px}
+.match .col{display:grid;gap:8px;align-content:start}
+.tile{background:var(--cream);border:2px solid transparent;border-radius:10px;padding:10px 12px;text-align:left;color:var(--ink)}
+.tile.term{font-family:Cambria,Georgia,serif;font-weight:700;color:var(--barn)}
+.tile.sel{border-color:var(--green);background:#e4eee9}
+.tile.done{background:#dcefe2;border-color:var(--ok);opacity:.75;cursor:default}
+.tile.shake{animation:shake .35s;border-color:var(--bad)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* order */
+.order{display:grid;gap:8px;margin-top:12px}
+.order .tile{display:flex;gap:10px;align-items:center}
+.order .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.placed{display:grid;gap:6px;margin-top:10px}
+.placed div{background:#dcefe2;border-radius:8px;padding:8px 12px}
+/* design */
+.bed{display:grid;gap:10px;margin-top:12px}
+.bedrow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;background:var(--cream);border-radius:10px;padding:10px 12px}
+.bedrow .lab{font-weight:700;color:var(--barn)}
+.bedrow .lab span{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.checks{font-size:14px;margin-top:6px;grid-column:1/-1}
+.checks span{display:inline-block;margin-right:12px}
+.ok{color:var(--ok);font-weight:700} .no{color:var(--bad);font-weight:700}
+/* baskets */
+.basket-in{display:grid;grid-template-columns:repeat(3,minmax(0,160px));gap:12px;margin-top:8px}
+.basket-in input{max-width:160px}
+/* report */
+table.rep{width:100%;border-collapse:collapse;margin-top:10px}
+table.rep th,table.rep td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+table.rep th{background:var(--green);color:#fff;font-weight:700}
+.bar{height:10px;background:var(--cream);border-radius:5px;overflow:hidden;min-width:80px}
+.bar i{display:block;height:100%;background:var(--green)}
+/* certificate */
+#cert{border:6px double var(--barn);background:#fffdf8;text-align:center;padding:28px 22px}
+#cert .big{font-family:Cambria,Georgia,serif;font-size:56px;font-weight:700;color:var(--green);line-height:1}
+#cert .code{font-family:"Courier New",monospace;font-size:28px;font-weight:700;letter-spacing:.12em;background:var(--cream);display:inline-block;padding:6px 14px;border-radius:8px;margin-top:6px}
+#cert .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+#cert .grid div{background:var(--cream);border-radius:8px;padding:8px}
+#cert .grid b{display:block;font-size:20px;color:var(--barn)}
+/* catalog */
+.modal{position:fixed;inset:0;background:rgba(30,22,16,.55);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:12px}
+.modal[hidden]{display:none}
+.modal .box{background:#fff;border-radius:12px;width:100%;max-width:1100px;max-height:calc(100vh - 24px);display:flex;flex-direction:column;overflow:hidden}
+.modal .head{background:var(--green);color:#fff;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.modal .head h3{color:#fff;margin:0;flex:1 1 240px}
+.modal .tools{padding:10px 16px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.modal .tools input,.modal .tools select{max-width:280px}
+.modal .scroll{overflow:auto;flex:1}
+table.cat{border-collapse:collapse;width:100%;font-size:14px;min-width:820px}
+table.cat th{position:sticky;top:0;background:var(--cream);color:var(--barn);text-align:left;padding:8px;z-index:1}
+table.cat td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.cat tr.pickable{cursor:pointer}
+table.cat tr.pickable:hover td{background:#e4eee9}
+table.cat td.nm i{font-weight:700;color:var(--ink)}
+.note{font-size:13px;color:var(--muted);padding:8px 16px;border-top:1px solid var(--line)}
+.teacher{margin-top:10px;font-size:13px}
+.teacher a{color:var(--muted)}
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:12px}
+  .card{padding:16px}
+  h1{font-size:28px}
+  .match{grid-template-columns:1fr}
+  .bedrow{grid-template-columns:1fr}
+  .basket-in{grid-template-columns:1fr}
+  #cert .grid{grid-template-columns:1fr}
+  #cert .big{font-size:44px}
+}
+@media print{
+  body{background:#fff}
+  #hud,.noprint,.modal{display:none !important}
+  .card{box-shadow:none;margin:0}
+  #cert{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header id="hud" hidden>
+  <div class="wrap">
+    <div class="co" id="hudName">Landscape Co.</div>
+    <div class="stat">Cash <b id="hudCash">$500</b></div>
+    <div class="stat">Reputation <span class="stars" id="hudStars">★★★☆☆</span></div>
+    <div class="stat" id="hudRound">Job 1 of 6</div>
+  </div>
+  <div class="progress"><i id="hudProg"></i></div>
+</header>
+<main class="wrap" id="app"></main>
+
+<div class="modal" id="catalog" hidden role="dialog" aria-modal="true" aria-labelledby="catTitle">
+  <div class="box">
+    <div class="head">
+      <h3 id="catTitle">Plant Catalog: Bedding Plant Chart (Figure 25-5, pp. 293&ndash;296)</h3>
+      <button class="btn ghost" style="color:#fff;border-color:#fff" id="catClose">Close</button>
+    </div>
+    <div class="tools">
+      <input type="text" id="catSearch" placeholder="Search any word: shade, edible, blue, vine...">
+      <select id="catUse">
+        <option value="">All uses</option>
+        <option>edging</option><option>flower bed</option><option>hanging basket</option>
+        <option>cut flowers</option><option>window box</option><option>potted plant</option>
+        <option>accent</option><option>urn</option><option>planter</option>
+      </select>
+      <span class="small muted" id="catCount"></span>
+    </div>
+    <div class="scroll">
+      <table class="cat" id="catTable">
+        <thead><tr><th>Name</th><th>Height</th><th>Spacing</th><th>Color</th><th>Uses</th><th>How to start</th><th>Remarks</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="note" id="catNote">Tip: the Remarks column holds most of the clues. Heights are in inches.</div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============ SETTINGS (teacher can edit) ============ */
+const TEACHER_PIN = "0545";          // PIN for the Teacher Check screen
+const SALT = "NPHS-FFA-U25-TYCOON";  // change to make new completion codes
+const START_CASH = 500;
+
+/* ============ DATA: Figure 25-5 bedding plant chart ============ */
+// [scientific, common, heightLo, heightHi, spacing, colors, uses, start, remarks]
+const RAW = [
+["Ageratum","floss flower",6,12,'6"–9"',"blue, pink, white","edging","seed and transplant","Compact, excellent bloom. Needs full sun."],
+["Alternanthera","alternanthera",12,12,'12"',"a variety of colors","accent","seed","Creates a background for flowering plants."],
+["Antirrhinum","snapdragon",12,36,'6"–8"',"yellow, pink, white, blue, red, salmon, rose, bronze, orange","cut flowers, flower bed","seed and transplant","Must be staked for straight flower spikes. Needs full sun. Excellent background plant."],
+["Aster","aster",8,36,'10"–12"',"blue, red, salmon, pink, white, yellow","flower bed","seed and transplant","Excellent cut flowers."],
+["Begonia","begonia",6,12,'6"–10"',"pink, red, white","edging, potted plant, window box, hanging basket","cuttings or seed","May be used as a houseplant. Needs direct light."],
+["Browallia","browallia",12,18,'8"–10"',"blue, white","hanging basket, window box","cuttings or seed","Makes an attractive houseplant. Needs full sun."],
+["Calendula","potted marigold",12,24,'10"–12"',"yellow, orange","flower bed, hanging basket","seed and transplant","Flower petals used in cooking stews to add color. Needs full sun."],
+["Callistephus","China aster",12,24,'10"–12"',"blue, purple, white, yellow","flower bed, cut flowers","seed and transplant","Gives excellent summer color. Needs full sun."],
+["Celosia","cockscomb",12,30,'10"–12"',"red, orange, yellow, pink","flower bed, cut flowers","seed and transplant","Excellent dried flower. Needs full sun."],
+["Cleome speciosa","spider plant",24,36,'18"–36"',"pink, white","flower bed","seed directly","Makes an attractive houseplant."],
+["Coleus","coleus",12,24,'10"–12"',"red, bronze, yellow, pink foliage","flower bed, hanging basket","seed and transplant","Needs full to partial sun. Beautiful foliage plant."],
+["Coreopsis","coreopsis",12,24,'6"–10"',"yellow, red","flower bed","seed directly","Good for cut flowers."],
+["Cosmos","cosmos",48,72,'12"–18"',"red, pink, yellow","flower bed","seed and transplant","Keep near the back of beds."],
+["Dahlia variabilis","dahlia",12,24,'12"–15"',"red, pink, yellow, rose","flower bed, cut flowers","seed and transplant","Profuse bloomer. For maximum bloom, sow several weeks before other annuals."],
+["Delphinium","larkspur",18,24,'8"–10"',"blue, pink, white","flower bed, cut flowers","seed and transplant","Grows best in peat pots. Difficult to transplant."],
+["Dianthus","pink",6,18,'6"–8"',"white, pink","edging, cut flowers","cuttings or seed","Very fragrant flowers."],
+["Dimorphotheca","cape marigold",12,18,'8"–18"',"yellow, orange, white","flower bed","seed and transplant","Grows well in dry areas."],
+["Dolichos lablab","hyacinth bean",null,null,"","purple","accent","seed","Vine texture."],
+["Gaillardia","gaillardia",12,24,'8"–10"',"red, orange","cut flowers, flower bed","cuttings","Loves seashore conditions. Does well in dry areas."],
+["Gazania","treasure flower",6,10,'8"–10"',"orange, yellow, white, tangerine, bronze","flower bed","seed and transplant","Bright blooms."],
+["Gomphrena","globe amaranth",9,24,'8"–10"',"blue, pink, white","cut flowers, flower bed","seed and transplant","Good dried flower. Collect and hang in a dry, dark place."],
+["Gypsophila","baby's breath",12,18,'10"–12"',"pink, white","flower bed, cut flowers","seed directly","This is the annual form; there is also a perennial."],
+["Helianthus","sunflower",18,60,'12"–36"',"yellow, brown","flower bed","seed directly","Seeds are edible."],
+["Helichrysum","strawflower",24,36,'8"–10"',"yellow, red, white","flower bed","seed and transplant","Good dried flower. Cut and hang in a dry, dark place."],
+["Hypoestes","polka-dot plant",8,24,'10"–12"',"burgundy, red, rose, white, pink","hanging basket, window box, flower bed","seed and transplant","Foliage accented by splashed colored leaves."],
+["Iberis","candytuft",10,18,'6"–8"',"white, pink, red","edging","seed and transplant","Makes an attractive ground cover."],
+["Impatiens","impatiens",6,18,'12"–18"',"pink, red, white, multicolor","edging, hanging basket","seed and transplant","Does best in a shaded area."],
+["Ipomoea","morning glory",60,120,'10"–12"',"blue","trellis","seed directly","Vine."],
+["Lantana","lantana",12,36,'2"–15"',"yellow, blue, red","hanging basket, flower bed, potted plant","cuttings","Makes an excellent topiary plant for the patio."],
+["Lathyrus","sweet pea",36,60,'6"–10"',"pink, blue, white","cut flowers","seed directly","Grows best in cool conditions."],
+["Limonium","statice (sea lavender)",18,30,'10"–12"',"blue, pink, white","flower bed, cut flowers","seed and transplant","Good dried flower. Filler flower for bouquets."],
+["Lisianthus","lisianthus",6,24,'12"–14"',"blue, rose, orchid, white, pink, yellow","flower bed","seed and transplant","Large blooms, drought tolerant."],
+["Lobelia","lobelia",3,6,'4"–6"',"blue, pink, white","edging, hanging basket, potted plant","seed directly","Very attractive in a hanging basket."],
+["Lobularia","sweet alyssum",4,6,'4"–6"',"white, pink, blue","window box, edging, hanging basket","seed and transplant","Blooms all summer."],
+["Matthiola","stock",12,36,'8"–10"',"white, pink, yellow, red","cut flowers, flower bed","seed and transplant","Fragrant flowers."],
+["Mirabilis","four-o'clock",24,36,'10"–12"',"yellow, red, white","flower bed","seed and transplant","Withstands city conditions."],
+["Myosotis","forget-me-not",6,12,'6"–8"',"blue, pink","edging, cut flowers","seed directly","Makes attractive cut flowers."],
+["Nicotiana","flowering tobacco",18,24,'10"–12"',"rose, white","cut flowers, flower bed","seed and transplant","Fragrant flowers after dark."],
+["Osteospermum","African daisy",15,15,'12"',"white, pastels, orange, red","accent, urn, flower bed","seed","Excellent flower quality."],
+["Papaver","poppy",18,36,'10"–12"',"red, yellow, white","cut flowers, flower bed","seed directly","Grows in masses. Bright colors."],
+["Pelargonium","geranium",12,18,'10"–12"',"red, white, pink, lavender","flower bed, window box, hanging basket","cuttings and seeds","Excellent flowering plant."],
+["Pennisetum glaucum","millet",24,24,'24"',"bold metallic leaves, purple grassy leaves","urn, accent, flower bed","seed","12-inch cattail spikes."],
+["Pentas","star flower",18,18,'18"–24"',"pink, white, red, pastel","flower bed, hanging basket, planter","seed","Flower color the full season."],
+["Petunia","petunia",6,18,'10"–12"',"pink, red, white, blue","edging, flower bed, hanging basket","seed and transplant","Most widely used annual. Cultivars include 'Wave,' 'Magic Carpet,' 'Dazzle,' and 'Cascade.'"],
+["Phlox","phlox",6,18,'6"–8"',"pink, blue, white, red","cut flowers, flower bed, window box, hanging basket","seed directly or transplant","Very intense colors."],
+["Portulaca","rose moss",4,6,'3"–6"',"red, orange, yellow","edging, hanging basket","seed directly","Reseeds by itself."],
+["Rudbeckia","black-eyed Susan",24,24,'24"',"yellow daisy, dark center","flower bed, accent","seed","'Indian Summer' and 'Sonora Marmalade' are cultivars."],
+["Salpiglossis","giant velvet flower",18,36,'10"–12"',"gold, scarlet, rose, blue","flower bed, cut flowers","seed and transplant","Very small seed."],
+["Salvia","scarlet sage",10,36,'6"–12"',"blue, red, white","cut flowers, flower bed","seed and transplant","Very showy color."],
+["Scabiosa","pincushion flower",30,36,'12"–14"',"multicolor","cut flowers","seed and transplant","Many varieties to choose from."],
+["Spilanthes","peek-a-boo",18,18,'24"',"yellow globe","flower bed, cut flowers, accent","seed","Companion crop to marigolds."],
+["Tagetes","marigold",6,48,'6"–12"',"orange, yellow","flower bed, edging, potted plant, hanging basket","seed and transplant or seed directly","Wide range of varieties. No insect problems."],
+["Thunbergia","black-eyed Susan vine",24,60,'10"–12"',"orange","climbing vine, hanging basket","seed and transplant","Nice addition to a summer or fall bouquet."],
+["Tithonia","Mexican sunflower",24,30,'24"',"yellow, orange, red","flower bed, cut flowers","seed","Drought-resistant. Attracts butterflies. Mass flower for bouquets."],
+["Tropaeolum","nasturtium",12,18,'10"–12"',"orange, yellow","flower bed, window box, hanging basket","seed and transplant or seed directly","Flowers and leaves are edible."],
+["Verbena","verbena",6,12,'10"–12"',"purple, red, white","flower bed, edging","seed and transplant","Good rock garden plant."],
+["Vinca","common periwinkle",8,12,'12"',"pink, pastel, white, blue, red, variegated colors","flower bed, urn, planter, edging and mounds","seed","Drought tolerant. Loves heat."],
+["Viola","pansy",6,8,'6"–8"',"multicolor","edging, flower bed, cut flowers, hanging basket","seed and transplant","Gives excellent color in summer."],
+["Zinnia","zinnia",8,36,'6"–12"',"multicolor","edging, flower bed, cut flowers","seed and transplant or seed directly","Gives excellent color in summer."]
+];
+const PLANTS = RAW.map(r => ({sci:r[0], common:r[1], lo:r[2], hi:r[3], sp:r[4], color:r[5], uses:r[6], start:r[7], rem:r[8],
+  label: r[0] + " (" + r[1] + ")"}));
+const P = s => PLANTS.find(p => p.sci === s);
+const ht = p => p.hi == null ? "not listed" : (p.lo === p.hi ? p.hi + '"' : p.lo + '"–' + p.hi + '"');
+const hasUse = (p,u) => p.uses.toLowerCase().includes(u);
+const hasColor = (p,c) => { const t = p.color.toLowerCase(); return t.includes("multicolor") || t.split(/[^a-z]+/).includes(c); };
+
+/* ============ helpers ============ */
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const pick = (a,n) => shuffle(a).slice(0,n);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money = n => (n < 0 ? "-$" : "$") + Math.abs(Math.round(n)).toLocaleString();
+function el(html){ const d=document.createElement("div"); d.innerHTML=html.trim(); return d.firstElementChild; }
+function toTop(){ window.scrollTo({top:0,behavior:"smooth"}); }
+
+/* ============ state + scoring ============ */
+const ROUNDS = [
+  {key:"hire",  name:"Hiring Day",        topic:"Key terms"},
+  {key:"calls", name:"Client Calls",      topic:"Bedding plant chart"},
+  {key:"site",  name:"Job Site Prep",     topic:"Soil, fertilizer, mulch"},
+  {key:"basket",name:"Basket Shop",       topic:"Hanging baskets"},
+  {key:"design",name:"Bed Design",        topic:"Designing a bed"},
+  {key:"season",name:"Season Calls",      topic:"Growing and care"}
+];
+let S = null;
+function newState(name, period){
+  const r = {}; ROUNDS.forEach(x => r[x.key] = {c:0,t:0});
+  return {name, period, cash:START_CASH, r, round:0, started:Date.now()};
+}
+function score(key, ok, pay=50, cost=25){
+  S.r[key].t++; if (ok){ S.r[key].c++; S.cash += pay; } else { S.cash -= cost; }
+  hud();
+}
+function totals(){ let c=0,t=0; for (const k in S.r){ c+=S.r[k].c; t+=S.r[k].t; } return {c,t,pct: t? Math.round(100*c/t):0}; }
+function starCount(pct){ return Math.max(1, Math.min(5, Math.round(pct/20))); }
+function starStr(n){ return "★".repeat(n) + "☆".repeat(5-n); }
+function hud(){
+  $("#hud").hidden = false;
+  $("#hudName").textContent = S.name.split(" ")[0] + "'s Landscape Co.";
+  $("#hudCash").textContent = money(S.cash);
+  const tt = totals();
+  $("#hudStars").textContent = starStr(tt.t ? starCount(tt.pct) : 3);
+  $("#hudRound").textContent = S.round < ROUNDS.length ? "Job " + (S.round+1) + " of " + ROUNDS.length : "Season complete";
+  $("#hudProg").style.width = (100*S.round/ROUNDS.length) + "%";
+}
+
+/* ============ completion code ============ */
+function fnv(str){ let h = 0x811c9dc5; for (let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
+const ALPH = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function makeCode(name, period, pct, date, mins){
+  const norm = name.toLowerCase().replace(/[^a-z]/g,"") + "|" + String(period).toLowerCase().replace(/\s+/g,"") + "|" + pct + "|" + date + "|" + mins;
+  let h1 = fnv(SALT + "|" + norm), h2 = fnv(norm + "|" + SALT), out = "";
+  for (let i=0;i<6;i++){ const h = i<3 ? h1 : h2; out += ALPH[(h >>> (i%3*9)) % ALPH.length]; }
+  return out.slice(0,3) + "-" + out.slice(3);
+}
+function today(d=new Date()){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+
+/* ============ catalog ============ */
+let catPick = null;
+function renderCatalog(){
+  const q = $("#catSearch").value.trim().toLowerCase(), u = $("#catUse").value;
+  const rows = PLANTS.filter(p => (!u || hasUse(p,u)) && (!q || [p.sci,p.common,p.color,p.uses,p.start,p.rem,ht(p)].join(" ").toLowerCase().includes(q)));
+  $("#catCount").textContent = rows.length + " of " + PLANTS.length + " plants";
+  $("#catTable tbody").innerHTML = rows.map(p => `<tr class="${catPick?'pickable':''}" data-sci="${esc(p.sci)}"><td class="nm"><i>${esc(p.sci)}</i><br>(${esc(p.common)})</td><td>${ht(p)}</td><td>${esc(p.sp)}</td><td>${esc(p.color)}</td><td>${esc(p.uses)}</td><td>${esc(p.start)}</td><td>${esc(p.rem)}</td></tr>`).join("");
+}
+function openCatalog(onPick){
+  catPick = onPick || null;
+  $("#catNote").textContent = catPick ? "Tap a row to choose that plant. The Remarks column holds most of the clues. Heights are in inches." : "Tip: the Remarks column holds most of the clues. Heights are in inches.";
+  $("#catalog").hidden = false; renderCatalog(); $("#catSearch").focus();
+}
+function closeCatalog(){ $("#catalog").hidden = true; catPick = null; }
+$("#catClose").onclick = closeCatalog;
+$("#catalog").addEventListener("click", e => { if (e.target.id === "catalog") closeCatalog(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#catalog").hidden) closeCatalog(); });
+$("#catSearch").oninput = renderCatalog; $("#catUse").onchange = renderCatalog;
+$("#catTable tbody").addEventListener("click", e => { const tr = e.target.closest("tr"); if (tr && catPick){ const f = catPick; closeCatalog(); f(tr.dataset.sci); } });
+function plantSelect(id){
+  return `<select id="${id}"><option value="">Choose a plant...</option>${PLANTS.slice().sort((a,b)=>a.sci.localeCompare(b.sci)).map(p=>`<option value="${esc(p.sci)}">${esc(p.label)}</option>`).join("")}</select>`;
+}
+
+/* ============ generic screens ============ */
+function feedback(box, ok, title, body){
+  box.className = "fb show " + (ok ? "good" : "bad");
+  box.innerHTML = `<b class="t">${ok ? "✔ " : "✘ "}${esc(title)}</b>${body}`;
+}
+function nextBtn(label, fn){ const b = el(`<button class="btn green" style="margin-top:14px">${label}</button>`); b.onclick = fn; return b; }
+
+function askMC(key, o, done){
+  // o: {head, prompt, options:[...], answer: index into options, explain, pay?, cost?}
+  const order = shuffle(o.options.map((t,i)=>({t,i})));
+  const card = el(`<div class="card"><div class="kicker">${esc(o.head)}</div><h3>${o.prompt}</h3><div class="opts"></div><div class="fb"></div></div>`);
+  const box = card.querySelector(".opts"), fb = card.querySelector(".fb");
+  order.forEach(x => {
+    const b = el(`<button class="opt">${esc(x.t)}</button>`);
+    b.onclick = () => {
+      const ok = x.i === o.answer;
+      box.querySelectorAll("button").forEach((bb,k) => { bb.disabled = true; if (order[k].i === o.answer) bb.classList.add("right"); });
+      if (!ok) b.classList.add("wrong");
+      score(key, ok, o.pay, o.cost);
+      feedback(fb, ok, ok ? "Correct! +" + money(o.pay||50) : "Not quite. " + money(-(o.cost||25)), `<div>${o.explain}</div>`);
+      card.appendChild(nextBtn("Next", done));
+    };
+    box.appendChild(b);
+  });
+  app.innerHTML = ""; app.appendChild(card); toTop();
+}
+function askNum(key, o, done){
+  // o: {head, prompt, answer, unit, explain}
+  const card = el(`<div class="card"><div class="kicker">${esc(o.head)}</div><h3>${o.prompt}</h3>
+    <div class="row" style="margin-top:10px"><input type="number" step="any" inputmode="decimal" style="max-width:180px" aria-label="Your answer"><span>${esc(o.unit||"")}</span><button class="btn">Submit</button></div><div class="fb"></div></div>`);
+  const inp = card.querySelector("input"), btn = card.querySelector("button"), fb = card.querySelector(".fb");
+  const go = () => {
+    if (inp.value.trim() === "") { inp.focus(); return; }
+    const v = parseFloat(inp.value), ok = Math.abs(v - o.answer) < 0.051;
+    inp.disabled = true; btn.disabled = true;
+    score(key, ok);
+    feedback(fb, ok, ok ? "Correct! +$50" : "Not quite. The answer is " + o.answer + " " + (o.unit||"") + ". -$25", `<div>${o.explain}</div>`);
+    card.appendChild(nextBtn("Next", done));
+  };
+  btn.onclick = go; inp.addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+  app.innerHTML = ""; app.appendChild(card); toTop(); inp.focus();
+}
+function series(items, done){ let i = 0; const step = () => i < items.length ? items[i++](step) : done(); step(); }
+
+/* ============ start screen ============ */
+function start(){
+  $("#hud").hidden = true;
+  app.innerHTML = "";
+  const c = el(`<div class="card">
+    <div class="kicker">Unit 25 &bull; Annual Bedding Plants</div>
+    <h1>Landscape Company Tycoon</h1>
+    <p>You just opened your own landscape company. Every season is different: new clients, new questions, new numbers. Over one season you will take six jobs: hiring, client calls, job site prep, the basket shop, bed design, and season calls. Right answers earn cash and reputation. Wrong answers cost you.</p>
+    <p class="muted small">Have your textbook nearby (pages 290 to 305). A built-in copy of the bedding plant chart is available whenever you need it. The game takes about 25 to 30 minutes.</p>
+    <label class="f" for="nm">Your first and last name</label>
+    <input type="text" id="nm" autocomplete="name" maxlength="40">
+    <label class="f" for="pd">Class period</label>
+    <input type="text" id="pd" maxlength="12" style="max-width:160px">
+    <div class="row" style="margin-top:18px"><button class="btn" id="go">Open for business</button></div>
+    <p class="small" id="best" style="margin-top:14px;display:none"></p>
+    <p class="small muted" style="margin-top:14px">At the end you get a certificate with a completion code. Screenshot it or save it as a PDF and turn it in. You can replay to raise your score.</p>
+    <div class="teacher noprint"><a href="#" id="tlink">Teacher check</a></div>
+  </div>`);
+  app.appendChild(c);
+  try { const b = JSON.parse(localStorage.getItem("u25tycoonBest") || "null"); if (b) { const bp = $("#best"); bp.style.display = "block"; bp.innerHTML = `Best score on this device: <b>${b.pct}%</b> by ${esc(b.name)}. Can you beat it?`; } } catch (e) {}
+  const go = () => {
+    const n = $("#nm").value.trim().replace(/\s+/g," "), p = $("#pd").value.trim();
+    if (n.split(" ").length < 2) { alert("Please enter your first and last name."); $("#nm").focus(); return; }
+    if (!p) { alert("Please enter your class period."); $("#pd").focus(); return; }
+    S = newState(n, p); hud(); runRound();
+  };
+  $("#go").onclick = go;
+  $("#pd").addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+  $("#tlink").onclick = e => { e.preventDefault(); teacher(); };
+}
+
+/* ============ round flow ============ */
+const RUN = {hire, calls, site, basket, design, season};
+function runRound(){
+  hud();
+  if (S.round >= ROUNDS.length) return report();
+  const R = ROUNDS[S.round];
+  const intro = INTROS[R.key];
+  app.innerHTML = "";
+  const c = el(`<div class="card cream"><div class="kicker">Job ${S.round+1} of ${ROUNDS.length} &bull; ${esc(R.topic)}</div><h2>${esc(R.name)}</h2>${intro}</div>`);
+  c.appendChild(nextBtn("Start this job", () => RUN[R.key](() => roundDone(R))));
+  app.appendChild(c); toTop();
+}
+function roundDone(R){
+  const x = S.r[R.key], pct = x.t ? Math.round(100*x.c/x.t) : 0;
+  S.round++; hud();
+  app.innerHTML = "";
+  const c = el(`<div class="card"><div class="kicker">Job complete</div><h2>${esc(R.name)}: ${x.c} of ${x.t} correct (${pct}%)</h2>
+    <p>${pct >= 80 ? "Great work. Clients are talking about your company." : pct >= 60 ? "Solid job. A little more care and you will be booked all season." : "Rough job. Review this part of your notes before the next season."}</p>
+    <p>Company cash: <b>${money(S.cash)}</b></p></div>`);
+  c.appendChild(nextBtn(S.round < ROUNDS.length ? "On to the next job" : "See your year-end report", runRound));
+  app.appendChild(c); toTop();
+}
+const INTROS = {
+  hire: `<p>Before customers trust you, you need to talk like a pro. Match each key term to its meaning.</p><p class="small muted">Tap a term, then tap its meaning. +$25 for each first-try match. Key Terms, pp. 290&ndash;302.</p>`,
+  calls: `<p>Eight clients are calling in. Read each request, search the plant catalog, and choose the annual that fits best.</p><p class="small muted">Open the catalog to search the chart. Most clues are in the Remarks column. +$75 for a happy client, -$40 for a refund. Figure 25-5, pp. 293&ndash;296.</p>`,
+  site: `<p>Time to get the beds ready. Test the drainage, work the fertilizer math, and mulch like a pro.</p><p class="small muted">Have scratch paper ready. Bed sizes change every game. pp. 298&ndash;302.</p>`,
+  basket: `<p>Hanging basket orders are piling up for the spring plant sale. Figure out how many plants each basket needs, then pick a plant that belongs in a basket.</p><p class="small muted">Remember the rule of thumb: one less plant than the size of the pot. p. 298 and Figure 25-5.</p>`,
+  design: `<p>Two clients want a 3-row bed in full sun, seen from the sidewalk on one side. Pick one plant for each row from the chart.</p>
+    <p class="small muted">Row rules use the <b>tallest</b> number in the Height column:<br>Back row: taller than 30" &bull; Middle row: 13" to 30" &bull; Front row: 12" or shorter.<br>Every plant must come in the client's color (multicolor counts), list "flower bed" or "edging" under Uses, and handle full sun. Figures 25-5 and 25-7.</p>`,
+  season: `<p>The beds are planted. Now keep them looking good all season. Put the steps in order, then answer customer calls about problems.</p><p class="small muted">Tap the steps in order. Each wrong tap costs you. pp. 298 and 303, Figure 25-14.</p>`
+};
+
+/* ============ Job 1: Hiring Day ============ */
+const TERM_BANK = [
+  ["Annuals",["Plants that complete their life cycle in one year","Plants that grow, bloom, set seed, and die in one season","Plants that must be replanted every year because they live only one season"]],
+  ["Residential",["Landscapes around homes, where people live","The type of landscape found at a family's house","Home landscapes, as opposed to business or public ones"]],
+  ["Commercial",["Landscapes around businesses","The type of landscape found at a bank, store, or restaurant","Business landscapes, as opposed to home or public ones"]],
+  ["Exposure",["The light a plant needs: sun or shade","How much sun or shade a plant requires","The light information printed on a good plant label"]],
+  ["Accent",["To highlight and lend color to a landscape","To draw attention to a spot and add color","What flowering annuals do for a landscape a short time after planting"]],
+  ["Aesthetics",["The beauty and visual appeal of a space","How attractive and pleasing a landscape looks","The visual appeal that annuals add around a home or park"]],
+  ["Multifaceted",["Doing many jobs at once, the way mulch does","Having many uses or sides at the same time","Mulch is this because it controls weeds, holds moisture, adds organic matter, and more"]],
+  ["Direct seeding",["Planting seeds in the soil where they will grow and germinate","Sowing seeds straight into the flower bed instead of starting them indoors","How sunflowers, poppies, and sweet peas are usually started"]]
+];
+function hire(done){
+  const TERMS = TERM_BANK.map(([t, ds]) => [t, pick(ds,1)[0]]);
+  const terms = shuffle(TERMS), defs = shuffle(TERMS);
+  const card = el(`<div class="card"><div class="kicker">Hiring Day</div><h3>Match each term to its meaning</h3><div class="match"><div class="col" id="tc"></div><div class="col" id="dc"></div></div><div class="fb"></div></div>`);
+  app.innerHTML = ""; app.appendChild(card); toTop();
+  const tc = card.querySelector("#tc"), dc = card.querySelector("#dc"), fb = card.querySelector(".fb");
+  let sel = null, left = TERMS.length; const missed = new Set();
+  terms.forEach(([t]) => { const b = el(`<button class="tile term">${esc(t)}</button>`); b.dataset.t = t; b.onclick = () => { if (b.classList.contains("done")) return; tc.querySelectorAll(".tile").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); sel = b; }; tc.appendChild(b); });
+  defs.forEach(([t,d]) => { const b = el(`<button class="tile">${esc(d)}</button>`); b.dataset.t = t; b.onclick = () => {
+    if (!sel || b.classList.contains("done")) { if (!sel) { fb.className="fb show bad"; fb.innerHTML="Tap a term first, then its meaning."; } return; }
+    const term = sel.dataset.t;
+    if (term === t){
+      sel.classList.remove("sel"); sel.classList.add("done"); b.classList.add("done"); sel.disabled = true; b.disabled = true;
+      const first = !missed.has(term);
+      S.r.hire.t++; if (first){ S.r.hire.c++; S.cash += 25; } hud();
+      fb.className = "fb show good"; fb.innerHTML = `<b class="t">✔ ${esc(term)}</b>${first ? "+$25" : "Matched (no pay after a miss)"}`;
+      sel = null; left--;
+      if (!left) card.appendChild(nextBtn("Finish hiring", done));
+    } else {
+      missed.add(term); S.cash -= 10; hud();
+      b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+      fb.className = "fb show bad"; fb.innerHTML = `<b class="t">✘ Not a match</b>-$10. Try again.`;
+    }
+  }; dc.appendChild(b); });
+}
+
+/* ============ Job 2: Client Calls ============ */
+const CLIENTS = [
+  ["Coach Rivera","I want tall flower spikes along the back of my bed. I don't mind staking them to keep them straight.",["Antirrhinum"],"Snapdragon: must be staked for straight flower spikes and is an excellent background plant."],
+  ["Chef Dana","I run a cafe. I want a yellow or orange flower whose petals I can cook into stews for color.",["Calendula"],"Calendula (potted marigold): its petals are used in cooking stews to add color."],
+  ["Mrs. Patel","I want a pink potted plant I can bring inside as a houseplant. My sunroom gets direct light.",["Begonia"],"Begonia: potted plant use, comes in pink, may be used as a houseplant, needs direct light."],
+  ["The fall festival committee","We need an orange flower that dries well for our fall arrangements.",["Celosia"],"Celosia (cockscomb): an excellent dried flower that comes in orange."],
+  ["Mr. Okafor","I don't care much about flowers. I want beautiful foliage for a bed that gets full to partial sun.",["Coleus","Hypoestes"],"Coleus: needs full to partial sun and is a beautiful foliage plant. Polka-dot plant, with its splashed colored leaves, also works."],
+  ["The garden club","We want a profuse bloomer for cut flowers, and we will sow it a few weeks before our other annuals.",["Dahlia variabilis"],"Dahlia: a profuse bloomer. For maximum bloom, sow it several weeks before other annuals."],
+  ["A wedding planner","I need blue cut flowers. I hear they are hard to transplant, so I will grow them in peat pots.",["Delphinium"],"Delphinium (larkspur): blue cut flowers, grows best in peat pots, difficult to transplant."],
+  ["Mrs. Greene","Along my front walk I want a white or pink edging plant with very fragrant flowers.",["Dianthus"],"Dianthus (pink): edging use, white or pink, very fragrant flowers."],
+  ["An elementary teacher","My class wants to sow seeds right into the ground, then eat the seeds at the end of the year.",["Helianthus"],"Helianthus (sunflower): seed directly, and the seeds are edible."],
+  ["Mr. Brooks","I need a low white edging plant that spreads into an attractive ground cover.",["Iberis"],"Iberis (candytuft): edging use, white, makes an attractive ground cover."],
+  ["A florist","I want cut flowers early in spring while the weather is still cool. I will sow the seed right in the ground.",["Lathyrus"],"Lathyrus (sweet pea): cut flowers, seed directly, grows best in cool conditions."],
+  ["A hotel manager","For the urns by our front door I want purple, grassy leaves with cattail-like spikes.",["Pennisetum glaucum"],"Pennisetum (millet): urn and accent use, purple grassy leaves, 12-inch cattail spikes."],
+  ["A bank manager","I want planters by the drive-through that keep their flower color the full season.",["Pentas"],"Pentas (star flower): planter use, and its flower color lasts the full season."],
+  ["A farm stand owner","I want a field of bright color that grows in masses. I will sow the seed directly.",["Papaver"],"Papaver (poppy): seed directly, grows in masses, bright colors."],
+  ["Ms. Carter","I want a blue plant that the chart calls very attractive in a hanging basket.",["Lobelia"],"Lobelia: comes in blue and is very attractive in a hanging basket."],
+  ["A garden center buyer","Stock our benches with the most widely used annual. Customers keep asking for 'Wave' types.",["Petunia"],"Petunia: the most widely used annual. 'Wave' is one of its listed cultivars."],
+  ["Mr. Hill","I want an orange vine for a hanging basket. I will also cut some for a fall bouquet.",["Thunbergia"],"Thunbergia (black-eyed Susan vine): climbing vine and hanging basket use, orange, nice in a summer or fall bouquet."],
+  ["A landscape architect","My plans call for the black-eyed Susan cultivar 'Indian Summer.'",["Rudbeckia"],"Rudbeckia (black-eyed Susan): 'Indian Summer' and 'Sonora Marmalade' are cultivars."],
+  ["Mrs. Nguyen","I am building a rock garden and want a purple flower that does well there.",["Verbena"],"Verbena: comes in purple and is a good rock garden plant."],
+  ["A community garden","We want an orange or yellow edging plant with no insect problems.",["Tagetes"],"Tagetes (marigold): orange or yellow, edging use, no insect problems."],
+  ["Mr. Daniels","I need a compact blue edging plant with excellent bloom for a bed in full sun.",["Ageratum"],"Ageratum (floss flower): edging, blue, compact with excellent bloom, needs full sun."],
+  ["Mrs. Simmons","I want a blue or white plant for my window box that I can also grow inside as a houseplant. It gets full sun.",["Browallia"],"Browallia: window box use, blue or white, makes an attractive houseplant, needs full sun."],
+  ["A wedding florist","I need purple cut flowers that give excellent summer color.",["Callistephus","Zinnia","Viola"],"Callistephus (China aster): cut flowers, comes in purple, gives excellent summer color. Zinnia and pansy (multicolor, excellent summer color, cut flowers) also work."],
+  ["Mr. Grant","I want a pink or white flower I can sow right in the bed. I hear it even makes an attractive houseplant.",["Cleome speciosa"],"Cleome (spider plant): seed directly, pink or white, makes an attractive houseplant."],
+  ["A restaurant owner","I want bright blooms in unusual colors, like tangerine or bronze, for my front bed.",["Gazania"],"Gazania (treasure flower): bright blooms in colors that include tangerine and bronze."],
+  ["Mrs. Lopez","I want the annual form of a plant that also comes as a perennial. Pink or white, and I will seed it directly.",["Gypsophila"],"Gypsophila (baby's breath): the chart notes this is the annual form, and there is also a perennial. Seed directly."],
+  ["A craft store owner","I want a yellow flower that I can cut and hang in a dry, dark place to dry.",["Helichrysum","Celosia"],"Helichrysum (strawflower): a good dried flower in yellow. Cut it and hang it in a dry, dark place. Celosia, an excellent yellow dried flower, also works."],
+  ["Mr. Price","I want large blooms in an orchid color, and my yard gets very dry.",["Lisianthus"],"Lisianthus: large blooms, drought tolerant, and orchid is one of its colors."],
+  ["Mrs. Young","My white window box needs a plant that blooms all summer long.",["Lobularia"],"Lobularia (sweet alyssum): window box use, white, blooms all summer."],
+  ["A gift shop owner","I want fragrant cut flowers, and I want them in yellow.",["Matthiola"],"Matthiola (stock): cut flowers, fragrant, and comes in yellow."],
+  ["Mrs. Turner","I want a blue or pink edging plant that makes attractive cut flowers. I will sow the seed directly.",["Myosotis"],"Myosotis (forget-me-not): edging, blue or pink, seed directly, makes attractive cut flowers."],
+  ["A hotel manager","Our front urns need an orange flower known for excellent flower quality.",["Osteospermum"],"Osteospermum (African daisy): urn use, comes in orange, excellent flower quality."],
+  ["Mr. Lee","I want a lavender plant for a window box. I am fine starting it from cuttings or seed.",["Pelargonium"],"Pelargonium (geranium): window box use, lavender, started from cuttings and seeds."],
+  ["Ms. Rivera","For my blue window box I want a plant with very intense colors.",["Phlox"],"Phlox: window box use, comes in blue, very intense colors."],
+  ["A seed company rep","I want a gold or scarlet flower for cut flowers. Be warned, its seed is very small.",["Salpiglossis"],"Salpiglossis (giant velvet flower): gold or scarlet, cut flowers, very small seed."],
+  ["The school front office","We want red cut flowers with very showy color.",["Salvia"],"Salvia (scarlet sage): red, cut flowers, very showy color."],
+  ["A park designer","I want a purple accent with a vine texture.",["Dolichos lablab"],"Dolichos lablab (hyacinth bean): purple, accent use, vine texture."]
+];
+function calls(done){
+  series(pick(CLIENTS, 8).map((c, i) => next => {
+    const [who, req, ok, why] = c;
+    const card = el(`<div class="card"><div class="kicker">Client call ${i+1} of 8</div>
+      <div class="client"><div class="avatar">${esc(who.replace(/^(The|A|An|Mr\.|Mrs\.|Ms\.|Coach|Chef)\s+/,"").charAt(0).toUpperCase())}</div>
+      <div class="bubble"><b>${esc(who)}</b><br>&ldquo;${esc(req)}&rdquo;</div></div>
+      <label class="f" for="cp">Your recommendation</label>${plantSelect("cp")}
+      <div class="row" style="margin-top:12px"><button class="btn ghost" id="cat">Open plant catalog</button><button class="btn" id="sell">Recommend this plant</button></div>
+      <div class="fb"></div></div>`);
+    app.innerHTML = ""; app.appendChild(card); toTop();
+    const sel = card.querySelector("#cp"), fb = card.querySelector(".fb");
+    card.querySelector("#cat").onclick = () => openCatalog(sci => { sel.value = sci; });
+    card.querySelector("#sell").onclick = () => {
+      if (!sel.value) { feedback(fb, false, "Choose a plant first", ""); return; }
+      const good = ok.includes(sel.value), chosen = P(sel.value);
+      sel.disabled = true; card.querySelector("#sell").disabled = true; card.querySelector("#cat").disabled = true;
+      score("calls", good, 75, 40);
+      feedback(fb, good, good ? "Happy client! +$75" : "Client complaint. Refund -$40",
+        `${good ? "" : `<div>You picked <i>${esc(chosen.label)}</i>: ${esc(chosen.rem)}</div>`}<div><b>Best pick:</b> ${esc(why)}</div>`);
+      card.appendChild(nextBtn("Next call", next));
+    };
+  }), done);
+}
+
+/* ============ Job 3: Job Site Prep ============ */
+// [prompt, right answer, wrong answers, explanation]
+const SITE_MC = [
+  ["When is the best time to prepare the soil for a spring annual bed?","In the fall before planting",["The morning you plant","In midsummer","Right after the first frost of winter"],"It is best to prepare the soil in the fall before planting the next spring (p. 298)."],
+  ["You start a drainage test. How deep should you dig the test hole?","10 inches",["4 inches","18 inches","24 inches"],"Dig a 10-inch hole, fill it with water, and fill it again the next day (p. 298)."],
+  ["During a drainage test, how long do you give the water to soak in on the second day?","10 hours",["1 hour","3 hours","2 days"],"If all the water has not seeped in within 10 hours on the second day, drainage is a problem (p. 298)."],
+  ["On day two, water is still standing in the test hole after 10 hours. What should you do?","Raise the bed, dig a shallow trench around it, and add pine bark",["Pack the soil down tight so water can't get in","Keep adding water until it drains","Nothing. Standing water is normal for flower beds"],"That means a drainage problem. Raise the bed, dig a shallow trench around it, and add pine bark (p. 298)."],
+  ["Which of these is NOT listed as a way to add organic matter to the soil?","Crushed gravel",["Peat moss","Pine bark fines","Composted leaves and grass clippings"],"Organic matter sources include peat moss, pine bark fines, composted sewage sludge, composted leaves and grass clippings (Leafgro), and composted manure. Gravel is not organic (p. 298)."],
+  ["Sphagnum peat moss and pine fines should be mixed and applied how?","50/50, spread 2 to 4 inches deep and dug in",["90/10, spread 1 inch deep on top","50/50, spread 8 to 10 inches deep","Pine fines only, spread 6 inches deep"],"A 50/50 mix applied 2 to 4 inches deep and dug in improves aeration, drainage, and moisture-holding capacity (p. 298)."],
+  ["Your plants are pale instead of a healthy dark green. Where do you put the 10-10-10?","Sprinkle it lightly on the soil around each plant",["Pack it against the base of each stem","Sprinkle it on the leaves","Pour it into the center of each plant"],"Sprinkle 10-10-10 lightly around each plant on the soil surface. Never place fertilizer on or against the plant (p. 298)."],
+  ["Why do many growers use soluble fertilizer on annuals?","Fertilizer in a solution is more readily available to plants",["It never needs to be measured","It raises the soil pH","It works as a weed killer"],"Fertilizer applied in a solution is more readily available to the plants (p. 300)."],
+  ["How should you mulch a new annual bed?","Apply 2 to 3 inches before planting",["Apply 6 inches after planting","Apply 1 inch only around each stem after planting","Skip mulch; annuals do not need it"],"Apply a 2- to 3-inch layer before the bed is planted. It spreads more evenly and saves time (p. 300)."],
+  ["Which is NOT one of the jobs mulch does in an annual bed?","Adds nitrogen fertilizer to the leaves",["Controls weeds","Conserves moisture","Evens out ground temperatures"],"Mulch creates aesthetics, adds organic matter, controls weeds, conserves moisture, and promotes even ground temperatures (p. 300)."],
+  ["Why should you keep an eye on soil pH after mulching?","Some mulches can change the pH of the soil",["Mulch always makes soil too salty","Mulch removes all the nitrogen","pH only matters in vegetable gardens"],"Some mulches influence the pH of the soil in the annual bed, so follow the pH closely (p. 300)."],
+  ["How warm should the soil be before you set started plants outdoors?","About 60°F",["About 40°F","About 50°F","About 80°F"],"Wait until the soil warms to about 60°F before setting the started plants outdoors (p. 302)."],
+  ["After transplanting, what kind of starter solution helps the new plants?","A water-soluble, high-phosphate fertilizer",["Straight lime mixed in water","A high-nitrogen lawn fertilizer","Plain salt water"],"Add a starter solution of 1 tablespoon of water-soluble, high-phosphate fertilizer in 1 gallon of water (p. 302)."]
+];
+function site(done){
+  const L = pick([10,12,15,20,25,30],1)[0], W = pick([4,5,6,8,10],1)[0], area = L*W;
+  const lbs = +(area/100*2).toFixed(2);
+  const pH = pick([5.2,5.5,5.8,6.4,6.8,7.1],1)[0], lime = pH < 6 ? +(area/100*5).toFixed(2) : 0;
+  const gal = pick([2,3,4,5],1)[0];
+  const H = "Job Site Prep";
+  const mc = pick(SITE_MC, 6).map(q => n => askMC("site", {head:H, prompt:q[0], options:[q[1], ...q[2]], answer:0, explain:q[3]}, n));
+  const math = [
+    n => askNum("site", {head:H, prompt:`The bed is <b>${L} ft by ${W} ft</b>. The book calls for 2 lb of 5-10-10 per 100 sq ft. How many pounds of 5-10-10 do you need?`, answer:lbs, unit:"lb", explain:`${L} × ${W} = ${area} sq ft. ${area} ÷ 100 × 2 = <b>${lbs} lb</b> of 5-10-10 (p. 298).`}, n),
+    n => askNum("site", {head:H, prompt:`A soil test on that same ${area} sq ft bed shows a <b>pH of ${pH}</b>. If the pH is below 6.0, the book says to add 5 lb of ground limestone per 100 sq ft. How many pounds of limestone do you add? (Enter 0 if none.)`, answer:lime, unit:"lb", explain: pH < 6 ? `${pH} is below 6.0, so add limestone: ${area} ÷ 100 × 5 = <b>${lime} lb</b> (p. 298).` : `${pH} is not below 6.0, so you add <b>0 lb</b> of limestone (p. 298).`}, n),
+    n => askNum("site", {head:H, prompt:`You are mixing soluble 20-20-20 fertilizer in a <b>${gal}-gallon</b> watering can. The rate is 1 tablespoon per gallon. How many tablespoons do you add?`, answer:gal, unit:"Tbsp", explain:`1 tablespoon per gallon × ${gal} gallons = <b>${gal} Tbsp</b>. Fertilizer in a solution is more readily available to plants (p. 300).`}, n)
+  ];
+  // the two bed questions stay together, in order; everything else is shuffled around them
+  const steps = shuffle([...mc, math[2], "BED"]);
+  const i = steps.indexOf("BED"); steps.splice(i, 1, math[0], math[1]);
+  series(steps, done);
+}
+
+/* ============ Job 4: Basket Shop ============ */
+function basket(done){
+  const sizes = pick([6,8,10,12,14], 4);
+  const basketOK = PLANTS.filter(p => hasUse(p,"hanging basket") && !/shade/i.test(p.rem));
+  const notBasket = PLANTS.filter(p => !hasUse(p,"hanging basket") && p.hi != null);
+  const names = ["Mrs. Allen","the Wolfpack Booster Club","Mr. Ortiz","a church festival","Ms. Howard","the front office"];
+  const who = pick(names, 4);
+  series(sizes.flatMap((sz, i) => [
+    next => {
+      const card = el(`<div class="card"><div class="kicker">Basket order ${i+1} of 4</div>
+        <div class="client"><div class="avatar">${sz}"</div><div class="bubble"><b>Order from ${esc(who[i])}</b><br>&ldquo;I need a <b>${sz}-inch</b> hanging basket, planted full.&rdquo;</div></div>
+        <div class="basket-in"><div><label class="f">Total plants</label><input type="number" id="bt" inputmode="numeric"></div>
+        <div><label class="f">Around the edge</label><input type="number" id="be" inputmode="numeric"></div>
+        <div><label class="f">In the center</label><input type="number" id="bc" inputmode="numeric"></div></div>
+        <div class="row" style="margin-top:14px"><button class="btn" id="bs">Plant it</button></div><div class="fb"></div></div>`);
+      app.innerHTML = ""; app.appendChild(card); toTop();
+      const fb = card.querySelector(".fb");
+      card.querySelector("#bs").onclick = () => {
+        const t = +card.querySelector("#bt").value, e = +card.querySelector("#be").value, c = +card.querySelector("#bc").value;
+        if (!card.querySelector("#bt").value || !card.querySelector("#be").value || !card.querySelector("#bc").value) { feedback(fb,false,"Fill in all three boxes",""); return; }
+        const ok = t === sz-1 && e === sz-2 && c === 1;
+        card.querySelectorAll("input,button").forEach(x => x.disabled = true);
+        score("basket", ok);
+        feedback(fb, ok, ok ? "Perfect basket! +$50" : "The customer sent it back. -$25",
+          `<div>Rule of thumb: one less plant than the pot size. A ${sz}-inch basket gets <b>${sz-1} plants</b>: <b>${sz-2}</b> around the edge and <b>1</b> in the center (p. 298).</div>`);
+        card.appendChild(nextBtn("Next", next));
+      };
+    },
+    next => {
+      const right = pick(basketOK,1)[0], wrong = pick(notBasket,3);
+      const opts = [right, ...wrong].map(p => p.label);
+      askMC("basket", {head:`Basket order ${i+1} of 4`, prompt:`Which plant should go in the ${sz}-inch basket for ${esc(who[i])}? Check the Uses column.`,
+        options:opts, answer:0,
+        explain:`<i>${esc(right.label)}</i> lists &ldquo;hanging basket&rdquo; under Uses. The others do not: ${wrong.map(p=>`<i>${esc(p.common)}</i> (${esc(p.uses)})`).join(", ")}.`}, next);
+      const tools = el(`<div class="row noprint" style="margin-top:8px"><button class="btn ghost">Open plant catalog</button></div>`);
+      tools.querySelector("button").onclick = () => openCatalog();
+      app.querySelector(".card h3").after(tools);
+    }
+  ]), done);
+}
+
+/* ============ Job 5: Bed Design ============ */
+const DESIGN_CLIENTS = [
+  {who:"The county courthouse", colors:["red","white"], say:"Our bed runs along the front sidewalk. We want only red or white flowers."},
+  {who:"A downtown bank", colors:["yellow","orange"], say:"We want warm colors by our entrance: yellow or orange flowers only."},
+  {who:"A pediatric clinic", colors:["pink","blue"], say:"Our bed is by the parking lot walk. Pink or blue flowers, please."},
+  {who:"A church entrance", colors:["purple","white"], say:"We want a calm look by our front doors: purple or white flowers only."},
+  {who:"The fire station", colors:["red","yellow"], say:"Bold and bright by the bay doors. Red or yellow flowers only."},
+  {who:"A lakeside restaurant", colors:["blue","white"], say:"Cool colors to match the water: blue or white flowers only."}
+];
+const ROWS = [
+  {key:"back",  name:"Back row",   rule:'taller than 30"', test:p => p.hi != null && p.hi > 30},
+  {key:"middle",name:"Middle row", rule:'13" to 30"',      test:p => p.hi != null && p.hi >= 13 && p.hi <= 30},
+  {key:"front", name:"Front row",  rule:'12" or shorter',  test:p => p.hi != null && p.hi <= 12}
+];
+function design(done){
+  series(pick(DESIGN_CLIENTS, 2).map((cl, i) => next => {
+    const card = el(`<div class="card"><div class="kicker">Bed design ${i+1} of 2</div>
+      <div class="client"><div class="avatar">${i+1}</div><div class="bubble"><b>${esc(cl.who)}</b><br>&ldquo;${esc(cl.say)}&rdquo;<br><span class="pill">Full sun</span><span class="pill">Seen from one side</span><span class="pill">${cl.colors.join(" or ")}</span></div></div>
+      <div class="bed">${ROWS.map(r => `<div class="bedrow" id="row-${r.key}"><div class="lab">${r.name}<span>tallest height ${r.rule}</span></div><div>${plantSelect("d-"+r.key)}</div><div class="checks"></div></div>`).join("")}</div>
+      <div class="row" style="margin-top:14px"><button class="btn ghost" id="cat">Open plant catalog</button><button class="btn" id="sub">Show the client</button></div><div class="fb"></div></div>`);
+    app.innerHTML = ""; app.appendChild(card); toTop();
+    const fb = card.querySelector(".fb");
+    card.querySelector("#cat").onclick = () => openCatalog();
+    card.querySelector("#sub").onclick = () => {
+      const picks = ROWS.map(r => card.querySelector("#d-"+r.key).value);
+      if (picks.some(v => !v)) { feedback(fb,false,"Choose a plant for every row",""); return; }
+      const dup = new Set(picks).size < picks.length;
+      let rowsRight = 0;
+      ROWS.forEach((r, k) => {
+        const p = P(picks[k]);
+        const hOK = r.test(p), cOK = cl.colors.some(c => hasColor(p,c)), uOK = hasUse(p,"flower bed") || hasUse(p,"edging"), sOK = !/shade/i.test(p.rem);
+        const dOK = !dup || picks.indexOf(picks[k]) === k;
+        const ok = hOK && cOK && uOK && sOK && dOK;
+        if (ok) rowsRight++;
+        score("design", ok);
+        card.querySelector(`#row-${r.key} .checks`).innerHTML =
+          `<span class="${hOK?'ok':'no'}">${hOK?'✔':'✘'} Height ${ht(p)}</span>` +
+          `<span class="${cOK?'ok':'no'}">${cOK?'✔':'✘'} Color: ${esc(p.color)}</span>` +
+          `<span class="${uOK?'ok':'no'}">${uOK?'✔':'✘'} Uses: ${esc(p.uses)}</span>` +
+          (sOK ? "" : `<span class="no">✘ ${esc(p.rem)}</span>`) + (dOK ? "" : `<span class="no">✘ Already used in another row</span>`);
+      });
+      card.querySelectorAll("select,button").forEach(x => x.disabled = true);
+      const stars = ["★☆☆","★☆☆","★★☆","★★★"][rowsRight];
+      feedback(fb, rowsRight === 3, `${rowsRight} of 3 rows meet the plan. Client rating: ${stars}`,
+        `<div>${rowsRight === 3 ? "Every row fits. Short plants in front keep every row visible from the sidewalk." : "Check the red marks. Use the tallest height in the chart to place each plant, and match the client's colors."}</div>`);
+      card.appendChild(nextBtn("Next", next));
+    };
+  }), done);
+}
+
+/* ============ Job 6: Season Calls ============ */
+const GROW8 = ["Decide which annuals to grow and outline the bed plan in writing","Seed 6 to 8 weeks before the frost-free date","Prepare the soil: add organic amendments, fertilizer, or lime","Plant by the landscape plan after the frost-free date","Water, weed, and mulch as needed","Pinch off all faded blossoms","Provide for insect control","Enjoy cut flowers"];
+const CARE7 = ["Water if the soil becomes too dry","Pull weeds, apply preemergence herbicide, and mulch","Prune faded flower blossoms (deadheading)","Control insects and diseases (ask the local extension service)","Fertilize with a time-release fertilizer (14-14-14)","Cut flowers for use in the home","Prune or pinch for better growth"];
+const TROUBLE = [
+  ["My plants are pale instead of dark green.","Sprinkle 10-10-10 lightly on the soil around each plant",["Pack fertilizer against each stem","Water them twice as much","Cut them back to the ground"],"Pale plants need fertilizer. Sprinkle 10-10-10 lightly around each plant, never on or against it (p. 298)."],
+  ["Water stands in a puddle around each new plant after watering.","A pocket or depression was left around the plant when it was set",["The plants were set too high","The mulch was too thin","The fertilizer was too strong"],"Do not make a pocket or depression around the plant. A depression lets excess water stand (Figure 25-14)."],
+  ["My annuals stopped blooming and are covered in faded flowers and seed heads.","Deadhead: cut off the faded blooms",["Add more mulch","Move them to the shade","Stop watering for a week"],"Setting seed saps the plant's strength and reduces blooming. Cutting off faded blooms is called deadheading (p. 292)."],
+  ["My coleus is tall, thin, and leggy.","Pinch the tips to get a thicker plant",["Pull off all the leaves","Fertilize with lime","Stake it straight"],"Herbaceous (soft-stemmed) plants can be pinched with the fingers. Pinching gives a thicker, more attractive plant (p. 303)."],
+  ["The tiny petunia seeds I sowed never came up after I watered them with the hose.","The water washed the tiny seeds too deep",["Petunias must be direct seeded","The seeds needed more fertilizer","The flat needed more light"],"Very small seeds like petunia must not be watered from the top with force. Sprinkle gently or soak the flat from the bottom (Figure 25-11)."],
+  ["My new transplants wilted badly their first days in full sun.","Shade them the first several days and remove the cover in the afternoon",["Pull them and start over","Fertilize them heavily","Water only the leaves"],"Shade new plants for the first several days if they are in direct sun. Remove the cover in the afternoon to help them adjust (Figure 25-14)."],
+  ["The seedlings' stems got crushed when we moved them to bigger pots.","Hold seedlings by their true leaves, not the stem",["Hold them by the roots","Use a fork to lift the stem","Water them right before moving"],"To transplant a small seedling, grasp it by its true leaves and gently lift it from the pot (Figure 25-13)."],
+  ["I dug a new annual bed over my tulips and now they look damaged.","You dug too deep in a bulb bed",["The annuals were planted too far apart","The bed was mulched","The pH was too high"],"When planting in beds that contain bulbs, do not dig deep enough to damage the bulbs, and don't let the bed dry out (p. 298)."],
+  ["Bugs are chewing my flowers and I don't know what to spray.","Contact the local extension service for controls",["Spray whatever is in the garage","Pull every plant","Add more 10-10-10"],"Step 4 of plant care: control insects and diseases. Contact the local extension service for controls to use in your area (p. 303)."],
+  ["The mulch I spread after planting was uneven and took all day.","Next time, apply mulch before planting",["Use 8 inches of mulch","Skip mulch next time","Mulch only in winter"],"Apply a 2- to 3-inch layer before the bed is planted for more even spreading and less mulching time (p. 300)."],
+  ["My snapdragon spikes keep flopping over and growing crooked.","Stake them for straight flower spikes",["Cut them to the ground","Move them to the shade","Stop watering them"],"The chart says snapdragons must be staked for straight flower spikes (Figure 25-5)."],
+  ["The roots are wound in a tight mat around the outside of the plastic pot.","Make fine 1/4-inch cuts in the surface of the root ball",["Plant it pot and all","Pull the plant out by the stem","Wash all the soil off the roots"],"For plants in clay or plastic pots, make fine 1/4-inch-deep cuts in the surface of the soil ball if the roots are matted (Figure 25-14)."],
+  ["I pulled my plants out of their pots by the stems and several snapped.","Knock the plants out of the pot instead",["Water them less before planting","Use smaller pots","Pull harder and faster"],"Knock plants out of clay or plastic pots. Do not pull on the stem (Figure 25-14)."],
+  ["I set my transplants out on a chilly spring day and they just sat there.","Wait until the soil warms to about 60°F",["Add more lime","Plant them deeper","Water them with ice water"],"Wait until the soil warms to about 60°F before setting the started plants outdoors (p. 302)."],
+  ["My new transplants are slow to root in.","Water them with a high-phosphate starter solution",["Give them a high-nitrogen lawn fertilizer","Pull them up to check the roots each day","Pack mulch against the stems"],"A starter solution of 1 tablespoon of water-soluble, high-phosphate fertilizer per gallon helps after transplanting (p. 302)."],
+  ["My sweet peas sown in June struggled in the heat.","Sweet peas grow best in cool conditions, so sow early in spring",["Sweet peas need more fertilizer","Sweet peas must be started from cuttings","Sweet peas need deep shade"],"The chart says sweet pea grows best in cool conditions. Direct-seeded annuals should be sown as early in spring as possible (Figure 25-5, p. 302)."],
+  ["My peat pot seedlings are ready to go outside. Do I take them out of the pot?","No. Set peat pot seedlings directly into the soil",["Yes, peel the pot off completely first","Yes, and wash the roots","No, keep them indoors all summer"],"Seedlings in peat pots are set directly into the soil (p. 302). Tear off the upper lip and open the bottom (Figure 25-14)."]
+];
+function orderTask(title, list, done){
+  const shuffled = shuffle(list.map((t,i)=>({t,i})));
+  const card = el(`<div class="card"><div class="kicker">Season Calls</div><h3>${esc(title)}</h3><p class="small muted">Tap the steps in the order the textbook lists them. +$20 for each step, -$10 for each wrong tap.</p><div class="placed"></div><div class="order"></div><div class="fb"></div></div>`);
+  app.innerHTML = ""; app.appendChild(card); toTop();
+  const placed = card.querySelector(".placed"), box = card.querySelector(".order"), fb = card.querySelector(".fb");
+  let nextIdx = 0, misses = 0;
+  shuffled.forEach(x => {
+    const b = el(`<button class="tile">${esc(x.t)}</button>`);
+    b.onclick = () => {
+      if (x.i === nextIdx){
+        b.remove(); placed.appendChild(el(`<div><b>${nextIdx+1}.</b> ${esc(x.t)}</div>`)); nextIdx++;
+        S.cash += 20; hud(); fb.className = "fb";
+        if (nextIdx === list.length){
+          const c = Math.max(0, list.length - misses);
+          S.r.season.c += c; S.r.season.t += list.length; hud();
+          feedback(fb, misses === 0, misses === 0 ? "All in order!" : `Done with ${misses} wrong tap${misses>1?"s":""}`, `<div>Score for this list: ${c} of ${list.length}.</div>`);
+          card.appendChild(nextBtn("Next", done));
+        }
+      } else {
+        misses++; S.cash -= 10; hud();
+        b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+        feedback(fb, false, "Not next", `<div>Step ${nextIdx+1} comes before that one. -$10</div>`);
+      }
+    };
+    box.appendChild(b);
+  });
+}
+function season(done){
+  series([
+    n => orderTask("Put the 8 steps for growing flowering annuals in order (p. 298)", GROW8, n),
+    n => orderTask("Put the 7 steps for caring for the plants in order (p. 303)", CARE7, n),
+    ...pick(TROUBLE, 5).map((t, i) => n => askMC("season", {head:`Customer call ${i+1} of 5`, prompt:`&ldquo;${esc(t[0])}&rdquo; What do you tell them?`, options:[t[1], ...t[2]], answer:0, explain:t[3]}, n))
+  ], done);
+}
+
+/* ============ Year-end report + certificate ============ */
+function report(){
+  hud();
+  const tt = totals(), now = new Date(), date = today(now);
+  const mins = Math.max(1, Math.round((Date.now() - S.started)/60000));
+  const code = makeCode(S.name, S.period, tt.pct, date, mins);
+  const st = starCount(tt.pct);
+  const timeStr = now.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+  const dateStr = now.toLocaleDateString([], {weekday:"short", month:"short", day:"numeric", year:"numeric"});
+  app.innerHTML = "";
+  const rows = ROUNDS.map(R => { const x = S.r[R.key], p = x.t ? Math.round(100*x.c/x.t) : 0;
+    return `<tr><td>${esc(R.name)}<div class="small muted">${esc(R.topic)}</div></td><td>${x.c} / ${x.t}</td><td style="width:35%"><div class="bar"><i style="width:${p}%"></i></div><span class="small">${p}%</span></td></tr>`; }).join("");
+  const weak = ROUNDS.filter(R => S.r[R.key].t && S.r[R.key].c / S.r[R.key].t < 0.7).map(R => R.topic.toLowerCase());
+  const c = el(`<div>
+    <div class="card" id="cert">
+      <div class="kicker">North Paulding FFA &bull; Unit 25 Annual Bedding Plants</div>
+      <h1 style="margin:6px 0 2px">Landscape Company Tycoon</h1>
+      <div class="muted">Certificate of Completion</div>
+      <h2 style="margin:14px 0 4px;color:var(--ink)">${esc(S.name)}</h2>
+      <div class="muted">Period ${esc(S.period)}</div>
+      <div class="big" style="margin-top:14px">${tt.pct}%</div>
+      <div>${tt.c} of ${tt.t} correct</div>
+      <div class="grid">
+        <div>Company cash<b>${money(S.cash)}</b></div>
+        <div>Reputation<b style="color:var(--gold)">${starStr(st)}</b></div>
+        <div>Time played<b>${mins} min</b></div>
+      </div>
+      <div class="small muted">Completed ${esc(dateStr)} at ${esc(timeStr)}</div>
+      <div style="margin-top:10px">Completion code</div>
+      <div class="code">${code}</div>
+    </div>
+    <div class="card noprint">
+      <h3>Turn it in</h3>
+      <p>Take a screenshot of the certificate above (on a Chromebook: <b>Ctrl + Show Windows</b>) or save it as a PDF, then submit it to your teacher. Don't close this page until you have turned it in.</p>
+      <div class="row"><button class="btn" id="pdf">Print or save as PDF</button><button class="btn ghost" id="again">Play again for a higher score</button></div>
+    </div>
+    <div class="card noprint">
+      <h3>Year-end report</h3>
+      <table class="rep"><thead><tr><th>Job</th><th>Correct</th><th>Score</th></tr></thead><tbody>${rows}</tbody></table>
+      <p style="margin-top:12px">${weak.length ? "Review before your test: <b>" + esc(weak.join(", ")) + "</b>." : "Strong season across every job. You are ready for the test."}</p>
+    </div></div>`);
+  app.appendChild(c); toTop();
+  try { const b = JSON.parse(localStorage.getItem("u25tycoonBest") || "null"); if (!b || tt.pct > b.pct) localStorage.setItem("u25tycoonBest", JSON.stringify({pct:tt.pct, name:S.name})); } catch (e) {}
+  $("#pdf").onclick = () => window.print();
+  $("#again").onclick = () => { if (confirm("Start a new season? Make sure you saved this certificate first.")) start(); };
+}
+
+/* ============ Teacher check ============ */
+function teacher(){
+  $("#hud").hidden = true;
+  app.innerHTML = "";
+  const c = el(`<div class="card"><div class="kicker">Teacher check</div><h2>Verify a completion code</h2>
+    <div id="pin"><label class="f" for="tp">Teacher PIN</label><input type="password" id="tp" style="max-width:200px"><div class="row" style="margin-top:12px"><button class="btn" id="tpb">Unlock</button><button class="btn ghost" id="back1">Back</button></div></div>
+    <div id="ver" hidden>
+      <p class="small muted">Type exactly what the certificate shows. The date comes from the "Completed" line.</p>
+      <label class="f">Student name</label><input type="text" id="vn">
+      <label class="f">Period</label><input type="text" id="vp" style="max-width:160px">
+      <label class="f">Score (percent, number only)</label><input type="number" id="vs" style="max-width:160px">
+      <label class="f">Date completed</label><input type="text" id="vd" placeholder="YYYY-MM-DD" style="max-width:200px">
+      <label class="f">Time played (minutes)</label><input type="number" id="vm" style="max-width:160px">
+      <label class="f">Completion code</label><input type="text" id="vc" style="max-width:200px;text-transform:uppercase">
+      <div class="row" style="margin-top:14px"><button class="btn" id="vb">Check code</button><button class="btn ghost" id="back2">Back</button></div>
+      <div class="fb"></div>
+    </div></div>`);
+  app.appendChild(c);
+  $("#vd").value = today();
+  $("#back1").onclick = start; $("#back2").onclick = start;
+  const unlock = () => { if ($("#tp").value === TEACHER_PIN){ $("#pin").hidden = true; $("#ver").hidden = false; } else { alert("Incorrect PIN."); } };
+  $("#tpb").onclick = unlock; $("#tp").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+  $("#vb").onclick = () => {
+    const code = makeCode($("#vn").value.trim(), $("#vp").value.trim(), String(parseInt($("#vs").value,10)), $("#vd").value.trim(), String(parseInt($("#vm").value,10)));
+    const typed = $("#vc").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+    const ok = typed === code.replace("-","");
+    feedback(c.querySelector(".fb"), ok, ok ? "Code matches" : "Code does not match", ok ? "<div>This certificate is genuine.</div>" : `<div>Double-check the spelling of the name, the period, and the date. If everything matches, the screenshot may have been edited.</div>`);
+  };
+}
+
+start();
+</script>
+</body>
+</html>
