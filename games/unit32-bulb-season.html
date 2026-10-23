@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 32 Bulb Season</title>
+<style>
+/* Teacher settings live in the script below (TEACHER_PIN, SALT). */
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--white:#fff;--ok:#2F7A4B;--bad:#A23B2A}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.45;overflow-x:hidden}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;margin:0 0 .4em;color:var(--red)}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header.top{background:var(--green);color:#fff;padding:12px 16px}
+header.top .k{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+header.top h1{color:#fff;font-size:26px;margin:2px 0 0}
+.card{background:#fff;border:1px solid var(--tan);border-radius:12px;padding:18px;margin:14px 0;box-shadow:0 2px 0 rgba(107,50,38,.08)}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input,select{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--tan);border-radius:8px;background:#fff;color:var(--ink)}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:12px 18px;background:var(--red);color:#fff;font-weight:700}
+button.alt{background:var(--green)}
+button.ghost{background:transparent;color:var(--green);text-decoration:underline;padding:6px 4px;font-weight:400}
+button:disabled{opacity:.6;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 140px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.hud{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{background:#fff;border:1px solid var(--tan);border-radius:999px;padding:4px 12px;font-size:14px}
+.chip b{color:var(--red)}
+.bar{height:8px;background:var(--tan);border-radius:8px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+.round-k{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-weight:700}
+.prompt{font-size:19px;margin:6px 0 14px}
+.opts{display:grid;gap:10px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{background:var(--cream);color:var(--ink);border:2px solid var(--tan);text-align:left;font-weight:400;padding:12px 14px}
+.opts.two .opt{text-align:center;font-weight:700;font-size:18px;padding:18px 10px}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:#E3F1E7;border-color:var(--ok)}
+.opt.wrong{background:#F6E1DC;border-color:var(--bad)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;border-left:6px solid var(--ok);background:#EEF6F0}
+.fb.no{border-left-color:var(--bad);background:#FBEDEA}
+.fb .pg{color:var(--muted);font-style:italic;font-size:14px}
+.bulb{font-family:Cambria,Georgia,serif;font-size:26px;color:var(--red);text-align:center;margin:4px 0 12px;font-weight:700}
+.intro li{margin:4px 0}
+.cert{border:6px double var(--red);background:#fff;padding:22px;text-align:center;border-radius:6px}
+.cert h2{font-size:28px}
+.cert .name{font-family:Cambria,Georgia,serif;font-size:30px;color:var(--ink);border-bottom:2px solid var(--tan);display:inline-block;padding:0 12px;margin:6px 0 10px;word-break:break-word}
+.cert .big{font-size:40px;font-weight:700;color:var(--green);font-family:Cambria,Georgia,serif}
+.cert .code{font-family:Consolas,"Courier New",monospace;font-size:26px;letter-spacing:4px;background:var(--cream);display:inline-block;padding:6px 14px;border-radius:6px;border:1px solid var(--tan)}
+table.brk{width:100%;border-collapse:collapse;margin-top:12px;font-size:15px}
+table.brk th,table.brk td{border:1px solid var(--tan);padding:6px 8px;text-align:left;vertical-align:top}
+table.brk th{background:var(--green);color:#fff}
+.hidden{display:none!important}
+.res{margin-top:10px;padding:10px;border-radius:8px}
+.res.ok{background:#E3F1E7}.res.no{background:#F6E1DC}
+@media (max-width:480px){.opts.two{grid-template-columns:1fr}.cert .name{font-size:24px}.cert .big{font-size:32px}.cert .code{font-size:22px}}
+@media print{
+  body{background:#fff}
+  header.top,.noprint,#game,#start,#teacher{display:none!important}
+  #end .card:not(.cert){display:none!important}
+  .cert{border-color:var(--red)}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="k">North Paulding Ag • Unit 32 Bulbs</div><h1>Unit 32 Bulb Season</h1></header>
+<div class="wrap">
+
+<!-- START -->
+<section id="start">
+  <div class="card intro">
+    <h2>Run the bulb department for one season</h2>
+    <p>You manage the bulb side of a garden center from fall planting to the spring flower sale. Every right call earns sales. Wrong calls cost you customers.</p>
+    <ol>
+      <li><b>Sorting Day:</b> spring planting or fall planting?</li>
+      <li><b>Bed Prep Crew:</b> soil, lime, fertilizer, and spacing</li>
+      <li><b>Customer Desk:</b> landscape uses, care after flowering, mice, lilies</li>
+      <li><b>Bulb Doctor:</b> match the damage to the pest or disease</li>
+      <li><b>Forcing House:</b> get flowers ready for a sale date</li>
+    </ol>
+    <p class="muted small">Every answer shows the reason and the textbook page. Keep your book open.</p>
+    <div class="row">
+      <div><label for="fn">First name</label><input id="fn" autocomplete="given-name" maxlength="30"></div>
+      <div><label for="ln">Last name</label><input id="ln" autocomplete="family-name" maxlength="30"></div>
+    </div>
+    <label for="per">Class period</label>
+    <select id="per"><option value="">Choose...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+    <p id="startErr" class="res no hidden"></p>
+    <p id="best" class="muted small"></p>
+    <div class="row"><button id="go">Open the garden center</button></div>
+    <p class="small"><button class="ghost" id="tlink">Teacher check</button></p>
+  </div>
+</section>
+
+<!-- TEACHER -->
+<section id="teacher" class="hidden">
+  <div class="card">
+    <h2>Teacher code check</h2>
+    <label for="tpin">PIN</label><input id="tpin" type="password" inputmode="numeric">
+    <div class="row">
+      <div><label for="tname">Student name (as on certificate)</label><input id="tname"></div>
+      <div><label for="tper">Period</label><input id="tper"></div>
+    </div>
+    <div class="row">
+      <div><label for="tpct">Percent</label><input id="tpct" inputmode="numeric"></div>
+      <div><label for="tmin">Minutes</label><input id="tmin" inputmode="numeric"></div>
+      <div><label for="tdate">Date (YYYY-MM-DD)</label><input id="tdate" placeholder="2026-10-23"></div>
+    </div>
+    <label for="tcode">Completion code</label><input id="tcode" placeholder="XXX-XXX">
+    <div class="row" style="margin-top:12px"><button id="tcheck" class="alt">Check code</button><button id="tback">Back</button></div>
+    <div id="tres" class="res hidden"></div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="hidden">
+  <div class="hud">
+    <span class="chip">Round <b id="hR">1</b> of 5</span>
+    <span class="chip">Item <b id="hI">1</b></span>
+    <span class="chip">Sales <b id="hS">$0</b></span>
+    <span class="chip">Streak <b id="hK">0</b></span>
+  </div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="card">
+    <div class="round-k" id="rName"></div>
+    <div id="bulbName" class="bulb hidden"></div>
+    <div class="prompt" id="prompt"></div>
+    <div class="opts" id="opts"></div>
+    <div id="fb" class="fb hidden"></div>
+    <div class="row noprint" style="margin-top:14px"><button id="next" class="alt hidden">Next</button></div>
+  </div>
+</section>
+
+<!-- END -->
+<section id="end" class="hidden">
+  <div class="card cert" id="cert">
+    <div class="round-k">North Paulding Ag • Unit 32 Bulbs</div>
+    <h2>Certificate of Completion</h2>
+    <div>This certifies that</div>
+    <div class="name" id="cName"></div>
+    <div class="muted" id="cPer"></div>
+    <div>ran the bulb department for a full season and scored</div>
+    <div class="big" id="cPct"></div>
+    <div id="cItems"></div>
+    <div style="margin:6px 0">Season sales: <b id="cSales"></b> &nbsp;•&nbsp; Rating: <b id="cRate"></b></div>
+    <div class="muted small" id="cWhen"></div>
+    <div style="margin-top:12px">Completion code</div>
+    <div class="code" id="cCode"></div>
+    <table class="brk" id="brk"><thead><tr><th>Round</th><th>Score</th><th>Review</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card noprint">
+    <div class="row"><button id="print">Print / Save as PDF</button><button id="again" class="alt">Play again</button></div>
+    <p class="muted small">Your teacher may ask for your completion code.</p>
+  </div>
+</section>
+</div>
+
+<script>
+"use strict";
+var TEACHER_PIN = "0545";
+var SALT = "NPFFA-U32-bulbs";
+var STORE = "npffa_u32_best";
+
+/* ---------- helpers ---------- */
+function $(id){return document.getElementById(id);}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a,n){return shuffle(a).slice(0,n);}
+function ri(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function uniq(a){var o=[];a.forEach(function(x){if(o.indexOf(x)<0)o.push(x);});return o;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function norm(s){return String(s||"").trim().toLowerCase().replace(/\s+/g," ");}
+function fnv(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h>>>0;}
+var ALPHA="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function makeCode(name,per,pct,date,mins){
+  var s=SALT+"|"+norm(name)+"|"+norm(per)+"|"+String(parseInt(pct,10))+"|"+String(date).trim()+"|"+String(parseInt(mins,10));
+  var h=fnv(s),h2=fnv(s+"#"),out="";
+  for(var i=0;i<6;i++){var v=(i<3?h:h2);out+=ALPHA[(v>>>(i%3*8))%ALPHA.length];}
+  return out.slice(0,3)+"-"+out.slice(3);
+}
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+var MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
+function md(d){return MON[d.getMonth()]+" "+d.getDate();}
+function lsGet(){try{var v=localStorage.getItem(STORE);return v?JSON.parse(v):null;}catch(e){return null;}}
+function lsSet(o){try{localStorage.setItem(STORE,JSON.stringify(o));}catch(e){}}
+
+/* ---------- DATA (from textbook pp. 386 to 394) ---------- */
+// Figure 32-2. depth = approximate inches read from the chart, used only for wide-gap comparisons.
+var BULBS=[
+ {n:"Tuberous rooted begonia",s:"spring",d:1},{n:"Calla",s:"spring",d:2.5},{n:"Anemone",s:"spring",d:3},
+ {n:"Ranunculus",s:"spring",d:3.5},{n:"Tigridia",s:"spring",d:4.5},{n:"Amaryllis",s:"spring",d:5.5},
+ {n:"Montbretia",s:"spring",d:5},{n:"Gladiolus",s:"spring",d:5},{n:"Dahlia",s:"spring",d:8},{n:"Ismene",s:"spring",d:9.5},
+ {n:"Muscari (grape hyacinth)",s:"fall",d:4.5},{n:"Galanthus",s:"fall",d:4},{n:"Chionodoxa",s:"fall",d:5},
+ {n:"Scilla",s:"fall",d:4.5},{n:"Crocus",s:"fall",d:4.5},{n:"Hyacinth",s:"fall",d:6.5},{n:"Colchicum",s:"fall",d:6.5},
+ {n:"Bulbous iris",s:"fall",d:6.5},{n:"Lily (base-rooting)",s:"fall",d:7.5},{n:"Lily (stem-rooting)",s:"fall",d:9.5},
+ {n:"Tulip",s:"fall",d:9.5},{n:"Daffodil (narcissus)",s:"fall",d:10}
+];
+
+// Round 2: Bed Prep Crew
+var PREP=[
+ {p:"A customer asks what kind of soil bulbs like best.",a:"A good garden loam that is well drained",w:["Heavy clay that holds water","Pure sand with no organic matter","Any soil, as long as it stays wet"],y:"Bulbs grow well in a good garden loam that is well drained.",pg:"p. 388",t:"Soils"},
+ {p:"Which of these would the textbook use to add organic matter to a bulb bed?",a:"Leaf mold or garden compost",w:["Gravel","Ground limestone","Straw only"],y:"Sphagnum moss, leaf mold, garden compost, pine bark, or well-rotted manure all add organic matter.",pg:"p. 388",t:"Soils"},
+ {p:"How thick should the organic matter layer be before it is tilled in?",a:"3 to 4 inches",w:["1/2 inch","10 to 12 inches","1 foot"],y:"Spread it in a layer 3 to 4 inches thick and work it in with a Rototiller.",pg:"p. 388",t:"Soils"},
+ {p:"When should you till organic matter into a bed you plan to plant in the fall?",a:"The spring before planting",w:["The day of planting","After the bulbs bloom","Never, just lay it on top"],y:"Work it in the spring before planting in the fall.",pg:"p. 388",t:"Soils"},
+ {p:"Your soil test shows pH 5.4. What does that mean for bulbs?",a:"Too acidic. Add ground limestone.",w:["Too alkaline. Add sulfur.","Perfect. Do nothing.","Too alkaline. Add bone meal."],y:"Bulbs grow better at neutral pH. Below 6.0, add ground limestone to raise pH toward 7.0.",pg:"p. 388",t:"Soil pH"},
+ {p:"Bulbs grow better when soil pH is:",a:"Neutral, neither acidic nor alkaline",w:["Strongly acidic","Strongly alkaline","Below 5.0"],y:"Bulbs grow better if the soil pH is neutral.",pg:"p. 388",t:"Soil pH"},
+ {p:"What fertilizer does the book say to dig into the bottom of the bed?",a:"A small amount of 5-10-5",w:["A heavy dose of 34-0-0","Pure potash","None, ever"],y:"A small amount of 5-10-5 fertilizer should be dug into the bottom of the bed.",pg:"p. 388",t:"Fertilizer"},
+ {p:"What should you do before adding any fertilizer?",a:"Have the soil tested",w:["Water for a week","Add lime no matter what","Cut the old foliage"],y:"Have the soil tested and fertilize according to the soil test recommendations.",pg:"p. 389",t:"Fertilizer"},
+ {p:"How should fertilizer sit under a new bulb?",a:"Covered by about 1 inch of soil, not touching the bulb",w:["Packed right against the bulb","Sprinkled on top of the bulb","Mixed into the planting hole with no soil layer"],y:"Cover the fertilizer with about 1 inch of soil. Do not place bulbs in direct contact with it.",pg:"p. 389",t:"Fertilizer"},
+ {p:"Each spring after the first year, just before growth starts, what does the book suggest?",a:"A light application of bulb food such as bone meal (3-15-0)",w:["Dig up all the bulbs","A heavy dose of nitrogen","Cutting the tops off"],y:"Give a light application of a bulb food such as bone meal 3-15-0, according to the soil analysis.",pg:"p. 389",t:"Fertilizer"},
+ {p:"The Summary says bulbs need a complete fertilizer high in which nutrient?",a:"Phosphorus",w:["Nitrogen","Iron","Calcium"],y:"Bulbs need a complete fertilizer with a high content of phosphorus.",pg:"p. 393",t:"Fertilizer"},
+ {p:"The client wants the bed to look as showy as possible. How do you space the bulbs?",a:"Closer together",w:["Farther apart","In one thin row","It does not matter"],y:"If a bed is to be showy, the bulbs are spaced closer together.",pg:"p. 388",t:"Spacing"},
+ {p:"Which tools does the book list for planting bulbs?",a:"Bulb planter, nursery spade, or hand trowel",w:["Post hole digger only","Rake and leaf blower","Pruning shears"],y:"Use a bulb planter, nursery spade, or hand trowel.",pg:"p. 388",t:"Planting"},
+ {p:"What is the last step after planting a bulb bed?",a:"Water the bed thoroughly",w:["Cover with plastic","Fertilize heavily on top","Dig the bulbs back up"],y:"Water the bed thoroughly after planting.",pg:"p. 388",t:"Planting"},
+ {p:"Why consider the height of each flower when planting?",a:"They look best growing in a sequence of height",w:["Tall bulbs need more fertilizer","Short bulbs bloom later","Height decides the planting month"],y:"Bulbs are most attractive when they grow in sequence of height.",pg:"p. 388",t:"Planting"},
+ {p:"What does the book say about planting bulbs in shallow soil?",a:"Do not. Always plant at the prescribed depth.",w:["It makes them bloom earlier","It is fine for tulips","It keeps mice away"],y:"Always plant bulbs at the depth prescribed. Do not plant in shallow soil.",pg:"p. 390",t:"Planting"}
+];
+function prepMath(){
+  var out=[];
+  // lime
+  (function(){var L=pick([10,20,25,30,40,50],1)[0],Wd=pick([4,5,8,10,20],1)[0];var area=L*Wd,lb=area*10/100;
+    var opts=uniq([lb,lb*10,area/10*2,lb/2,lb+10].map(function(x){return Math.round(x*10)/10;})).filter(function(x){return x>0;});
+    out.push({p:"Soil test: pH 5.6. The bed is "+L+" ft by "+Wd+" ft. Using the book's rate, how many pounds of ground limestone do you need?",a:lb+" lb",w:opts.filter(function(x){return x!==lb;}).slice(0,3).map(function(x){return x+" lb";}),y:"Area = "+L+" x "+Wd+" = "+area+" sq ft. Rate is 10 lb per 100 sq ft, so "+area+" / 100 x 10 = "+lb+" lb.",pg:"p. 388",t:"Lime math"});})();
+  // spacing = depth
+  (function(){var d=pick([3,4,5,6,8],1)[0];
+    out.push({p:"A bulb's tag says plant "+d+" inches deep. Using the general rule, how far apart should you space them?",a:d+" inches",w:[(d*2)+" inches",(d/2)+" inches",(d+6)+" inches",(d+1)+" inches"],y:"As a general rule, bulbs are spaced the same distance apart as their planting depth.",pg:"p. 388",t:"Spacing"});})();
+  // compost volume
+  (function(){var dims=pick([[8,10],[6,12],[10,12],[4,15],[12,12]],1)[0];var inch=pick([3,4],1)[0];var area=dims[0]*dims[1];var cf=Math.round(area*inch/12*10)/10;
+    out.push({p:"You spread compost "+inch+" inches thick over a "+dims[0]+" ft by "+dims[1]+" ft bed. How many cubic feet of compost is that?",a:cf+" cu ft",w:uniq([area*inch,area/inch,cf*2,cf+inch]).filter(function(x){return x!==cf;}).slice(0,3).map(function(x){return (Math.round(x*10)/10)+" cu ft";}),y:"Convert inches to feet: "+inch+" / 12 = "+(inch/12).toFixed(2)+" ft. "+area+" sq ft x "+(inch/12).toFixed(2)+" = "+cf+" cu ft. The book calls for a 3 to 4 inch layer.",pg:"p. 388",t:"Soil math"});})();
+  return out;
+}
+
+// Round 3: Customer Desk (uses, care, mice, lilies, key terms)
+var DESK=[
+ {p:"A customer wants bulbs that deer will leave alone. What do you recommend?",a:"Daffodils",w:["Tulips","Lilies","Hyacinths"],y:"Deer will not graze on daffodils because they contain alkaloids that are toxic to them.",pg:"p. 387",t:"Landscape uses"},
+ {p:"How should a customer arrange tulips for the most striking look?",a:"In a massing, a circular group of a dozen or more",w:["In one thin, narrow row","One of every color mixed together","Spread one bulb per square yard"],y:"Bulbs are most striking in a massing. Thin, narrow rows are not attractive.",pg:"p. 387",t:"Landscape uses"},
+ {p:"Which bulbs fit best in a rock garden?",a:"Crocus, dwarf daffodils, and species tulips",w:["Dahlias and ismene","Gladiolus and calla","Tall stem-rooting lilies"],y:"Low-growing bulbs such as crocus, dwarf daffodils, and species tulips work well in rock gardens.",pg:"p. 388",t:"Landscape uses"},
+ {p:"Bulbs are planted around evergreen foundation shrubs. What fills the color gap after the bulbs die back?",a:"Summer annuals",w:["More bulbs","Mulch only","Turfgrass"],y:"Summer annuals can be planted to replace the color. Be careful not to dig too deeply and damage the bulbs.",pg:"p. 388",t:"Landscape uses"},
+ {p:"In a wooded area, bulbs are planted with evergreen ground covers. What happens after the bulbs bloom?",a:"The tops die back and the ground cover fills the space",w:["The ground cover dies too","You must replant right away","The bulbs keep blooming all summer"],y:"After flowering, the tops turn brown and die back, and the ground cover remains until next season.",pg:"pp. 387 to 388",t:"Landscape uses"},
+ {p:"A florist wants tulips and narcissus for arrangements in January through March. What must happen?",a:"The bulbs must be forced to bloom out of season",w:["Plant them outside in December","Buy them as seeds","Nothing, they bloom then naturally"],y:"Florists use tulips and narcissus in January, February, and March, and those bulbs must be forced.",pg:"p. 388",t:"Cut flowers"},
+ {p:"Where should a cutting garden for bulb flowers go?",a:"In a special area, so cutting does not spoil the landscape",w:["Right by the front door","Mixed into the foundation beds","In the shade under the deck"],y:"Cutting beds should be in a special area so the landscaped area is not spoiled.",pg:"p. 388",t:"Cut flowers"},
+ {p:"Name the method: toss a handful of bulbs and plant them where they fall.",a:"Wolfgang Oehme's naturalized planting",w:["Massing in rows","Forcing","Bulb grading"],y:"Wolfgang Oehme, founder of the New American Garden movement, used this naturalized approach.",pg:"pp. 387 to 388",t:"Landscape uses"},
+ {p:"When should spring-flowering bulbs be dug?",a:"After the foliage turns yellow and dies back",w:["Right after the flowers open","While leaves are still bright green","Before they bloom"],y:"Dig spring-flowering bulbs after the foliage turns yellow and dies back.",pg:"p. 389",t:"Care after flowering"},
+ {p:"Which bulbs does the book say should be replanted every year for high-quality blooms?",a:"Tulip and hyacinth",w:["Daffodil and crocus","Lily and colchicum","Dahlia and calla"],y:"Tulip and hyacinth bulbs should be replanted every year. Perennial tulips are an exception.",pg:"p. 389",t:"Care after flowering"},
+ {p:"How often should daffodil, crocus, lily, and colchicum bulbs be dug, thinned, and replanted?",a:"Every 3 to 5 years",w:["Every year","Every 10 years","Never"],y:"Daffodil, crocus, lily, and colchicum bulbs should be dug every 3 to 5 years.",pg:"p. 389",t:"Care after flowering"},
+ {p:"When do you dig summer-flowering bulbs like dahlia and gladiolus?",a:"After the first fall frost kills the foliage",w:["In early spring","Right after they bloom","In the middle of summer"],y:"Dig them after the first fall frost has killed the foliage, with no green left.",pg:"p. 389",t:"Care after flowering"},
+ {p:"How should dug bulbs be stored?",a:"At 50 °F in dim light, in sawdust or peat moss",w:["In a hot, sunny window","In a sealed bag of water","Frozen at 0 °F"],y:"Store them at 50 °F in dim light, in sawdust or peat moss to prevent moisture loss.",pg:"p. 390",t:"Care after flowering"},
+ {p:"A customer cut the bulb leaves off right after the flowers faded. What will happen?",a:"Flowering next year will be greatly reduced",w:["The bulbs will bloom twice","Nothing at all","The bulbs will rot right away"],y:"Do not cut the tops off until they have died naturally.",pg:"p. 390",t:"Care after flowering"},
+ {p:"Which bulbs do mice love most?",a:"Lilies and tulips",w:["Daffodils and crown imperial","Crocus and scilla","Dahlias and gladiolus"],y:"Mice love lilies and tulips. They will not eat daffodils or crown imperial.",pg:"p. 390",t:"Mice"},
+ {p:"How do you build a cage to keep mice out of a bulb bed?",a:"1/4-inch mesh wire, tight at corners, 1 to 2 inches above soil",w:["Chicken wire laid flat on top","Plastic sheeting under the bulbs","A 2-inch mesh fence"],y:"Cages of 1/4-inch mesh wire, tight at the corners, extending 1 or 2 inches above the soil, work well.",pg:"p. 390",t:"Mice"},
+ {p:"Which plant may repel mice if it is interplanted with other bulbs?",a:"Crown imperial (Fritillaria imperialis)",w:["Tulip","Lily","Hyacinth"],y:"Crown imperial may repel mice if interplanted with other bulbs.",pg:"p. 390",t:"Mice"},
+ {p:"Why must lily bulbs be handled carefully?",a:"They are soft and never dormant, so they bruise and must not dry out",w:["They are poisonous to touch","They explode in heat","They are very hard and sharp"],y:"The lily bulb is soft and never dormant. Avoid bruising and never let it dry out.",pg:"p. 390",t:"Lilies"},
+ {p:"Which lily does the book name as one of the best to start with?",a:"'Enchantment'",w:["'Sunburst'","'Red Emperor'","'King Alfred'"],y:"'Enchantment' is one of the best lilies to start with.",pg:"p. 390",t:"Lilies"},
+ {p:"Bulbs, corms, tubers, and rhizomes all contain an EMBRYONIC plant. What does embryonic mean here?",a:"An undeveloped young plant, plus stored food",w:["A dead plant","A full-grown plant","Only stored water"],y:"They contain an embryonic plant and the necessary stored food for plant growth.",pg:"p. 387",t:"Key terms"},
+ {p:"These structures differ in appearance and in their methods of PROPAGATION. Propagation means:",a:"How the plant reproduces or makes new plants",w:["How tall it grows","How it is fertilized","How it is stored"],y:"Bulbs, corms, tubers, and rhizomes differ in their methods of propagation. See Unit 9.",pg:"p. 387",t:"Key terms"},
+ {p:"Which word means a grouping of color in the landscape?",a:"Massing",w:["Forcing","Dormancy","Foundation"],y:"A massing is a grouping of color.",pg:"p. 387",t:"Key terms"},
+ {p:"A FOUNDATION planting is planted:",a:"Around the base of a building, often with evergreen shrubs",w:["In a refrigerator","In a rock garden only","Deep in the woods"],y:"Many people use bulbs to add color around evergreen foundation shrubs.",pg:"p. 388",t:"Key terms"}
+];
+
+// Round 4: Bulb Doctor (Figure 32-4)
+var DOC=[
+ {h:"Hyacinth",c:"Tiny white mites, less than 1/25 inch, in rotting bulbs.",a:"Bulb mites"},
+ {h:"Hyacinth",c:"A vile-smelling bacterial disease that often follows mites.",a:"Soft rot"},
+ {h:"Hyacinth",c:"Dark rings inside the bulb.",a:"Bulb nematode"},
+ {h:"Hyacinth",c:"Curled leaves. Virus diseases may be passed along.",a:"Aphids"},
+ {h:"Gladiolus",c:"Leaves silvered, flowers streaked and deformed.",a:"Thrips"},
+ {h:"Gladiolus",c:"Plants infected through the roots turn yellow and wilt.",a:"Yellows (soil fungus)"},
+ {h:"Gladiolus",c:"Lesions on corms, spots on leaves.",a:"Corm rots, scab"},
+ {h:"Narcissus",c:"A fly that looks like a bumblebee lays eggs near the ground. A fat yellow maggot tunnels in the bulb.",a:"Narcissus bulb fly"},
+ {h:"Narcissus",c:"Chocolate-colored dry rot at the base of the bulb.",a:"Basal rot"},
+ {h:"Narcissus",c:"Plants stunted or missing, with masses of black sclerotia on rotting leaves.",a:"Smoulder (botrytis rot)"},
+ {h:"Narcissus",c:"Yellow, red, or brown spots blight the tips of the leaves.",a:"Scorch"},
+ {h:"Tulip",c:"Powdery white or grayish aphids on stored bulbs.",a:"Tulip bulb aphid"},
+ {h:"Tulip",c:"Gray mold, buds blasted, small shiny black sclerotia on the petals.",a:"Botrytis blight (fire)"},
+ {h:"Tulip",c:"Yellow streaking of foliage and broken flower colors.",a:"Cucumber mosaic / lily mottle viruses"},
+ {h:"Amaryllis",c:"Something feeds on the flowers at night.",a:"Spotted cutworm"},
+ {h:"Amaryllis",c:"Reddish spots on flowers, leaves, and bulb scales; stalks deformed.",a:"Leaf scorch (red blotch)"},
+ {h:"Lily",c:"Oval tan spots on leaves that turn black and droop.",a:"Botrytis blight"},
+ {h:"Iris (bulbous)",c:"Light brown foliage spots with reddish borders.",a:"Leaf spot"}
+];
+var DOC_EXTRA=[
+ {p:"For every pest in Figure 32-4, where does the book send you for control recommendations?",a:"Your local Extension Service",w:["The bulb package only","A florist","The Weather Channel app"],y:"Every row of Figure 32-4 says to contact your local Extension Service.",pg:"p. 391",t:"Pest control"},
+ {p:"What is the simplest way to cut down on bulb pests?",a:"Keep good cultural conditions: remove weeds and rubbish",w:["Spray every week no matter what","Plant bulbs closer together","Water every day"],y:"Many pests are controlled by good cultural conditions like removing weeds and rubbish.",pg:"p. 390",t:"Pest control"},
+ {p:"Before applying any chemical to bulbs, what must you do?",a:"Check the label to be sure it will not injure the bulbs",w:["Mix it double strength","Wet the bulbs first","Nothing, all chemicals are safe"],y:"Check the label to be sure it will not injure the bulbs.",pg:"p. 390",t:"Pest control"}
+];
+
+// Round 5: Forcing House
+var FORCE=[
+ {p:"What does FORCING mean?",a:"Producing flowers, vegetables, or fruits out of season",w:["Planting bulbs very deep","Pushing bulbs into hard soil","Cutting flowers early"],y:"Forcing is the procedure used to produce flowers, vegetables, and fruits out of season.",pg:"p. 390",t:"Forcing basics"},
+ {p:"Which bulbs should you select for forcing?",a:"Number 1 (large) bulbs",w:["The smallest bulbs","Bulbs with cuts from digging","Any bulb, size does not matter"],y:"Select Number 1 (large) bulbs. Bulbs are graded by size.",pg:"p. 392",t:"Forcing steps"},
+ {p:"What goes in the bottom of the pot first?",a:"Drainage material, like a stone or a piece of clay pot",w:["Fertilizer","The bulb","Straw"],y:"Place drainage material in the bottom of the pot.",pg:"p. 392",t:"Forcing steps"},
+ {p:"How deep do you set a bulb for forcing in a pot?",a:"So the top of the bulb is exposed",w:["6 inches below the soil","Lying on its side","Floating in water"],y:"Fill in around the bulb so that the top of the bulb is exposed.",pg:"p. 392",t:"Forcing steps"},
+ {p:"How should you water a newly potted forcing bulb?",a:"Set the pot in a pan of water",w:["Spray the leaves","Pour water on top until it floods","Do not water at all"],y:"Water by setting the pot in a pan of water.",pg:"p. 392",t:"Forcing steps"},
+ {p:"What is a COLD FRAME?",a:"A frame, usually glass-covered, that protects plants without artificial heat",w:["A heated greenhouse","A freezer","A shade cloth"],y:"A cold frame protects plants without artificial heat.",pg:"p. 390",t:"Forcing basics"},
+ {p:"No cold frame? What can you use for the cold treatment instead?",a:"A refrigerator",w:["A sunny window","An oven on low","A heat mat"],y:"A refrigerator may be used for the cold treatment.",pg:"pp. 390, 392",t:"Forcing basics"},
+ {p:"Why do forcing bulbs need a cold period?",a:"To build a root system, break dormancy, and start growth",w:["To kill all pests","To make them smaller","To dry them out"],y:"Cold lets bulbs develop roots, break dormancy, and establish some growth before flowering.",pg:"p. 390",t:"Forcing basics"},
+ {p:"After the cold treatment, what temperature does the procedure say to keep in the greenhouse?",a:"60 °F",w:["32 °F","85 °F","100 °F"],y:"Move pots to the greenhouse, check root development, water well, and maintain 60 °F.",pg:"p. 392",t:"Forcing steps"},
+ {p:"What temperature range does the book give for refrigerator storage of potted bulbs?",a:"40 to 50 °F",w:["0 to 10 °F","60 to 70 °F","75 to 85 °F"],y:"Store potted bulbs in a refrigerator at 40 to 50 °F for 10 to 12 weeks.",pg:"p. 390",t:"Forcing basics"},
+ {p:"The Summary says precooled bulbs need cold storage for how long at 38 °F?",a:"15 to 16 weeks",w:["1 to 2 weeks","4 to 5 weeks","30 weeks"],y:"Precooled bulbs work best for forcing; cold storage for 15 to 16 weeks at 38 °F is required.",pg:"p. 393",t:"Forcing basics"},
+ {p:"Why label each pot during forcing?",a:"So you know the variety of each bulb",w:["It is required by OSHA","Labels keep mice away","Labels add fertilizer"],y:"Be sure to label the pot correctly according to the variety of bulb.",pg:"p. 392",t:"Forcing steps"}
+];
+function forceMath(){
+  var out=[];
+  var y=2027, base=new Date(y,1,10);
+  var sale=new Date(y,1,10+ri(0,36)); // Feb 10 to Mar 18
+  var rem=new Date(sale.getTime()); rem.setDate(rem.getDate()-35);
+  var w=[-14,-7,+7,+21,+35].map(function(k){var d=new Date(rem.getTime());d.setDate(d.getDate()+k);return md(d);});
+  out.push({p:"The FFA chapter tulip sale is "+md(sale)+". Tulips bloom about 5 weeks after they come out of cold treatment. About when do you take them out?",a:md(rem),w:pick(w.filter(function(x){return x!==md(rem);}),3),y:"5 weeks = 35 days. "+md(sale)+" minus 35 days = "+md(rem)+".",pg:"p. 392, step 9",t:"Forcing schedule"});
+  var out2=new Date(y,0,15+ri(-3,3)); var bloom=new Date(out2.getTime()); bloom.setDate(bloom.getDate()+35);
+  var w2=[-14,-7,+7,+14].map(function(k){var d=new Date(bloom.getTime());d.setDate(d.getDate()+k);return md(d);});
+  out.push({p:"You moved tulip pots out of the cold frame on "+md(out2)+". About when should they bloom?",a:md(bloom),w:pick(w2,3),y:"Tulips bloom about 5 weeks (35 days) after removal: "+md(out2)+" + 35 days = "+md(bloom)+".",pg:"p. 392, step 9",t:"Forcing schedule"});
+  var n=ri(3,8)*6, per=pick([3,5,6],1)[0];
+  out.push({p:"You want "+n+" tulips forced for the sale, planted "+per+" bulbs per 6-inch pot. How many pots do you need?",a:String(Math.ceil(n/per)),w:uniq([Math.ceil(n/per)+1,Math.ceil(n/per)*2,n*per,Math.max(1,Math.ceil(n/per)-2)].map(String)).filter(function(x){return x!==String(Math.ceil(n/per));}).slice(0,3),y:n+" / "+per+" = "+Math.ceil(n/per)+" pots. Figure 32-6 shows bulbs set in a 6-inch azalea pot or bulb pan.",pg:"p. 392",t:"Forcing schedule"});
+  return out;
+}
+
+/* ---------- build a game ---------- */
+var ROUNDS=[
+ {name:"Round 1 • Sorting Day",topic:"Spring vs. fall planting (Fig. 32-2)",n:8},
+ {name:"Round 2 • Bed Prep Crew",topic:"Soils, pH, fertilizer, spacing",n:6},
+ {name:"Round 3 • Customer Desk",topic:"Landscape uses, care, mice, lilies, key terms",n:6},
+ {name:"Round 4 • Bulb Doctor",topic:"Pests and diseases (Fig. 32-4)",n:5},
+ {name:"Round 5 • Forcing House",topic:"Forcing procedure and schedule",n:5}
+];
+function mcq(o,r){var w=uniq(o.w).filter(function(x){return x!==o.a;}).slice(0,3);return {r:r,prompt:o.p,answer:o.a,options:shuffle([o.a].concat(w)),why:o.y,page:o.pg,topic:o.t};}
+function buildGame(){
+  var Q=[];
+  // R1: season sort plus one depth comparison
+  pick(BULBS,7).forEach(function(b){
+    Q.push({r:0,bulb:b.n,prompt:"Which pile does this one go in for Figure 32-2?",answer:b.s==="spring"?"Plant in spring":"Plant in fall",options:["Plant in spring","Plant in fall"],two:true,
+      why:b.n+" is on the "+(b.s==="spring"?"PLANT IN SPRING":"PLANT IN FALL")+" side of the depth chart.",page:"Fig. 32-2, p. 389",topic:"Planting season"});
+  });
+  var pairs=[];BULBS.forEach(function(a){BULBS.forEach(function(b){if(a.d-b.d>=4)pairs.push([a,b]);});});
+  var pr=pick(pairs,1)[0];
+  Q.push({r:0,prompt:"Which one needs the DEEPER planting hole: "+pr[0].n+" or "+pr[1].n+"?",answer:pr[0].n,options:shuffle([pr[0].n,pr[1].n]),two:true,
+    why:"On Figure 32-2, "+pr[0].n+" sits several inches lower than "+pr[1].n+".",page:"Fig. 32-2, p. 389",topic:"Planting depth"});
+  // R2
+  pick(PREP,4).concat(pick(prepMath(),2)).forEach(function(o){Q.push(mcq(o,1));});
+  // R3
+  pick(DESK,6).forEach(function(o){Q.push(mcq(o,2));});
+  // R4: 4 diagnoses + 1 control
+  var allPests=uniq(DOC.map(function(d){return d.a;}));
+  pick(DOC,4).forEach(function(d){
+    var kw=["botrytis","aphid","blight","mosaic"].filter(function(k){return d.a.toLowerCase().indexOf(k)>=0;});
+    var wrong=pick(allPests.filter(function(x){return x!==d.a&&!kw.some(function(k){return x.toLowerCase().indexOf(k)>=0;});}),3);
+    Q.push({r:3,prompt:"Host: "+d.h+". Symptom: "+d.c+" What is the problem?",answer:d.a,options:shuffle([d.a].concat(wrong)),
+      why:"Figure 32-4 lists "+d.a+" on "+d.h+": "+d.c+" Control: contact your local Extension Service.",page:"Fig. 32-4, p. 391",topic:"Pest ID"});
+  });
+  Q.push(mcq(pick(DOC_EXTRA,1)[0],3));
+  // R5: 3 concept + 2 schedule math
+  pick(FORCE,3).concat(pick(forceMath(),2)).forEach(function(o){Q.push(mcq(o,4));});
+  return Q;
+}
+
+/* ---------- state ---------- */
+var G={Q:[],i:0,cur:null,score:0,sales:0,streak:0,byR:[],missT:{},start:0,player:null,answered:false};
+window.G=G;
+
+function show(id){["start","teacher","game","end"].forEach(function(s){$(s).classList.toggle("hidden",s!==id);});window.scrollTo(0,0);}
+function showBest(){var b=lsGet();$("best").textContent=b?("Best on this device: "+b.pct+"% by "+b.name+" ("+b.date+")"):"";}
+
+$("go").onclick=function(){
+  var fn=$("fn").value.trim(),ln=$("ln").value.trim(),per=$("per").value;
+  var err=[];if(!fn)err.push("first name");if(!ln)err.push("last name");if(!per)err.push("class period");
+  if(err.length){$("startErr").textContent="Please enter your "+err.join(", ")+".";$("startErr").classList.remove("hidden");return;}
+  $("startErr").classList.add("hidden");
+  G.player={name:fn+" "+ln,per:per};
+  G.Q=buildGame();G.i=0;G.score=0;G.sales=0;G.streak=0;G.missT={};
+  G.byR=ROUNDS.map(function(){return {c:0,n:0};});
+  G.start=Date.now();show("game");render();
+};
+function render(){
+  var q=G.Q[G.i];G.cur=q;G.answered=false;
+  $("hR").textContent=q.r+1;$("hI").textContent=(G.i+1)+" of "+G.Q.length;
+  $("hS").textContent="$"+G.sales.toLocaleString();$("hK").textContent=G.streak;
+  $("prog").style.width=(G.i/G.Q.length*100)+"%";
+  $("rName").textContent=ROUNDS[q.r].name;
+  if(q.bulb){$("bulbName").textContent=q.bulb;$("bulbName").classList.remove("hidden");}else $("bulbName").classList.add("hidden");
+  $("prompt").textContent=q.prompt;
+  var box=$("opts");box.innerHTML="";box.className="opts"+(q.two?" two":"");
+  q.options.forEach(function(o){var b=document.createElement("button");b.className="opt";b.textContent=o;b.onclick=function(){answer(o,b);};box.appendChild(b);});
+  $("fb").classList.add("hidden");$("next").classList.add("hidden");
+}
+function answer(o,btn){
+  if(G.answered)return;G.answered=true;
+  var q=G.cur,ok=(o===q.answer);
+  G.byR[q.r].n++;
+  Array.prototype.forEach.call($("opts").children,function(b){b.disabled=true;if(b.textContent===q.answer)b.classList.add("right");});
+  if(ok){G.score++;G.byR[q.r].c++;G.streak++;var earn=100+Math.min(G.streak-1,4)*25;G.sales+=earn;}
+  else{btn.classList.add("wrong");G.streak=0;G.missT[q.r]=G.missT[q.r]||[];if(G.missT[q.r].indexOf(q.topic)<0)G.missT[q.r].push(q.topic);}
+  var fb=$("fb");fb.className="fb"+(ok?"":" no");
+  fb.innerHTML="<b>"+(ok?pick(["Sold!","Happy customer!","Nice call.","Right on.","That bed will bloom."],1)[0]:"Not quite. Answer: "+esc(q.answer))+"</b><br>"+esc(q.why)+" <span class='pg'>("+esc(q.page)+")</span>";
+  $("hS").textContent="$"+G.sales.toLocaleString();$("hK").textContent=G.streak;
+  $("next").textContent=G.i===G.Q.length-1?"See my certificate":"Next";
+  $("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){if(G.i<G.Q.length-1){G.i++;render();}else finish();};
+
+function rating(p){return p>=95?"Master Grower":p>=85?"Head Grower":p>=70?"Department Manager":p>=50?"Seasonal Helper":"Trainee";}
+function finish(){
+  var tot=G.Q.length,pct=Math.round(G.score/tot*100);
+  var mins=Math.max(1,Math.round((Date.now()-G.start)/60000));
+  var now=new Date(),date=ymd(now);
+  var code=makeCode(G.player.name,G.player.per,pct,date,mins);
+  G.result={pct:pct,mins:mins,date:date,code:code};
+  $("cName").textContent=G.player.name;$("cPer").textContent="Period "+G.player.per;
+  $("cPct").textContent=pct+"%";$("cItems").textContent=G.score+" of "+tot+" items correct";
+  $("cSales").textContent="$"+G.sales.toLocaleString();$("cRate").textContent=rating(pct);
+  $("cWhen").textContent=date+" at "+now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+" • "+mins+" minute"+(mins===1?"":"s")+" played";
+  $("cCode").textContent=code;
+  var tb=$("brk").querySelector("tbody");tb.innerHTML="";
+  ROUNDS.forEach(function(R,i){var m=G.missT[i];var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+esc(R.name)+"</td><td>"+G.byR[i].c+" / "+G.byR[i].n+"</td><td>"+(m&&m.length?"Review: "+esc(m.join(", ")):"Solid")+"</td>";tb.appendChild(tr);});
+  var b=lsGet();if(!b||pct>b.pct)lsSet({pct:pct,name:G.player.name,date:date});
+  $("prog").style.width="100%";show("end");
+}
+$("print").onclick=function(){window.print();};
+$("again").onclick=function(){showBest();show("start");};
+
+/* ---------- teacher ---------- */
+$("tlink").onclick=function(){show("teacher");$("tres").classList.add("hidden");};
+$("tback").onclick=function(){show("start");};
+$("tcheck").onclick=function(){
+  var r=$("tres");r.classList.remove("hidden");
+  if($("tpin").value.trim()!==TEACHER_PIN){r.className="res no";r.textContent="PIN does not match.";return;}
+  var exp=makeCode($("tname").value,$("tper").value,$("tpct").value,$("tdate").value,$("tmin").value);
+  var got=$("tcode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(got===exp.replace("-","")){r.className="res ok";r.textContent="Match. The code fits this name, period, score, date, and minutes.";}
+  else{r.className="res no";r.textContent="No match. Check that each field is typed exactly as on the certificate.";}
+};
+["fn","ln"].forEach(function(id){$(id).addEventListener("keydown",function(e){if(e.key==="Enter")$("go").click();});});
+showBest();
+</script>
+</body>
+</html>
