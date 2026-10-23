@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shrub Crew Foreman</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2F6B3A;--bad:#9A2E1F;
+--head:Cambria,Georgia,"Times New Roman",serif;--body:Calibri,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4;overflow-x:hidden}
+button,input,select{font:inherit}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+header.bar{background:var(--green);color:#fff}
+header.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;padding-bottom:10px}
+.brand{font-family:var(--head);font-weight:700;font-size:20px}
+.brand small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:var(--tan)}
+.acct{background:rgba(255,255,255,.12);border:1px solid var(--tan);border-radius:10px;padding:6px 12px;text-align:right;font-size:13px;white-space:nowrap}
+.acct b{display:block;font-size:20px;font-family:var(--head)}
+.card{background:#fff;border:1px solid var(--tan);border-radius:14px;padding:20px;margin:14px 0;box-shadow:0 2px 6px rgba(43,33,24,.06)}
+h1,h2,h3{font-family:var(--head);color:var(--red);margin:0 0 8px}
+h1{font-size:30px}h2{font-size:23px}h3{font-size:18px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--green);text-transform:uppercase;margin-bottom:4px}
+.muted{color:var(--muted)}
+label{display:block;font-weight:700;margin:12px 0 4px}
+input[type=text],input[type=number],input[type=date],select{width:100%;padding:10px 12px;border:1px solid var(--tan);border-radius:10px;background:#fff}
+.btn{display:inline-block;border:0;border-radius:10px;padding:12px 18px;background:var(--red);color:#fff;font-weight:700;cursor:pointer;min-height:44px}
+.btn.alt{background:var(--green)}.btn.ghost{background:#fff;color:var(--red);border:1px solid var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.shifts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:12px 0}
+.shift{background:var(--cream);border-radius:10px;padding:10px;font-size:14px}
+.shift b{display:block;color:var(--red);font-family:var(--head)}
+.progress{height:8px;background:var(--tan);border-radius:8px;overflow:hidden;margin:6px 0 2px}
+.progress i{display:block;height:100%;background:var(--gold);width:0}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{text-align:left;background:var(--cream);border:2px solid transparent;border-radius:10px;padding:12px 14px;cursor:pointer;min-height:48px;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--tan)}
+.opt.right{border-color:var(--ok);background:#E4EFE3}.opt.wrong{border-color:var(--bad);background:#F6E1DC}
+.opt:disabled{cursor:default}
+.client{background:var(--cream);border-radius:12px;padding:14px;font-style:italic;position:relative}
+.client:before{content:"Client call";display:block;font-style:normal;font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.fb{margin-top:14px;border-radius:12px;padding:14px;display:none}
+.fb.show{display:block}.fb.good{background:#E4EFE3;border:1px solid var(--ok)}.fb.badfb{background:#F6E1DC;border:1px solid var(--bad)}
+.fb .ref{display:block;margin-top:6px;font-size:14px;color:var(--muted);font-style:italic}
+.seq{display:grid;gap:8px;margin-top:10px}
+.chip{background:var(--cream);border:1px solid var(--tan);border-radius:10px;padding:10px 12px;text-align:left;cursor:pointer;min-height:44px;color:var(--ink)}
+.chip:disabled{opacity:.35}
+ol.built{margin:8px 0 0;padding-left:26px}ol.built li{margin:4px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:600px){.grid2{grid-template-columns:1fr}h1{font-size:25px}.brand{font-size:17px}.acct b{font-size:17px}}
+.cert{border:6px double var(--green);background:#fff;border-radius:6px;padding:26px;text-align:center}
+.cert h1{font-size:34px}.cert .big{font-family:var(--head);font-size:44px;color:var(--green);font-weight:700}
+.cert table{margin:12px auto;border-collapse:collapse;font-size:15px;max-width:100%}
+.cert td{padding:4px 10px;text-align:left;border-bottom:1px solid var(--cream)}
+.code{font-family:"Courier New",monospace;font-size:28px;letter-spacing:.12em;color:var(--red);font-weight:700}
+.break{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+.break th,.break td{border:1px solid var(--tan);padding:6px 8px;text-align:left}
+.break th{background:var(--green);color:#fff}
+.tiny{font-size:13px}
+a.link{color:var(--green);cursor:pointer;text-decoration:underline}
+.hidden{display:none!important}
+@media print{body{background:#fff}header.bar,.noprint,#game,#start,#teacher{display:none!important}#result{display:block!important}#result .card{border:0;box-shadow:none}.cert{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="bar noprint"><div class="wrap">
+  <div class="brand">Shrub Crew Foreman<small>Unit 30 • Deciduous Shrubs • NPHS Ag</small></div>
+  <div class="acct">Crew account<b id="cash">$0</b></div>
+</div></header>
+
+<main class="wrap">
+<section id="start">
+  <div class="card">
+    <div class="kicker">Introductory Horticulture • Unit 30</div>
+    <h1>Shrub Crew Foreman</h1>
+    <p>You run a landscape crew for one long workday. Learn the words at the morning briefing, match clients to shrubs at the order desk, buy plants in the right form, plant by the book, and set the pruning calendar. Every correct call pays the crew. Every miss is a callback.</p>
+    <div class="shifts">
+      <div class="shift"><b>1. Briefing</b>Key terms</div>
+      <div class="shift"><b>2. Order Desk</b>Figure 30-2</div>
+      <div class="shift"><b>3. Loading Dock</b>Buying and timing</div>
+      <div class="shift"><b>4. Job Site</b>Planting and math</div>
+      <div class="shift"><b>5. Pruning</b>Care calendar</div>
+    </div>
+    <label for="first">First name</label><input id="first" type="text" autocomplete="off" maxlength="40">
+    <label for="last">Last name</label><input id="last" type="text" autocomplete="off" maxlength="40">
+    <label for="period">Class period</label>
+    <select id="period"><option value="">Choose your period</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+    <p id="startErr" class="tiny" style="color:var(--bad)"></p>
+    <div class="row"><button class="btn" id="go">Clock in</button><span class="muted tiny" id="best"></span></div>
+    <p class="tiny muted" style="margin-top:16px">Textbook pp. 366 to 375. Questions and numbers change every time you play. <a class="link" id="tlink">Teacher check</a></p>
+  </div>
+</section>
+
+<section id="teacher" class="hidden">
+  <div class="card">
+    <h2>Teacher Check</h2>
+    <div id="pinBox"><label for="pin">PIN</label><input id="pin" type="text" inputmode="numeric" maxlength="8"><div class="row" style="margin-top:10px"><button class="btn alt" id="pinGo">Unlock</button><button class="btn ghost" id="tBack">Back</button></div><p id="pinErr" class="tiny" style="color:var(--bad)"></p></div>
+    <div id="verify" class="hidden">
+      <p class="muted tiny">Type what is printed on the student's certificate.</p>
+      <div class="grid2">
+        <div><label for="vName">Student name</label><input id="vName" type="text"></div>
+        <div><label for="vPer">Period</label><input id="vPer" type="text"></div>
+        <div><label for="vPct">Percent (number only)</label><input id="vPct" type="number"></div>
+        <div><label for="vMin">Minutes played</label><input id="vMin" type="number"></div>
+        <div><label for="vDate">Date</label><input id="vDate" type="date"></div>
+        <div><label for="vCode">Completion code</label><input id="vCode" type="text" maxlength="7"></div>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn alt" id="vGo">Check code</button><button class="btn ghost" id="vBack">Back to start</button></div>
+      <p id="vOut" style="font-weight:700;margin-top:10px"></p>
+    </div>
+  </div>
+</section>
+
+<section id="game" class="hidden">
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><div class="kicker" id="shiftName"></div><div class="tiny muted" id="count"></div></div>
+    <div class="progress"><i id="prog"></i></div>
+    <div id="stage"></div>
+    <div id="fb" class="fb"></div>
+    <div class="row" style="margin-top:12px"><button class="btn alt hidden" id="next">Next</button></div>
+  </div>
+</section>
+
+<section id="result" class="hidden">
+  <div class="card">
+    <div class="cert" id="cert"></div>
+    <h3 class="noprint" style="margin-top:18px">Shift breakdown</h3>
+    <table class="break noprint" id="breakdown"></table>
+    <div class="row noprint" style="margin-top:16px"><button class="btn" id="print">Print or save as PDF</button><button class="btn alt" id="again">Play again</button></div>
+  </div>
+</section>
+</main>
+
+<script>
+"use strict";
+var TEACHER_PIN = "0545";
+var SALT = "NPHS-U30-shrubcrew-2026";
+var DATA = {"shrubs":[{"bot":"Chaenomeles japonica","com":"Japanese quince","flower":"orange to red","interest":"April","hardy":"4","expo":"sun","ph":"6.0-7.0","prop":"cuttings","remarks":"Border shrub. Grows in partial shade.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Cotoneaster horizontalis","com":"Cotoneaster","flower":"small, pink, mid-June","interest":"fall","hardy":"5","expo":"southern slopes","ph":"6.0-7.0","prop":"cuttings","remarks":"Good for rock gardens. Low spreading branches.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Daphne genkwa","com":"Blue daphne","flower":"blue, April","interest":"April","hardy":"5","expo":"sun","ph":"6.5-7.5","prop":"cuttings","remarks":"Difficult to transplant. Slow growing.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Deutzia gracilis","com":"Slender deutzia","flower":"white, May","interest":"May","hardy":"4","expo":"sun","ph":"6.0-7.0","prop":"cuttings","remarks":"Showy, white.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Forsythia viridissima","com":"Dwarf forsythia","flower":"yellow, April","interest":"April","hardy":"5","expo":"sun","ph":"6.0-7.0","prop":"layering, cuttings","remarks":"Rock garden plant.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Hypericum spp.","com":"St. Johnswort","flower":"yellow, summer","interest":"summer","hardy":"5","expo":"sun","ph":"5.5-6.5","prop":"cuttings","remarks":"Many forms; yellow flowers throughout summer; dense.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Potentilla fruticosa","com":"Cinquefoil","flower":"yellow single rose, mid-May","interest":"summer","hardy":"2","expo":"sun","ph":"6.0-7.0","prop":"stem cuttings","remarks":"Fine textured. Good border plant.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Spiraea bumalda 'Anthony Waterer'","com":"Anthony Waterer spirea","flower":"pink","interest":"June","hardy":"6","expo":"sun","ph":"6.0-7.0, well drained","prop":"cuttings","remarks":"Blooms throughout summer. Compact and bushy.","height":"Less than 3 ft","page":"p. 368"},{"bot":"Abelia grandiflora","com":"Abelia","flower":"pink, summer","interest":"summer","hardy":"6","expo":"sun","ph":"6.0-8.0","prop":"cuttings","remarks":"Flowers all summer. Good border or foundation plant.","height":"3 to 6 ft","page":"p. 368"},{"bot":"Berberis thunbergi","com":"Green leaf Japanese barberry","flower":"yellow","interest":"fall, winter","hardy":"6","expo":"dry sun","ph":"6.0-7.5","prop":"cuttings","remarks":"Small hedge. Grows well under all conditions. Green foliage in summer; red foliage in fall.","height":"3 to 6 ft","page":"p. 368"},{"bot":"Berberis thunbergi 'Atropurpurea'","com":"Red leaf Japanese barberry","flower":"yellow","interest":"fall, winter","hardy":"6","expo":"dry sun","ph":"6.0-7.5","prop":"cuttings","remarks":"Red all summer. Good specimen or hedge.","height":"3 to 6 ft","page":"p. 368"},{"bot":"Buddleia davidii","com":"Butterfly bush","flower":"white, pink, and blue summer spikes","interest":"summer","hardy":"6","expo":"sun","ph":"6.0-7.0","prop":"cuttings","remarks":"Cut back to ground in spring. Fast-growing, arching plant.","height":"3 to 6 ft","page":"p. 368"},{"bot":"Euonymus alatus 'Compactus'","com":"Dwarf winged euonymus","flower":"greenish, May","interest":"fall","hardy":"4","expo":"sun","ph":"5.5-7.0","prop":"cuttings","remarks":"Brilliant red leaf in fall. Dense shrub; hedge plant.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Fothergilla monticola","com":"Fothergilla","flower":"white","interest":"fall, May","hardy":"5","expo":"sun","ph":"5.0-7.0","prop":"cuttings","remarks":"Fragrant white spring flowers. Quite stunning in autumn. Nice in a shrub border.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Hydrangea quercifolia","com":"Oakleaf hydrangea","flower":"white, mid-July","interest":"summer, fall","hardy":"6","expo":"sun","ph":"6.0-7.0, moist soil","prop":"division, cuttings","remarks":"Naturalistic effect when used to edge wooded lots.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Kerria japonica","com":"Japonica (kerria)","flower":"yellow","interest":"winter, May","hardy":"not listed","expo":"sun","ph":"6.0-7.0","prop":"division, cuttings","remarks":"Green twigs in winter. Large perennial borders. Sometimes called Mt. Vernon shrub.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Prunus glandulosa","com":"Flowering almond","flower":"double pink","interest":"early May","hardy":"4","expo":"sun","ph":"6.0-7.0","prop":"cuttings","remarks":"Double blossoms.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Rhododendron calendulaceum","com":"Flame azalea","flower":"yellow to red","interest":"late May","hardy":"5","expo":"sun","ph":"4.5-5.5","prop":"layering, cuttings","remarks":"Acid soil. Open growth habit.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Spiraea thunbergi","com":"Baby's breath spirea","flower":"white","interest":"April","hardy":"6","expo":"sun","ph":"6.5-7.0","prop":"cuttings","remarks":"Informal hedge. Fine textured.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Spiraea prunifolia","com":"Bridalwreath spirea","flower":"white","interest":"April","hardy":"5","expo":"sun","ph":"6.0-7.0","prop":"cuttings","remarks":"Arching branches; background plant.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Spiraea vanhouttei","com":"Vanhoutte spirea","flower":"cascade of white, flat flowers","interest":"May","hardy":"5","expo":"sun, shade","ph":"6.0-7.0","prop":"cuttings","remarks":"Good hedge. Should not be sheared; best to prune to base.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Weigela spp.","com":"Weigela","flower":"pink to red","interest":"May","hardy":"5","expo":"sun","ph":"6.0-7.0","prop":"cuttings","remarks":"Abundance of flowers. Used in boundary plantings.","height":"3 to 6 ft","page":"p. 369"},{"bot":"Aesculus parviflora","com":"Bottlebrush buckeye","flower":"white spikes","interest":"July","hardy":"5","expo":"semishade","ph":"6.0-7.0","prop":"cuttings","remarks":"Green mass of foliage in summer.","height":"6 to 10 ft","page":"p. 369"},{"bot":"Elaeagnus umbellata","com":"Autumn olive","flower":"pale yellow","interest":"May","hardy":"3","expo":"sun","ph":"5.0-6.0","prop":"cuttings","remarks":"Provides wildlife food. Pink-red fruit; silvery foliage. Used in border plantings. Very fragrant.","height":"6 to 10 ft","page":"p. 369"},{"bot":"Forsythia intermedia 'Spectabilis'","com":"Border forsythia","flower":"yellow","interest":"spring","hardy":"5","expo":"sun","ph":"6.0-7.5","prop":"cuttings","remarks":"Good in borders. Easy to transplant. Fast growing.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Ilex verticillata","com":"Winterberry","flower":"inconspicuous","interest":"winter","hardy":"4","expo":"sun","ph":"5.5-6.5","prop":"not listed","remarks":"Showy red fruit in winter. Grows well in swamps.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Kolkwitzia amabilis","com":"Beauty bush","flower":"pink","interest":"June","hardy":"5","expo":"sun","ph":"6.0-7.5","prop":"cuttings","remarks":"Boundary or specimen plant. Requires sun.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Ligustrum ovalifolium","com":"California privet","flower":"white","interest":"May","hardy":"4","expo":"shade, sun","ph":"6.0-7.0","prop":"cuttings","remarks":"Good hedge material.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Lonicera tatarica","com":"Tatarian honeysuckle","flower":"white to yellow","interest":"May","hardy":"4","expo":"sun","ph":"6.5-8.0","prop":"cuttings","remarks":"Red berries in June or July.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Philadelphus spp.","com":"Mock orange","flower":"white","interest":"June","hardy":"6","expo":"sun","ph":"6.0-8.0, well drained","prop":"cuttings","remarks":"Many varieties are fragrant.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Syringa chinensis","com":"Chinese lilac","flower":"lavender","interest":"April","hardy":"5","expo":"sun","ph":"6.0-7.5, moderately drained","prop":"cuttings","remarks":"Varieties available with white or red flowers.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Syringa vulgaris","com":"Common lilac","flower":"purple","interest":"April, May","hardy":"3","expo":"sun","ph":"6.0-7.5","prop":"cuttings","remarks":"Powdery mildew is sometimes a problem. Suckers are pruned back to stimulate blooming.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Viburnum dentatum","com":"Arrowwood","flower":"flat white clusters","interest":"late May","hardy":"3","expo":"wet to damp woods","ph":"6.0-7.5","prop":"cuttings","remarks":"Excellent wildlife food source and border plant.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Viburnum macrocephalum","com":"Chinese snowball","flower":"large white flower heads","interest":"May","hardy":"6","expo":"sun","ph":"6.0-7.5, rich soil","prop":"cuttings","remarks":"Largest flower heads of all, snowballs.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Viburnum opulus","com":"Cranberry bush","flower":"white","interest":"May, fall","hardy":"3","expo":"sun","ph":"6.0-7.5","prop":"cuttings","remarks":"Park plantings. Red fruit. Purplish brown fall color.","height":"6 to 10 ft","page":"p. 370"},{"bot":"Viburnum plicatum var. tomentosum","com":"Doublefile viburnum","flower":"white","interest":"May, fall","hardy":"5","expo":"sun","ph":"6.5-7.5","prop":"cuttings","remarks":"Flowers and fruit develop on upper side of branch.","height":"6 to 10 ft","page":"p. 370"}],"terms":[{"term":"deciduous","page":"p. 367","why":"Deciduous shrubs drop their leaves and change color as the seasons change.","clues":["Which word describes a shrub that loses its leaves each year and changes color with the seasons?","Forsythia, spirea, and oakleaf hydrangea are all this type of shrub because they drop their leaves."]},{"term":"adaptability","page":"p. 367","why":"Adaptability is influenced by rainfall, wind velocity, exposure to sun, and soil type.","clues":["How well a plant fits an area, influenced by rainfall, wind velocity, sun exposure, and soil type.","Which term covers whether a shrub can handle a site's wind, rain, sun, and soil?"]},{"term":"survival","page":"p. 371","why":"For shrubs 3 or 4 years old or older, the survival rate is better when moved with a root ball.","clues":["This rate is better when shrubs 3 or 4 years old or older are moved with a root ball.","Which word means how many transplanted plants actually live?"]},{"term":"dormant","page":"p. 371","why":"Bare-root plants are moved only when dormant, giving roots time to establish before leafing out.","clues":["The resting stage when bare-root shrubs should be moved.","Bare-root shrubs are planted in this stage so roots can establish before the leaves open."]},{"term":"container-grown","page":"p. 371","why":"Container-grown shrubs grow in pots, baskets, or tubs; roots are damaged less, so they can be planted any time.","clues":["Shrubs raised in pots, baskets, or tubs that can be transplanted any time of year.","Which form has the least root damage during transplanting?"]},{"term":"period of interest","page":"p. 367","why":"The period of interest is the time of year a plant creates the most interest in the landscape.","clues":["The time of year when a plant creates the most interest in the landscape.","For cranberry bush, this happens in fall when red fruit appears."]},{"term":"hardiness","page":"p. 367","why":"Hardiness is based on the lowest minimum temperature a plant can endure without damage to flower buds or wood.","clues":["A rating based on the lowest minimum temperature a plant can take without damage to buds or wood.","Figure 30-2 lists this as a number from 2 to 6."]},{"term":"bare root","page":"p. 371","why":"A bare-root shrub is moved with no soil around the roots. Only small shrubs should be bought this way.","clues":["A shrub transported and transplanted with no soil around the roots.","The purchase form abbreviated BR."]},{"term":"balled and burlapped","page":"p. 371","why":"B&B plants have a ball of soil around the roots wrapped tightly in burlap.","clues":["A root ball of soil wrapped tightly in burlap.","The purchase form abbreviated B&B."]}],"orders":[{"client":"Our back lot is wet to damp woods. We want a border shrub that is an excellent wildlife food source.","answer":"Arrowwood"},{"client":"Soil test says pH 5.0. We want a 3 to 6 ft shrub with yellow to red flowers in late May.","answer":"Flame azalea"},{"client":"Our mountain cabin gets bitter cold. Give me the cold-hardiest shrub on your list.","answer":"Cinquefoil"},{"client":"I have a partly shaded spot. I want 6 to 10 ft with white flower spikes in July.","answer":"Bottlebrush buckeye"},{"client":"We're building a rock garden on a sunny southern slope. Low spreading branches, please.","answer":"Cotoneaster"},{"client":"Our yard is swampy and we want showy red fruit in winter.","answer":"Winterberry"},{"client":"Whatever has the biggest flower heads. I want snowballs.","answer":"Chinese snowball"},{"client":"I want a white hedge that I never have to shear. I'll prune it at the base.","answer":"Vanhoutte spirea"},{"client":"I want a fast-growing, arching shrub with summer flower spikes, and I don't mind cutting it to the ground each spring.","answer":"Butterfly bush"},{"client":"My grandmother called it the Mt. Vernon shrub. It has green twigs in winter.","answer":"Japonica (kerria)"},{"client":"I want a shrub where the flowers and fruit sit along the upper side of the branch.","answer":"Doublefile viburnum"},{"client":"I want a dense hedge shrub with greenish May flowers and brilliant red leaves in fall.","answer":"Dwarf winged euonymus"},{"client":"Edge my wooded lot with something natural looking that blooms white in mid-July.","answer":"Oakleaf hydrangea"},{"client":"Fragrant white spring flowers and stunning fall color for my shrub border.","answer":"Fothergilla"},{"client":"I want a 6 to 10 ft shrub with white June flowers. Fragrance is a must.","answer":"Mock orange"},{"client":"Something under 3 ft with pink flowers that blooms throughout summer.","answer":"Anthony Waterer spirea"},{"client":"A 3 to 6 ft pink shrub that flowers all summer for my foundation planting.","answer":"Abelia"},{"client":"I need a 6 to 10 ft hedge that will grow in shade.","answer":"California privet"},{"client":"I want lavender flowers in April on a 6 to 10 ft shrub.","answer":"Chinese lilac"},{"client":"I want double pink blossoms in early May on a 3 to 6 ft shrub.","answer":"Flowering almond"}],"dock":[{"q":"A client orders 20 small, two-year-old forsythia shipped cheaply while dormant in February. Which form?","a":"Bare root","w":["Balled and burlapped","Container-grown","Sod strips"],"why":"Only small shrubs should be bought bare root, and bare-root plants are moved only when dormant.","ref":"p. 371"},{"q":"A five-year-old shrub is dug from the nursery field. Which form gives it the best survival?","a":"Balled and burlapped","w":["Bare root","Washed roots","Cut flowers"],"why":"After 3 or 4 years of age, survival is better if the plant is moved with a root ball.","ref":"p. 371"},{"q":"Which purchase form should NOT be used for a July planting job?","a":"Bare root","w":["Container-grown","Balled and burlapped","None of these can be planted in July"],"why":"Bare-root plants are moved only when dormant. B&B and container plants can be transplanted any time.","ref":"p. 371"},{"q":"Which form damages the root system the least during transplanting?","a":"Container-grown","w":["Bare root","Balled and burlapped","Field dug with no ball"],"why":"Container-grown root systems are damaged less, so they can be planted any time of year.","ref":"p. 371"},{"q":"You slide a shrub out of its pot and the roots are circling. What comes first?","a":"Straighten the roots","w":["Plant it as is","Cut the root ball in half","Pull all the soil off the roots"],"why":"Roots of root-bound plants should be straightened after removal from the container.","ref":"p. 371"},{"q":"The circling roots will not straighten out. Now what?","a":"Cut them off at the edge of the ball","w":["Wrap them in burlap","Bury the shrub deeper","Leave them circling"],"why":"If twisted or curled roots cannot be straightened, cut them at the edge of the ball to encourage new roots.","ref":"p. 371"},{"q":"When is the best time to plant bare-root deciduous shrubs?","a":"In the dormant stage","w":["In full bloom","Right after leafing out","Midsummer"],"why":"The best time to plant bare-root shrubs is in their dormant stage.","ref":"p. 371"},{"q":"Where winters are severe, what is the best time to plant?","a":"Spring","w":["Late fall","Midwinter","Midsummer"],"why":"Where winters are severe, spring is the best time to plant.","ref":"p. 371"},{"q":"In mild-winter areas, such as south of Chesapeake Bay, deciduous shrubs may be planted when?","a":"Year-round","w":["Only in April","Only in fall","Never in winter"],"why":"In areas with mild winters, deciduous shrubs may be planted year-round.","ref":"p. 371"},{"q":"Bare-root shrubs waiting to be planted should be packed in what?","a":"Moist peat moss or sawdust","w":["Dry sand","Plastic with no packing","Gravel"],"why":"Roots should never dry before planting; pack bare-root shrubs in moist peat moss or sawdust.","ref":"p. 371"},{"q":"After a B&B shrub is set in the hole, what happens to the burlap?","a":"Roll it down to expose the root ball","w":["Leave it tied tight at the trunk","Rip the ball apart to remove it","Wrap a second layer"],"why":"The burlap is rolled down to expose the root ball as much as possible without breaking the ball.","ref":"p. 372"},{"q":"What soil type is best for most shrubs?","a":"A good garden loam","w":["Heavy clay","Pure sand","Compacted fill dirt"],"why":"Most shrubs prefer well-drained soil; a good garden loam is best.","ref":"p. 372"}],"prune":[{"q":"Forsythia blooms on wood grown the previous season. When do you prune it?","a":"Immediately after flowering","w":["In late fall","In midwinter","Just before it blooms"],"why":"Shrubs that bloom on the previous season's wood are pruned right after flowering.","ref":"p. 373"},{"q":"Bridalwreath spirea blooms white in April on last season's wood. When do you prune?","a":"Right after it flowers","w":["In October","In February","Never"],"why":"Spirea is the book's example of a shrub that blooms on previous-season wood: prune right after flowering.","ref":"p. 373"},{"q":"Roses bloom on the current year's growth. When do you prune them?","a":"Fall or early spring","w":["Right after the first bloom","Midsummer","Only every five years"],"why":"Shrubs that bloom on the current year's growth are pruned in fall or early spring.","ref":"p. 373"},{"q":"What does Figure 30-2 say to do with butterfly bush each spring?","a":"Cut it back to the ground","w":["Shear it into a ball","Never prune it","Remove only the flowers"],"why":"Figure 30-2 remarks: cut back to ground in spring; fast-growing, arching plant.","ref":"Figure 30-2, p. 368"},{"q":"How should a Vanhoutte spirea hedge be pruned?","a":"Do not shear; prune to the base","w":["Shear it flat every month","Cut it to the ground every spring","Top it at 2 ft"],"why":"Figure 30-2 remarks: good hedge, should not be sheared; best to prune to base.","ref":"Figure 30-2, p. 369"},{"q":"A shrub sends up lots of suckers from its base. What do you do?","a":"Remove some so growth does not get too thick","w":["Leave all of them","Fertilize them","Cut the main stems instead"],"why":"If shrubs send up suckers from the roots or base, remove at least some so growth does not become too thick.","ref":"p. 373"},{"q":"Hydrangea, privet, and spirea need yearly pruning for what reason?","a":"To thin out old or shaded wood","w":["To make them bloom twice","To stop them from leafing out","To keep them dormant"],"why":"Some shrubs need annual pruning to thin out old wood or wood that is shaded out and killed.","ref":"p. 373"},{"q":"Which is NOT one of the book's reasons to prune?","a":"To make roots grow deeper","w":["To thin out old or dead wood","To shape plants","To control plant size"],"why":"Pruning is used to thin out old or dead wood, shape plants, and control plant size.","ref":"p. 372"},{"q":"Most diseases of deciduous shrubs are caused by what?","a":"Bacteria and fungi","w":["Too much mulch","Cold weather alone","Fertilizer burn"],"why":"Most diseases that affect deciduous shrubs are caused by microscopic organisms such as bacteria and fungi.","ref":"p. 372"},{"q":"Who should you check with before spraying shrubs for insects or disease?","a":"The local extension service","w":["The nearest hardware store clerk","A social media post","Nobody; spray every week"],"why":"Consult your local agriculture experiment station or extension service for details.","ref":"p. 372"}],"steps":["Dig a hole with a flat bottom so roots sit on undug soil","Prune diseased and broken roots","Set the shrub at the same depth it grew before","Work soil around the roots and apply fertilizer","Build a slight berm around the hole's edge","Water well to settle soil and remove air pockets","Mulch with chips or bark 2 to 4 inches deep","Prune the top to remove broken branches and shape"]};
+
+// ---------- utilities ----------
+function $(id){return document.getElementById(id);}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a,n){return shuffle(a).slice(0,n);}
+function rnd(min,max,step){step=step||1;var n=Math.floor((max-min)/step)+1;return min+step*Math.floor(Math.random()*n);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function money(n){return "$"+n.toLocaleString("en-US");}
+function fmt(n){return (Math.round(n*100)/100).toString();}
+function lsGet(k){try{return window.localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{window.localStorage.setItem(k,v);}catch(e){}}
+function norm(s){return String(s||"").trim().toLowerCase().replace(/\s+/g," ");}
+function fnv(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h>>>0;}
+var ALPH="ACDEFGHJKMNPQRTUVWXY34679";
+function makeCode(name,period,pct,date,mins){
+  var base=SALT+"|"+norm(name)+"|"+norm(period)+"|"+pct+"|"+date+"|"+mins;
+  var h1=fnv(base),h2=fnv(base+"#"+h1),out="";
+  for(var i=0;i<6;i++){var h=i<3?h1:h2;out+=ALPH[(h>>>(i%3*8))%ALPH.length];h1=Math.imul(h1,31)>>>0;h2=Math.imul(h2,37)>>>0;}
+  return out.slice(0,3)+"-"+out.slice(3);
+}
+function ymd(d){function p(n){return n<10?"0"+n:""+n;}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+
+// ---------- question builders ----------
+function mc(prompt,correct,wrongs,why,ref,extra){
+  var seen={};seen[correct]=1;var pool=wrongs.filter(function(w){if(seen[w])return false;seen[w]=1;return true;});
+  var opts=shuffle([correct].concat(pick(pool,3)));
+  return {type:"mc",prompt:prompt,options:opts,answer:correct,why:why,ref:ref,client:extra&&extra.client,topic:extra&&extra.topic};
+}
+function buildTerms(n){
+  var terms=pick(DATA.terms,n);
+  var names=DATA.terms.map(function(t){return t.term;});
+  return terms.map(function(t){
+    var w=t.clues[Math.floor(Math.random()*t.clues.length)];
+    return mc(w,t.term,names,t.why,t.page,{topic:"Key terms"});
+  });
+}
+function buildOrders(n){
+  return pick(DATA.orders,n).map(function(o){
+    var s=DATA.shrubs.filter(function(x){return x.com===o.answer;})[0];
+    var same=DATA.shrubs.filter(function(x){return x.height===s.height&&x.com!==s.com;}).map(function(x){return x.com;});
+    var others=DATA.shrubs.filter(function(x){return x.com!==s.com;}).map(function(x){return x.com;});
+    var w=pick(same,2).concat(pick(others.filter(function(x){return same.indexOf(x)<0;}),2));
+    var q=mc("Which shrub from Figure 30-2 fills this order?",s.com,w,
+      s.com+" ("+s.bot+"): "+s.height+", "+s.flower+", exposure "+s.expo+", pH "+s.ph+". Remarks: "+s.remarks,"Figure 30-2, "+s.page,{client:o.client,topic:"Reading Figure 30-2"});
+    return q;
+  });
+}
+function buildBank(bank,n,topic){return pick(bank,n).map(function(b){return mc(b.q,b.a,b.w,b.why,b.ref,{topic:topic});});}
+function buildMath(n){
+  var makers=[
+    function(){var L=rnd(10,30,2),W=rnd(8,20,1),A=L*W,hi=A/100*5,lo=A/100*2;
+      return mc("A foliage-type shrub bed is "+L+" ft by "+W+" ft. What is the MOST 10-6-4 fertilizer the book's rate allows?",fmt(hi)+" lb",[fmt(lo)+" lb",fmt(A/100*10)+" lb",fmt(hi*10)+" lb",fmt(A*5)+" lb",fmt(hi/2)+" lb"],
+        "Area = "+L+" x "+W+" = "+A+" sq ft, which is "+fmt(A/100)+" hundreds. 2 to 5 lb per 100 sq ft gives "+fmt(lo)+" to "+fmt(hi)+" lb.","p. 372",{topic:"Fertilizer rate"});},
+    function(){var d=rnd(10,24,2);
+      return mc("A balled and burlapped root ball measures "+d+" inches across. What is the smallest hole diameter the book allows?",(d*3)+" in",[(d*2)+" in",(d+6)+" in",(d*4)+" in",(d)+" in",(d*3+12)+" in"],
+        "Holes for B&B and container plants should be at least 3 times larger in diameter than the root ball: 3 x "+d+" = "+(d*3)+" inches.","p. 372",{topic:"Hole size"});},
+    function(){var L=rnd(12,30,3),W=rnd(6,15,3),D=[2,3,4][Math.floor(Math.random()*3)],cf=L*W*D/12,cy=cf/27;
+      return mc("You mulch a bed "+L+" ft by "+W+" ft at "+D+" inches deep. About how many cubic yards of mulch is that? (27 cu ft = 1 cu yd)",fmt(Math.round(cy*10)/10)+" cu yd",[fmt(Math.round(cf*10)/10)+" cu yd",fmt(Math.round(L*W*D/27*10)/10)+" cu yd",fmt(Math.round(cy*3*10)/10)+" cu yd",fmt(Math.round(cy/3*10)/10)+" cu yd"],
+        L+" x "+W+" x ("+D+"/12 ft) = "+fmt(Math.round(cf*10)/10)+" cu ft. Divide by 27 = about "+fmt(Math.round(cy*10)/10)+" cu yd. The book calls for 2 to 4 inches of mulch.","p. 371",{topic:"Mulch math"});},
+    function(){var rain=[0,0.2,0.4,0.5,0.6,0.7,0.8,0.9,1.1,1.2,1.4,1.5,1.8][Math.floor(Math.random()*13)];var need=rain<1;
+      return mc("It is the first year after planting. The rain gauge shows "+rain+" inch of rain this week. Does the crew water?",need?"Yes, water this week":"No, rainfall was enough",[need?"No, rainfall was enough":"Yes, water this week","Only if leaves turn yellow","No, shrubs never need watering after planting day"],
+        "Water regularly the first year any time the plant gets less than 1 inch of natural rainfall per week. "+rain+" inch is "+(need?"less than":"at least")+" 1 inch.","p. 371",{topic:"First-year watering"});},
+    function(){var f=Math.random()<.5;
+      return mc("The bed is full of "+(f?"flowering-type shrubs like weigela and spirea":"foliage-type shrubs grown for their leaves")+". Which fertilizer does the book call for?",f?"5-10-10":"10-6-4",[f?"10-6-4":"5-10-10","0-0-60","34-0-0"],
+        "10-6-4 is for foliage-type shrubs and 5-10-10 is for flowering-type shrubs, both at 2 to 5 lb per 100 sq ft in spring.","pp. 371 to 372",{topic:"Fertilizer type"});}
+  ];
+  return pick(makers,n).map(function(m){return m();});
+}
+function buildSeq(){return {type:"seq",prompt:"Put the crew's planting steps in the right order. Tap each step in order.",steps:DATA.steps.slice(),why:"The 8-step planting procedure: dig, prune roots, set depth, soil and fertilizer, berm, water, mulch, prune the top.",ref:"p. 371",topic:"Planting procedure"};}
+
+// ---------- game ----------
+var G=null;
+var ROUNDS=[
+  {key:"brief",name:"Shift 1: Morning Briefing",pay:20,topic:"Key terms (pp. 366 to 371)"},
+  {key:"order",name:"Shift 2: Order Desk",pay:40,topic:"Reading Figure 30-2 (pp. 368 to 370)"},
+  {key:"dock",name:"Shift 3: Loading Dock",pay:30,topic:"Buying and planting time (p. 371)"},
+  {key:"site",name:"Shift 4: Job Site",pay:50,topic:"Planting procedure and site math (pp. 371 to 372)"},
+  {key:"prune",name:"Shift 5: Pruning Calendar",pay:30,topic:"Disease and pruning (pp. 372 to 373)"}
+];
+function newGame(){
+  var items=[];
+  function add(r,list){list.forEach(function(q){q.round=r;items.push(q);});}
+  add(0,buildTerms(5));add(1,buildOrders(6));add(2,buildBank(DATA.dock,4,"Buying and timing"));
+  add(3,[buildSeq()].concat(buildMath(3)));add(4,buildBank(DATA.prune,4,"Pruning"));
+  G={items:items,i:0,cash:0,correct:0,start:Date.now(),byRound:ROUNDS.map(function(){return {got:0,of:0,miss:[]};}),answered:false};
+}
+function payFor(q){return q.type==="seq"?80:ROUNDS[q.round].pay;}
+function maxCash(){return G.items.reduce(function(a,q){return a+payFor(q);},0);}
+function show(id){["start","teacher","game","result"].forEach(function(s){$(s).classList.toggle("hidden",s!==id);});window.scrollTo(0,0);}
+function render(){
+  var q=G.items[G.i];G.answered=false;window.__u30={item:q,index:G.i};
+  $("shiftName").textContent=ROUNDS[q.round].name;
+  $("count").textContent="Job "+(G.i+1)+" of "+G.items.length;
+  $("prog").style.width=(G.i/G.items.length*100)+"%";
+  $("fb").className="fb";$("fb").innerHTML="";$("next").classList.add("hidden");
+  var h="";
+  if(q.client)h+='<div class="client">"'+esc(q.client)+'"</div>';
+  h+='<h3 style="margin-top:12px">'+esc(q.prompt)+'</h3>';
+  if(q.type==="mc"){
+    h+='<div class="opts">'+q.options.map(function(o,k){return '<button class="opt" data-k="'+k+'">'+esc(o)+'</button>';}).join("")+"</div>";
+    $("stage").innerHTML=h;
+    Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.addEventListener("click",function(){answerMC(q,+b.getAttribute("data-k"));});});
+  } else {
+    q.order=shuffle(q.steps.map(function(s,k){return k;}));q.built=[];
+    h+='<div class="seq" id="pool">'+q.order.map(function(k){return '<button class="chip" data-k="'+k+'">'+esc(q.steps[k])+'</button>';}).join("")+'</div>';
+    h+='<p class="tiny muted" style="margin-top:12px">Your order:</p><ol class="built" id="built"></ol>';
+    h+='<div class="row" style="margin-top:10px"><button class="btn ghost" id="undo">Undo</button><button class="btn" id="submitSeq" disabled>Submit order</button></div>';
+    $("stage").innerHTML=h;
+    Array.prototype.forEach.call(document.querySelectorAll(".chip"),function(b){b.addEventListener("click",function(){
+      if(G.answered)return;q.built.push(+b.getAttribute("data-k"));b.disabled=true;drawBuilt(q);});});
+    $("undo").addEventListener("click",function(){if(G.answered||!q.built.length)return;var k=q.built.pop();document.querySelector('.chip[data-k="'+k+'"]').disabled=false;drawBuilt(q);});
+    $("submitSeq").addEventListener("click",function(){answerSeq(q);});
+  }
+}
+function drawBuilt(q){$("built").innerHTML=q.built.map(function(k){return "<li>"+esc(q.steps[k])+"</li>";}).join("");$("submitSeq").disabled=q.built.length!==q.steps.length;}
+function settle(q,ok,detail){
+  G.answered=true;var r=G.byRound[q.round];r.of++;
+  if(ok){r.got++;G.correct++;G.cash+=payFor(q);}else r.miss.push(q.topic||ROUNDS[q.round].topic);
+  $("cash").textContent=money(G.cash);
+  var fb=$("fb");fb.className="fb show "+(ok?"good":"badfb");
+  fb.innerHTML="<b>"+(ok?"Job done. +"+money(payFor(q))+" to the crew.":"Callback. No pay for this job.")+"</b>"+(detail?"<br>"+detail:"")+"<br>"+esc(q.why)+'<span class="ref">Textbook: '+esc(q.ref)+"</span>";
+  var nb=$("next");nb.textContent=G.i===G.items.length-1?"Clock out and see results":"Next job";nb.classList.remove("hidden");nb.focus();
+}
+function answerMC(q,k){
+  if(G.answered)return;var ok=q.options[k]===q.answer;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b,j){b.disabled=true;if(q.options[j]===q.answer)b.classList.add("right");else if(j===k)b.classList.add("wrong");});
+  settle(q,ok,ok?"":"Best answer: <b>"+esc(q.answer)+"</b>.");
+}
+function answerSeq(q){
+  if(G.answered)return;var ok=q.built.every(function(k,j){return k===j;});
+  Array.prototype.forEach.call(document.querySelectorAll(".chip,#undo,#submitSeq"),function(b){b.disabled=true;});
+  settle(q,ok,ok?"":"Correct order:<ol style='margin:6px 0 0;padding-left:22px'>"+q.steps.map(function(s){return "<li>"+esc(s)+"</li>";}).join("")+"</ol>");
+}
+function rating(p){return p>=90?"Head Foreman":p>=75?"Crew Lead":p>=60?"Crew Member":"Trainee";}
+function finish(){
+  var total=G.items.length,pct=Math.round(G.correct/total*100);
+  var mins=Math.max(1,Math.round((Date.now()-G.start)/60000));
+  var now=new Date(),date=ymd(now);
+  var name=G.name,code=makeCode(name,G.period,pct,date,mins);
+  var best=parseInt(lsGet("u30crew_best")||"0",10);if(pct>best){lsSet("u30crew_best",String(pct));}
+  $("prog").style.width="100%";
+  $("cert").innerHTML='<div class="kicker">North Paulding Agriculture • Unit 30 Deciduous Shrubs</div><h1>Certificate of Completion</h1>'+
+    '<p class="muted">Shrub Crew Foreman</p><h2 style="color:var(--ink)" id="cName">'+esc(name)+'</h2>'+
+    '<div class="big" id="cPct">'+pct+'%</div><div><b id="cRating">'+rating(pct)+'</b></div>'+
+    '<table><tr><td>Period</td><td id="cPer">'+esc(G.period)+'</td></tr><tr><td>Jobs done right</td><td id="cItems">'+G.correct+' of '+total+'</td></tr>'+
+    '<tr><td>Crew earnings</td><td id="cCash">'+money(G.cash)+' of '+money(maxCash())+'</td></tr><tr><td>Minutes played</td><td id="cMin">'+mins+'</td></tr>'+
+    '<tr><td>Date and time</td><td id="cDate" data-ymd="'+date+'">'+date+' '+now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+'</td></tr></table>'+
+    '<div class="tiny muted">Completion code</div><div class="code" id="cCode">'+code+'</div>';
+  var rows='<tr><th>Shift</th><th>Score</th><th>Review</th></tr>';
+  ROUNDS.forEach(function(r,k){var b=G.byRound[k];var uniq=b.miss.filter(function(m,j){return b.miss.indexOf(m)===j;});
+    rows+='<tr><td>'+esc(r.name)+'</td><td>'+b.got+' / '+b.of+'</td><td>'+(uniq.length?"Review: "+esc(uniq.join(", "))+" "+esc(r.topic.replace(/^[^(]*/,"")):"Nice work")+'</td></tr>';});
+  $("breakdown").innerHTML=rows;
+  show("result");
+}
+
+// ---------- wiring ----------
+function showBest(){var b=lsGet("u30crew_best");$("best").textContent=b?"Best on this device: "+b+"%":"";}
+$("go").addEventListener("click",function(){
+  var f=$("first").value.trim(),l=$("last").value.trim(),p=$("period").value;
+  if(!f||!l){$("startErr").textContent="Enter your first and last name.";return;}
+  if(!p){$("startErr").textContent="Choose your class period.";return;}
+  $("startErr").textContent="";newGame();G.name=f+" "+l;G.period=p;$("cash").textContent="$0";show("game");render();
+});
+$("next").addEventListener("click",function(){if(G.i<G.items.length-1){G.i++;render();}else finish();});
+$("print").addEventListener("click",function(){window.print();});
+$("again").addEventListener("click",function(){showBest();$("cash").textContent="$0";show("start");});
+$("tlink").addEventListener("click",function(){show("teacher");$("pinBox").classList.remove("hidden");$("verify").classList.add("hidden");$("pin").value="";});
+$("tBack").addEventListener("click",function(){show("start");});
+$("vBack").addEventListener("click",function(){show("start");});
+$("pinGo").addEventListener("click",function(){if($("pin").value.trim()===TEACHER_PIN){$("pinBox").classList.add("hidden");$("verify").classList.remove("hidden");$("pinErr").textContent="";$("vDate").value=ymd(new Date());}else $("pinErr").textContent="Wrong PIN.";});
+$("vGo").addEventListener("click",function(){
+  var c=makeCode($("vName").value,$("vPer").value,parseInt($("vPct").value,10),$("vDate").value,parseInt($("vMin").value,10));
+  var typed=$("vCode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");typed=typed.slice(0,3)+"-"+typed.slice(3);
+  var o=$("vOut");if(typed===c){o.style.color="var(--ok)";o.textContent="Match. This certificate is genuine.";}else{o.style.color="var(--bad)";o.textContent="No match. Check each field, or the certificate was changed.";}
+});
+showBest();
+</script>
+</body>
+</html>
