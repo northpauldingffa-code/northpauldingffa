@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Border Builder: Unit 26</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2F7A4B;--bad:#A8322A}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#FBF8F3;color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.45;overflow-x:hidden}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;color:var(--red);margin:.2em 0 .4em}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+header.bar{background:var(--green);color:#fff;padding:12px 16px}
+header.bar .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;padding:0 16px}
+header.bar b{font-family:Cambria,Georgia,serif;font-size:20px}
+.pill{background:rgba(255,255,255,.15);border-radius:999px;padding:3px 12px;font-size:15px;white-space:nowrap}
+.card{background:#fff;border:1px solid #E6DCCB;border-radius:12px;padding:18px;margin:14px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.cream{background:var(--cream)}
+label{display:block;font-weight:bold;margin:10px 0 4px}
+input,select{width:100%;padding:10px;font-size:17px;border:1px solid #CDBFA8;border-radius:8px;background:#fff;color:var(--ink)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:0;padding:12px 18px;background:var(--green);color:#fff;font-weight:bold}
+button.alt{background:var(--red)}
+button.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+button:disabled{opacity:.5;cursor:default}
+.opt:disabled{opacity:1}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{text-align:left;background:var(--cream);color:var(--ink);border:2px solid transparent;font-weight:normal;padding:12px 14px}
+.opt:hover:not(:disabled){border-color:var(--tan)}
+.opt.right{background:#DCEFE2;border-color:var(--ok)}
+.opt.wrong{background:#F6DEDA;border-color:var(--bad)}
+.fb{margin-top:12px;padding:12px 14px;border-radius:10px;display:none}
+.fb.show{display:block}
+.fb.good{background:#E6F2EA;border-left:0;outline:1px solid #B9DAC4}
+.fb.bad{background:#F8E7E4;outline:1px solid #E7BDB6}
+.ref{color:var(--muted);font-style:italic;font-size:15px}
+.kicker{color:var(--green);font-weight:bold;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 200px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tag{background:#fff;border:1px solid var(--tan);border-radius:999px;padding:3px 10px;font-size:15px}
+.progress{height:8px;background:#E9E0D2;border-radius:99px;overflow:hidden;margin:8px 0 0}
+.progress i{display:block;height:100%;background:var(--gold);width:0}
+small.link{display:inline-block;margin-top:14px;color:var(--muted);text-decoration:underline;cursor:pointer}
+table{border-collapse:collapse;width:100%;font-size:15px}
+td,th{border:1px solid #E1D5C1;padding:6px 8px;text-align:left}
+th{background:var(--green);color:#fff}
+.hidden{display:none!important}
+.big{font-family:Cambria,Georgia,serif;font-size:40px;font-weight:bold;color:var(--red);line-height:1.1}
+#cert{border:6px double var(--green);background:#fff;padding:22px;border-radius:6px;text-align:center}
+#cert .code{font-family:"Courier New",monospace;font-size:28px;letter-spacing:4px;color:var(--green);font-weight:bold}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;text-align:left;margin:14px 0}
+.grid2 div{background:var(--cream);border-radius:8px;padding:8px 10px}
+.grid2 b{display:block;font-size:13px;color:var(--muted);text-transform:uppercase}
+@media print{
+  body *{visibility:hidden}
+  #cert,#cert *{visibility:visible}
+  #cert{position:absolute;left:0;top:0;width:100%}
+  .noprint{display:none}
+}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap"><b>Border Builder</b><span class="pill" id="hudRound">Unit 26: Perennials, Grasses, Vines, Bamboos &amp; Prairie Gardens</span><span class="pill hidden" id="hudMoney">$0</span></div></header>
+<main class="wrap">
+
+<section id="start" class="card">
+  <div class="kicker">North Paulding Ag &bull; Unit 26 review game</div>
+  <h1>Border Builder</h1>
+  <p>You just took over a landscape crew. Earn contract money in four jobs: the <b>Plant Desk</b> (key facts), <b>Chart Detective</b> (Figures 26-2, 26-5, 26-6, 26-7), <b>Crew Math</b> (spacing and fertilizer), and <b>Site Match</b> (pick the right wildflower). Every answer shows the reason and textbook page.</p>
+  <div class="row">
+    <div><label for="fn">First name</label><input id="fn" autocomplete="given-name"></div>
+    <div><label for="ln">Last name</label><input id="ln" autocomplete="family-name"></div>
+    <div><label for="per">Class period</label><select id="per"><option value="">Choose</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></div>
+  </div>
+  <p id="startErr" class="ref" style="color:var(--bad)"></p>
+  <button id="go">Start the job</button>
+  <p class="ref" id="best"></p>
+  <small class="link" id="teacherLink">Teacher check</small>
+</section>
+
+<section id="teacher" class="card hidden">
+  <h2>Teacher Check</h2>
+  <p class="ref">Type what is on the student's certificate. The code is rebuilt from these values.</p>
+  <div class="row">
+    <div><label for="tpin">PIN</label><input id="tpin" type="password" inputmode="numeric"></div>
+    <div><label for="tname">Student name (first last)</label><input id="tname"></div>
+    <div><label for="tper">Period</label><input id="tper"></div>
+  </div>
+  <div class="row">
+    <div><label for="tpct">Percent (number only)</label><input id="tpct" inputmode="numeric"></div>
+    <div><label for="tdate">Date (YYYY-MM-DD)</label><input id="tdate"></div>
+    <div><label for="tmin">Minutes played</label><input id="tmin" inputmode="numeric"></div>
+    <div><label for="tcode">Completion code</label><input id="tcode"></div>
+  </div>
+  <p id="tout" style="font-weight:bold"></p>
+  <div class="row"><button id="tcheck">Check code</button><button class="ghost" id="tback">Back</button></div>
+</section>
+
+<section id="intro" class="card hidden">
+  <div class="kicker" id="introKicker"></div>
+  <h2 id="introTitle"></h2>
+  <p id="introText"></p>
+  <button id="introGo">Let's go</button>
+</section>
+
+<section id="play" class="card hidden">
+  <div class="row" style="justify-content:space-between"><div class="kicker" id="qKicker"></div><div class="ref" style="text-align:right" id="qCount"></div></div>
+  <div class="progress"><i id="bar"></i></div>
+  <h3 id="qText" style="margin-top:14px"></h3>
+  <div class="tags" id="qTags"></div>
+  <div class="opts" id="opts"></div>
+  <div id="numBox" class="hidden" style="margin-top:12px">
+    <div class="row"><input id="numIn" inputmode="decimal" placeholder="Type a number"><button id="numGo" style="flex:0 0 auto">Submit</button></div>
+  </div>
+  <div class="fb" id="fb"></div>
+  <div style="margin-top:14px"><button id="next" class="hidden">Next</button></div>
+</section>
+
+<section id="done" class="hidden">
+  <div id="cert">
+    <div class="kicker">North Paulding Ag &bull; Certificate of Completion</div>
+    <h1 style="margin-top:8px">Border Builder: Unit 26</h1>
+    <p>Perennials, Ornamental Grasses, Vines, Bamboos, and Prairie Gardens</p>
+    <div class="big" id="cName"></div>
+    <div class="grid2">
+      <div><b>Period</b><span id="cPer"></span></div>
+      <div><b>Score</b><span id="cPct"></span></div>
+      <div><b>Items correct</b><span id="cItems"></span></div>
+      <div><b>Contract earnings</b><span id="cMoney"></span></div>
+      <div><b>Minutes played</b><span id="cMin"></span></div>
+      <div><b>Date and time</b><span id="cDate"></span></div>
+    </div>
+    <div class="ref">Completion code</div>
+    <div class="code" id="cCode"></div>
+    <table style="margin-top:14px" id="cTable"></table>
+    <p id="cReview" class="ref" style="text-align:left"></p>
+  </div>
+  <div class="row noprint" style="margin-top:14px"><button id="print">Print / Save as PDF</button><button class="alt" id="again">Play again</button></div>
+</section>
+</main>
+
+<script>
+const TEACHER_PIN = "0545";
+const SALT = "NPFFA-U26-border";
+const DATA = {"f262":[{"n":"Achillea millefolium (yarrow)","ws":"early spring or late fall","ex":"sun","sp":"36\"","h":"24\"","use":"borders, cut flowers","c":"yellow, white, red, pink","rm":"Seed is small. Water with a mist. Easy to grow.","p":309,"clue":"Seed is small. Water with a mist. Easy to grow."},{"n":"Alyssum saxatile (golddust)","ws":"early spring","ex":"sun","sp":"24\"","h":"9\"-12\"","use":"rock garden, edging, cut flowers","c":"yellow","rm":"Blooms early spring. Good in dry and sandy soils.","p":309,"clue":"Blooms early spring. Good in dry and sandy soils."},{"n":"Anchusa italica (alkanet)","ws":"spring to September","ex":"partial shade","sp":"24\"","h":"48\"-60\"","use":"borders, background, cut flowers","c":"blue","rm":"Blooms June or July. Refrigerate seed 72 hours before sowing.","p":309,"clue":"Blooms June or July. Refrigerate seed 72 hours before sowing."},{"n":"Anemone pulsatilla (windflower)","ws":"early spring or late fall for tuberous","ex":"sun","sp":"35\"-42\"","h":"12\"","use":"borders, rock garden, potted plant, cut flowers","c":"blue, rose, scarlet","rm":"Blooms May and June. Is not hardy north of Washington, DC.","p":309,"clue":"Blooms May and June. Is not hardy north of Washington, DC."},{"n":"Anthemis tinctoria (golden daisy)","ws":"late spring outdoors","ex":"sun","sp":"24\"","h":"24\"","use":"borders, cut flowers","c":"yellow","rm":"Blooms midsummer to frost. Prefers dry or sandy soil.","p":309,"clue":"Blooms midsummer to frost. Prefers dry or sandy soil."},{"n":"Arabis alpina (rock cress)","ws":"spring to September","ex":"light shade","sp":"12\"","h":"8\"-12\"","use":"edging, rock garden","c":"white","rm":"Blooms early spring.","p":309,"clue":""},{"n":"Armeria maritima alpina (sea pink)","ws":"spring to September","ex":"sun","sp":"12\"","h":"18\"-24\"","use":"rock garden, edging, borders, cut flowers","c":"pink","rm":"Blooms May and June. Plant in dry sandy soil. Shade until plants are well established.","p":309,"clue":"Blooms May and June. Plant in dry sandy soil. Shade until plants are well established."},{"n":"Aster alpinus (hardy aster)","ws":"early spring","ex":"sun","sp":"36\"","h":"12\"-60\"","use":"rock garden, borders, cut flowers","c":"white","rm":"Blooms June.","p":309,"clue":""},{"n":"Astilbe arendsii (false spirea)","ws":"early spring","ex":"sun","sp":"24\"","h":"12\"-36\"","use":"borders","c":"pink, red, white","rm":"Blooms July and August. Gives masses of color.","p":309,"clue":"Blooms July and August. Gives masses of color."},{"n":"Begonia evansiana (hardy begonia)","ws":"summer in shady, moist spot","ex":"shade","sp":"9\"-12\"","h":"12\"","use":"flower bed","c":"yellow, pink, white","rm":"Blooms late in summer. Can be propagated from bulblets in leaf axils.","p":310,"clue":"Blooms late in summer. Can be propagated from bulblets in leaf axils."},{"n":"Bergenia purpurascens (bergenia)","ws":"late winter","ex":"light shade","sp":"18\"","h":"2'-3'","use":"herb","c":"pink, red","rm":"Hummingbirds love it.","p":310,"clue":""},{"n":"Candytuft (Iberis)","ws":"early spring or late fall","ex":"sun","sp":"12\"","h":"10\"","use":"rock garden, edging, ground cover","c":"white","rm":"Blooms in late spring. Prefers dry places. Cut faded flowers to promote branching.","p":310,"clue":"Blooms in late spring. Prefers dry places. Cut faded flowers to promote branching."},{"n":"Canterbury bells (Campanula medium)","ws":"spring to September (Do not cover.)","ex":"partial shade","sp":"15\"","h":"24\"-30\"","use":"borders, cut flowers","c":"white, pink, blue","rm":"Divide mature plants every other year. Best grown as a biennial.","p":310,"clue":"Divide mature plants every other year. Best grown as a biennial."},{"n":"Carnation (Dianthus caryophyllus)","ws":"late spring","ex":"sun","sp":"12\"","h":"18\"-24\"","use":"flower bed, borders, edging, rock garden","c":"pink, red, white, yellow","rm":"Blooms in late summer. Cut plants back in late fall and hold in cold frame.","p":310,"clue":"Blooms in late summer. Cut plants back in late fall and hold in cold frame."},{"n":"Cerastium tomentosum (snow-in-summer)","ws":"early spring","ex":"sun","sp":"18\"","h":"6\"","use":"rock garden, ground cover","c":"white","rm":"Blooms in May and June. Forms a creeping mat and is a fast grower. Prefers a dry spot.","p":310,"clue":"Blooms in May and June. Forms a creeping mat and is a fast grower. Prefers a dry spot."},{"n":"Chinese lantern (Physalis alkekengi)","ws":"late fall","ex":"sun","sp":"36\"","h":"24\"","use":"borders, specimen plant","c":"orange","rm":"Lanterns are borne the second year in the fall.","p":310,"clue":"Lanterns are borne the second year in the fall."},{"n":"Columbine (Aquilegia)","ws":"spring to September","ex":"sun or partial shade","sp":"12\"-18\"","h":"30\"-36\"","use":"borders, cut flowers","c":"wide color range","rm":"Blooms in late spring. Best grown as a biennial.","p":310,"clue":"Blooms in late spring. Best grown as a biennial."},{"n":"Coreopsis lanceolata","ws":"early spring","ex":"sun","sp":"30\"","h":"24\"","use":"borders","c":"yellow","rm":"Blooms from June to fall if old flowers are removed.","p":310,"clue":"Blooms from June to fall if old flowers are removed."},{"n":"Daisy, Shasta (Chrysanthemum maximum)","ws":"early spring to September","ex":"sun","sp":"30\"","h":"24\"-30\"","use":"borders, cut flowers","c":"white","rm":"Blooms June and July. Best grown as a biennial in well-drained location.","p":311,"clue":"Blooms June and July. Best grown as a biennial in well-drained location."},{"n":"Delphinium elatum (delphinium)","ws":"spring to September","ex":"sun","sp":"24\"","h":"48\"-60\"","use":"borders, background, cut flowers","c":"blue, lavender, white, pink","rm":"Blooms in June. Best grown as a biennial. Needs dry location.","p":311,"clue":"Blooms in June. Best grown as a biennial. Needs dry location."},{"n":"Dianthus deltoides (pink)","ws":"spring to September","ex":"sun","sp":"12\"","h":"12\"","use":"borders, rock garden, edging, cut flowers","c":"pink","rm":"Blooms in May and June. Best grown as a biennial. Needs dry location.","p":311,"clue":"Blooms in May and June. Best grown as a biennial. Needs dry location."},{"n":"Echinacea purpurea (coneflower)","ws":"spring to September","ex":"sun","sp":"30\"","h":"30\"-36\"","use":"borders, flower bed, cut flowers","c":"white, pink, red, rose, purple","rm":"Blooms midsummer to fall. Shade summer plantings. Attracts butterflies. Deer resistant. Accent specimen massing.","p":311,"clue":"Blooms midsummer to fall. Shade summer plantings. Attracts butterflies. Deer resistant. Accent specimen massing."},{"n":"Foxglove (Digitalis purpurea)","ws":"spring to September","ex":"sun or partial shade","sp":"12\"","h":"48\"-60\"","use":"borders, cut flowers","c":"pink, white, purple, rose","rm":"Blooms in June and July. Grown as a biennial. Shade summer plantings.","p":311,"clue":"Blooms in June and July. Grown as a biennial. Shade summer plantings."},{"n":"Gaillardia grandiflora (gaillardia)","ws":"early spring or late summer","ex":"sun","sp":"24\"","h":"12\"-30\"","use":"borders, cut flowers","c":"scarlet, yellow","rm":"Blooms from July until frost.","p":311,"clue":"Blooms from July until frost."},{"n":"Gypsophila paniculata (baby's breath)","ws":"early spring to September","ex":"sun","sp":"48\"","h":"24\"-36\"","use":"borders, cut flowers, drying","c":"white, pink","rm":"Blooms early summer until early fall. Needs lots of lime.","p":311,"clue":"Blooms early summer until early fall. Needs lots of lime."},{"n":"Hemerocallis (daylily)","ws":"late fall","ex":"sun or partial shade","sp":"24\"-30\"","h":"12\"-48\"","use":"borders, among shrubbery","c":"pink, red","rm":"Plant several varieties for longer blooming season.","p":311,"clue":"Plant several varieties for longer blooming season."},{"n":"Hibiscus moscheutos (mallow rose)","ws":"spring or summer","ex":"sun or partial shade","sp":"24\"","h":"36\"-96\"","use":"background, flower bed","c":"white, pink, red, rose","rm":"Blooms July to September.","p":311,"clue":""},{"n":"Iris","ws":"bulbs or rhizomes in fall","ex":"sun or partial shade","sp":"18\"-24\"","h":"3\"-30\"","use":"borders, cut flowers","c":"blue, red, yellow, pink, bronze, wine","rm":"Blooms spring and summer if different varieties are used.","p":312,"clue":"Blooms spring and summer if different varieties are used."},{"n":"Liatris pycnostachya (gayfeather)","ws":"early spring or late fall","ex":"sun","sp":"18\"","h":"24\"-60\"","use":"borders, cut flowers","c":"rose-purple","rm":"Blooms summer to early fall. Easily started from seed.","p":312,"clue":"Blooms summer to early fall. Easily started from seed."},{"n":"Lupinus polyphyllus (lupine)","ws":"early spring or late fall (Soak before planting.)","ex":"sun","sp":"36\"","h":"36\"","use":"borders, cut flowers","c":"white, yellow, pink, rose, red, blue, purple","rm":"Blooms most of summer. Needs excellent drainage. Does not transplant easily.","p":312,"clue":"Blooms most of summer. Needs excellent drainage. Does not transplant easily."},{"n":"Mentha ssp. (mint)","ws":"late winter","ex":"sun","sp":"15\"","h":"6\"-3'","use":"culinary","c":"white","rm":"Mint flavors.","p":312,"clue":""},{"n":"Peony (Paeonia)","ws":"Plant tubers in late fall 2\"-3\" deep.","ex":"sun","sp":"36\"","h":"24\"-48\"","use":"borders, cut flowers, flower bed","c":"pink, red, white, rose","rm":"Blooms late spring. Difficult to grow from seed.","p":312,"clue":"Blooms late spring. Difficult to grow from seed."},{"n":"Phlox paniculata (summer phlox)","ws":"late fall or early winter","ex":"sun","sp":"24\"","h":"36\"","use":"borders, cut flowers","c":"red, pink, blue, white","rm":"Blooms early summer. Color of flower varies.","p":312,"clue":"Blooms early summer. Color of flower varies."},{"n":"Phlox subulata (moss phlox)","ws":"grown from stolons","ex":"sun","sp":"8\"","h":"4\"-5\"","use":"borders","c":"blue, red, white, pink","rm":"Blooms in spring. Drought resistant.","p":312,"clue":"Blooms in spring. Drought resistant."},{"n":"Poppy, Iceland (Papaver nudicaule)","ws":"early spring","ex":"sun","sp":"24\"","h":"15\"-18\"","use":"borders, cut flowers","c":"white, pink, red","rm":"Blooms early summer. Does not transplant easily.","p":312,"clue":""},{"n":"Poppy, Oriental (Papaver orientale)","ws":"early spring","ex":"sun","sp":"24\"","h":"36\"","use":"borders, cut flowers","c":"pink, red, rose, orange, white, salmon","rm":"Blooms early summer. Does not transplant easily.","p":312,"clue":""},{"n":"Primrose (Primula polyantha and Primula veris)","ws":"January, in a flat on surface. Allow to freeze; then bring in to germinate.","ex":"partial shade","sp":"12\"","h":"6\"-9\"","use":"rock garden","c":"white, yellow, pink, red, blue","rm":"Blooms April and May. May be seeded in fall.","p":312,"clue":"Blooms April and May. May be seeded in fall."},{"n":"Pyrethrum roseum (painted daisy)","ws":"spring to September","ex":"sun","sp":"18\"","h":"24\"","use":"borders, cut flowers, accent","c":"various, including gold, pink, and lavender","rm":"Blooms May and June. Prefers well-drained soil.","p":313,"clue":"Blooms May and June. Prefers well-drained soil."},{"n":"Rudbeckia fulgida (pot of gold)","ws":"midsummer to September","ex":"sun or partial shade","sp":"30\"","h":"30\"-36\"","use":"borders, flower bed, cut flowers, accent","c":"","rm":"Specimen attracts butterflies. Easy to grow. Deer and rabbit resistant. Wild flower.","p":313,"clue":"Specimen attracts butterflies. Easy to grow. Deer and rabbit resistant. Wild flower."},{"n":"Salvia (Salvia azurea grandiflora and Salvia farinacea)","ws":"spring","ex":"sun","sp":"18\"-24\"","h":"36\"-48\"","use":"borders","c":"red","rm":"Blooms August until frost.","p":313,"clue":"Blooms August until frost."},{"n":"Sea lavender (Limonium latifolia)","ws":"early spring","ex":"sun","sp":"30\"","h":"24\"-36\"","use":"flower bed, cut flowers, drying","c":"pink, yellow, mauve","rm":"Blooms in July and August.","p":313,"clue":"Blooms in July and August."},{"n":"Sedum spectabile (sedum)","ws":"late winter","ex":"sun","sp":"10\"","h":"4\"-15\"","use":"ground cover","c":"pink, white","rm":"Fall foliage.","p":313,"clue":""},{"n":"Stokesia cyanea (Stokes' aster)","ws":"early spring to September","ex":"sun","sp":"18\"","h":"15\"","use":"borders, cut flowers","c":"white, blue","rm":"Blooms in September if started early.","p":313,"clue":"Blooms in September if started early."},{"n":"Sweet pea (Lathyrus latifolius)","ws":"early spring","ex":"sun","sp":"24\"","h":"60\"-72\"","use":"background","c":"pink, white, purple, red","rm":"Blooms June to September. Easily grown as a vine on fence or trellis.","p":313,"clue":"Blooms June to September. Easily grown as a vine on fence or trellis."},{"n":"Sweet William (Dianthus barbatus)","ws":"spring to September","ex":"sun","sp":"12\"","h":"12\"-18\" (dwarf form also available)","use":"borders, edging, cut flowers","c":"red, pink, white","rm":"Blooms May and June. Very hardy. Needs well-drained soil.","p":313,"clue":"Blooms May and June. Very hardy. Needs well-drained soil."},{"n":"Veronica spicata (speedwell)","ws":"spring to September","ex":"sun","sp":"18\"","h":"18\"","use":"borders, rock garden, cut flowers","c":"purple","rm":"Blooms June and July. Easy to grow.","p":313,"clue":"Blooms June and July. Easy to grow."}],"f265":[{"n":"Carex morrowii ('Variegata') (sedge)","ex":"semishade","sp":"9\"-12\"","h":"12\"-15\"","use":"border, bank","rm":"Leaves narrow, white margin."},{"n":"Calamagrostis","ex":"sun","sp":"4'","h":"3'-5'","use":"accent","rm":"Looks great with black-eyed Susan."},{"n":"Chasmanthium latifolium (northern sea oats)","ex":"sun","sp":"18\"-24\"","h":"3'","use":"accent","rm":"Winter interest."},{"n":"Cortaderia (pampas grass)","ex":"sun","sp":"9'-12'","h":"6'-9'","use":"specimen","rm":"Silvery flower stalks."},{"n":"Festuca glauca (blue fescue)","ex":"sun","sp":"4\"-6\"","h":"10\"-12\"","use":"border, bank","rm":"Blue-gray foliage."},{"n":"Imperata (Japanese blood grass)","ex":"sun/shade","sp":"3'-4'","h":"1'-2'","use":"massing","rm":"Reddish foliage."},{"n":"Leymus (blue wild rye)","ex":"sun","sp":"2'-3'","h":"2'-3'","use":"massing","rm":"Silvery blue foliage."},{"n":"Miscanthus floridulus (giant miscanthus)","ex":"sun","sp":"9'-12'","h":"12'-15'","use":"accent, screen, windbreak","rm":"Effective fall and winter."},{"n":"Panicum virgatum (switchgrass)","ex":"sun","sp":"2'-3'","h":"3'-4'","use":"accent","rm":"Fall interest. Open panicles."},{"n":"Pennisetum (dwarf fountain grass)","ex":"sun","sp":"4'","h":"3'-8'","use":"accent","rm":"Excellent fall color."},{"n":"Phalaris arundinaccea picta (ribbon grass)","ex":"sun","sp":"12\"-15\"","h":"18\"","use":"accent","rm":"White, variegate leaves. Spread by rhizomes."}],"f266":[{"n":"Campsis radicans (trumpet vine)","rm":"Rich-looking orange flower. Very fast grower; clings to most surfaces. Grows in most soils in full sun.","clues":["has a rich-looking orange flower and clings to most surfaces","is a very fast grower with orange flowers that grows in most soils in full sun"]},{"n":"Celastrus scandens (American bittersweet)","rm":"Fast growing, with orange and red berries on the female plants. Very effective in the fall; grows well in most soils in full sun. Excellent for holiday decorations.","clues":["has orange and red berries on the female plants","is excellent for holiday decorations"]},{"n":"Clematis hybrida (clematis)","rm":"Best known for excellent flowers, but must be trained on a trellis, fence, or porch post. Needs well-drained, slightly alkaline soil. Flowers like sun; roots prefer a cool, shaded location. Prune in late winter or very early spring.","clues":["likes its flowers in sun but its roots cool and shaded","needs slightly alkaline soil and is pruned in late winter or very early spring"]},{"n":"Parthenocissus tricuspidata (Boston ivy)","rm":"Very rapid grower. Foliage opens red in the spring, then turns rich green in summer. Does very well on walls.","clues":["has foliage that opens red in spring, then turns rich green","does very well on walls and opens red in the spring"]},{"n":"Polygonum auberti (silverlace vine)","rm":"Very rapid grower with white flowers in summer. Needs well-drained soil in full sun or shade.","clues":["is a very rapid grower with white flowers in the summer"]},{"n":"Wisteria sinensis (wisteria)","rm":"The old-timer, with fragrant blue-violet pendulous racemes (like a bunch of grapes) in late May. Introduced into this country in 1816. Requires deep, moist, well-drained soil.","clues":["was introduced into this country in 1816","has fragrant blue-violet racemes that look like a bunch of grapes"]}],"f267":[{"n":"Lavender Hyssop","bot":"Agastache foeniculum","h":"1'-3'","c":"purple","b":"Jul-Sep","m":"D,M","s":"S,L","sun":"F,P","p":318},{"n":"Nodding Pink Onion","bot":"Allium cernuum","h":"1'-2'","c":"white/pink","b":"Jul-Aug","m":"M,W","s":"S,L","sun":"F","p":318},{"n":"Leadplant","bot":"Amorpha canescens","h":"2'-3'","c":"purple","b":"Jun-Jul","m":"D,M","s":"S,L","sun":"F","p":318},{"n":"Canada Anemone","bot":"Anemone canadensis","h":"1'-2'","c":"white","b":"May-Jun","m":"M,W","s":"S,L,C","sun":"F,P","p":318},{"n":"Pasque Flower","bot":"Anemone patens","h":"<1'","c":"white","b":"Apr-May","m":"D","s":"S","sun":"F","p":318},{"n":"Virginia Anemone","bot":"Anemone virginiana","h":"2'-4'","c":"white","b":"Jun-Jul","m":"M,W","s":"S,L","sun":"P","p":318},{"n":"Angelica","bot":"Angelica atropurpurea","h":"5'-10'","c":"white","b":"June","m":"W","s":"S,L,C","sun":"F,P","p":318},{"n":"Columbine","bot":"Aquilegia canadensis","h":"1'-3'","c":"red-yellow","b":"May-Jun","m":"D,M","s":"S,L","sun":"F,P,S","p":318},{"n":"Rock Sandwort","bot":"Arenaria stricta","h":"<1'","c":"white","b":"June","m":"D","s":"S","sun":"F","p":318},{"n":"Jack-in-the-Pulpit","bot":"Arisaema triphyllum","h":"1'-2'","c":"green","b":"Apr-May","m":"M,W","s":"S,L,C","sun":"P,S","p":318},{"n":"White Woodland Milkweed","bot":"Asclepias exaltata","h":"4'-5'","c":"white","b":"Jul-Aug","m":"D,M","s":"S,L","sun":"F,P,S","p":319},{"n":"Red Milkweed","bot":"Asclepias incarnata","h":"3'-5'","c":"pink-red","b":"Jun-Jul","m":"W","s":"S,L,C","sun":"F","p":319},{"n":"Prairie Milkweed","bot":"Asclepias sullivantii","h":"3'-5'","c":"pink","b":"Jul-Aug","m":"M","s":"S,L,C","sun":"F","p":319},{"n":"Common Milkweed","bot":"Asclepias syriaca","h":"2'-4'","c":"lavender","b":"Jun-Aug","m":"D,M","s":"S,L,C","sun":"F","p":319},{"n":"Butterflyweed","bot":"Asclepias tuberosa","h":"2'-3'","c":"orange","b":"Jun-Aug","m":"D","s":"S,L","sun":"F","p":319},{"n":"Butterflyweed for Clay","bot":"Asclepias tuberosa, var. clay","h":"2'-3'","c":"orange","b":"Jun-Aug","m":"M","s":"L,C","sun":"F","p":319},{"n":"Sky Blue Aster","bot":"Aster azureus","h":"2'-3'","c":"blue","b":"Aug-Oct","m":"D,M","s":"S,L","sun":"F,P","p":319},{"n":"Heath Aster","bot":"Aster ericoides","h":"1'-3'","c":"white","b":"Aug-Oct","m":"D,M","s":"S,L,C","sun":"F","p":319},{"n":"Smooth Aster","bot":"Aster laevis","h":"2'-4'","c":"blue","b":"Aug-Oct","m":"D,M","s":"S,L","sun":"F","p":319},{"n":"New England Aster","bot":"Aster novae-angliae","h":"3'-6'","c":"pink-purple-blue","b":"Aug-Oct","m":"M,W","s":"S,L,C","sun":"F,P","p":319},{"n":"White Aster","bot":"Aster ptarmicoides","h":"1'-2'","c":"white","b":"Aug-Sep","m":"D","s":"S","sun":"F","p":319},{"n":"Silky Aster","bot":"Aster sericeus","h":"1'-2'","c":"purple","b":"Sep-Oct","m":"D","s":"S","sun":"F","p":319},{"n":"Canada Milk Vetch","bot":"Astragalus canadensis","h":"2'-3'","c":"yellow","b":"Jul-Aug","m":"D,M","s":"S,L","sun":"F","p":319},{"n":"Blue False Indigo","bot":"Baptisia australis","h":"2'-5'","c":"blue","b":"Jun-Jul","m":"M","s":"S,L,C","sun":"F,P","p":319},{"n":"White False Indigo","bot":"Baptisia leucantha","h":"3'-5'","c":"white","b":"May-Jun","m":"D,M","s":"S,L,C","sun":"F","p":319},{"n":"Cream False Indigo","bot":"Baptisia leucophaea","h":"1'-2'","c":"cream","b":"May-Jun","m":"D,M","s":"S,L","sun":"F","p":319},{"n":"Pale Indian Plantain","bot":"Cacalia atriplicifolia","h":"4'-8'","c":"white","b":"Jul-Sep","m":"W","s":"S,L","sun":"F,P","p":319},{"n":"Sweet Indian Plantain","bot":"Cacalia suaveolens","h":"3'-6'","c":"white","b":"Jul-Sep","m":"M,W","s":"S,L","sun":"F","p":319},{"n":"Poppy Mallow","bot":"Callirhoe triangulata","h":"1'-2'","c":"magenta","b":"Jul-Aug","m":"D","s":"S","sun":"F","p":319},{"n":"Marsh Marigold","bot":"Caltha palustris","h":"1'-2'","c":"yellow","b":"Jul-Aug","m":"W","s":"S,L","sun":"F,P","p":319},{"n":"Harebell","bot":"Campanula rotundifolia","h":"1'-2'","c":"blue","b":"Jun-Sep","m":"D,M","s":"S","sun":"F,P","p":319},{"n":"Partridge Pea","bot":"Cassia fasciculata","h":"1'-2'","c":"yellow","b":"Jun-Aug","m":"D","s":"S,L","sun":"F,P","p":319},{"n":"Wild Senna","bot":"Cassia hebecarpa","h":"4'-6'","c":"yellow","b":"Jul-Aug","m":"M,W","s":"S,L,C","sun":"F","p":319},{"n":"New Jersey Tea","bot":"Ceanothus americanus","h":"2'-3'","c":"white","b":"Jul-Aug","m":"D,M","s":"S,L","sun":"F,P","p":320},{"n":"White Turtlehead","bot":"Chelone glabra","h":"2'-4'","c":"white","b":"Aug-Sep","m":"W","s":"S,L","sun":"F,P","p":320},{"n":"Lanceleaf Coreopsis","bot":"Coreopsis lanceolata","h":"1'-2'","c":"yellow","b":"Jun-Aug","m":"D,M","s":"S,L","sun":"F","p":320},{"n":"Stiff Coreopsis","bot":"Coreopsis palmata","h":"2'-3'","c":"yellow","b":"Jun-Aug","m":"D,M","s":"S,L","sun":"F","p":320},{"n":"Canada Tick-Trefoil","bot":"Desmodium canadense","h":"2'-5'","c":"purple","b":"Jul-Aug","m":"M","s":"S,L,C","sun":"F","p":320},{"n":"Shootingstar","bot":"Dodecatheon meadia","h":"1'-2'","c":"white-pink","b":"May-Jun","m":"M","s":"S,L","sun":"F,P","p":320},{"n":"Narrow Leaf Purple Coneflower","bot":"Echinacea angustifolia","h":"1'-3'","c":"purple","b":"Jun-Jul","m":"D,M","s":"S,L","sun":"F","p":320},{"n":"Pale Purple Coneflower","bot":"Echinacea pallida","h":"2'-5'","c":"purple","b":"Jun-Jul","m":"D,M","s":"S,L,C","sun":"F","p":320},{"n":"Purple Coneflower","bot":"Echinacea purpurea","h":"3'-4'","c":"purple","b":"Jul-Sep","m":"D,M","s":"S,L,C","sun":"F,P","p":320},{"n":"Fireweed","bot":"Epilobium angustifolium","h":"2'-6'","c":"pink","b":"Jul-Aug","m":"M,W","s":"S,L","sun":"F","p":320},{"n":"Rattlesnake Master","bot":"Eryngium yuccifolium","h":"3'-5'","c":"white","b":"Jun-Aug","m":"D,M","s":"S,L,C","sun":"F","p":320},{"n":"Joe Pye Weed","bot":"Eupatorium maculatum","h":"4'-6'","c":"pink","b":"Jul-Aug","m":"W","s":"S,L,C","sun":"F","p":320},{"n":"Boneset","bot":"Eupatorium perfoliatum","h":"3'-4'","c":"white","b":"Aug-Sep","m":"M,W","s":"S,L,C","sun":"F","p":320},{"n":"Sweet Joe Pye Weed","bot":"Eupatorium purpureum","h":"3'-6'","c":"purple","b":"Jul-Aug","m":"M","s":"S,L,C","sun":"F,P","p":320},{"n":"Flowering Spurge","bot":"Euphorbia corollata","h":"2'-4'","c":"white","b":"Jul-Aug","m":"D","s":"S,L","sun":"F","p":320},{"n":"Queen of the Prairie","bot":"Filipendula rubra","h":"4'-5'","c":"pink","b":"Jun-Jul","m":"M,W","s":"S,L,C","sun":"F","p":320},{"n":"Bottle Gentian","bot":"Gentiana andrewsii","h":"1'-2'","c":"blue","b":"Aug-Sep","m":"W","s":"S,L,C","sun":"F,P","p":320},{"n":"Wild Geranium","bot":"Geranium maculatum","h":"1'-2'","c":"lavender","b":"Apr-Jul","m":"M","s":"S,L","sun":"F,P,S","p":320},{"n":"Prairie Smoke","bot":"Geum triflorum","h":"1'","c":"red","b":"Jul-Aug","m":"D,M","s":"S,L","sun":"F","p":320},{"n":"Sawtooth Sunflower","bot":"Helianthus grosseserratus","h":"6'-12'","c":"yellow","b":"Aug-Sep","m":"M,W","s":"L,C","sun":"F","p":320},{"n":"Showy Sunflower","bot":"Helianthus laetiflorus","h":"3'-5'","c":"yellow","b":"Aug-Sep","m":"D,M","s":"S,L,C","sun":"F","p":320},{"n":"Downy Sunflower","bot":"Helianthus mollis","h":"4'-6'","c":"yellow","b":"Aug-Sep","m":"D","s":"S","sun":"F","p":321},{"n":"Western Sunflower","bot":"Helianthus occidentalis","h":"2'-5'","c":"yellow","b":"Aug-Oct","m":"D,M","s":"S,L","sun":"F,P","p":321},{"n":"Woodland Sunflower","bot":"Helianthus strumosus","h":"2'-5'","c":"yellow","b":"Aug-Oct","m":"D,M","s":"S,L","sun":"F,P","p":321},{"n":"Ox Eye Sunflower","bot":"Heliopsis helianthoides","h":"2'-5'","c":"yellow","b":"Jun-Sep","m":"M,W","s":"S,L,C","sun":"F,P","p":321},{"n":"Alum Root","bot":"Heuchera richardsonii","h":"2'-3'","c":"green/orange","b":"May-Jun","m":"D,M","s":"S,L","sun":"F,P","p":321},{"n":"Wild Iris","bot":"Iris shrevei","h":"2'-3'","c":"blue","b":"May-Jun","m":"W","s":"S,L,C","sun":"F,P","p":321},{"n":"Blue Flag Iris","bot":"Iris versicolor","h":"2'-3'","c":"blue","b":"Jun-Jul","m":"W","s":"S,L,C","sun":"F,P","p":321},{"n":"False Boneset","bot":"Kuhnia eupatorioides","h":"1'-3'","c":"white","b":"Aug-Sep","m":"D,M","s":"S,L","sun":"F","p":321},{"n":"Roundheaded Bushclover","bot":"Lespedeza capitata","h":"2'-4'","c":"white","b":"Aug-Sep","m":"D,M","s":"S,L","sun":"F","p":321},{"n":"Rough Blazingstar","bot":"Liatris aspera","h":"2'-3'","c":"purple-pink","b":"Aug-Sep","m":"D,M","s":"S,L","sun":"F","p":321},{"n":"Meadow Blazingstar","bot":"Liatris ligulistylus","h":"3'-5'","c":"purple","b":"Aug-Sep","m":"M","s":"L","sun":"F","p":321},{"n":"Dotted Blazingstar","bot":"Liatris punctata","h":"1'-2'","c":"rose","b":"Jul-Sep","m":"D","s":"S,L","sun":"F","p":321},{"n":"Prairie Blazingstar","bot":"Liatris pycnostachya","h":"2'-4'","c":"purple-pink","b":"Jul-Aug","m":"M,W","s":"S,L,C","sun":"F","p":321},{"n":"Dense Blazingstar","bot":"Liatris spicata","h":"3'-6'","c":"pink-purple","b":"Aug-Sep","m":"M,W","s":"S,L,C","sun":"F","p":321},{"n":"Turks Cap Lily","bot":"Lilium superbum","h":"3'-5'","c":"orange","b":"Jul-Aug","m":"W","s":"S,L,C","sun":"F,P","p":321},{"n":"Cardinal Flower","bot":"Lobelia cardinalis","h":"2'-5'","c":"red","b":"Jul-Sep","m":"W","s":"S,L","sun":"F,P","p":321},{"n":"Great Blue Lobelia","bot":"Lobelia siphilitica","h":"1'-4'","c":"blue","b":"Jul-Sep","m":"M,W","s":"S,L,C","sun":"F,P","p":321},{"n":"Lupine","bot":"Lupinus perennis","h":"1'-2'","c":"blue","b":"May-Jun","m":"D","s":"S","sun":"F,P","p":321},{"n":"Bergamot","bot":"Monarda fistulosa","h":"2'-5'","c":"lavender","b":"Jul-Sep","m":"D,M","s":"S,L,C","sun":"F,P","p":321},{"n":"Dotted Mint","bot":"Monarda punctata","h":"1'-2'","c":"lavender","b":"Jul-Sep","m":"D","s":"S","sun":"F","p":321},{"n":"Evening Primrose","bot":"Oenothera biennis","h":"3'-6'","c":"yellow","b":"Jul-Aug","m":"D,M","s":"S,L","sun":"F","p":321},{"n":"Wild Quinine","bot":"Parthenium integrifolium","h":"2'-5'","c":"white","b":"Jun-Sep","m":"D,M","s":"S,L,C","sun":"F","p":321},{"n":"Smooth Penstemon","bot":"Penstemon digitalis","h":"2'-3'","c":"white","b":"Jun-Jul","m":"M","s":"S,L,C","sun":"P,S","p":321},{"n":"Slender Penstemon","bot":"Penstemon gracilis","h":"1'-2'","c":"lavender","b":"May-Jun","m":"D","s":"S","sun":"F,P","p":321},{"n":"Beardtongue","bot":"Penstemon grandiflorus","h":"2'-4'","c":"lavender","b":"May-Jun","m":"D","s":"S","sun":"F","p":322},{"n":"Purple Prairie Clover","bot":"Petalostemum purpureum","h":"1'-3'","c":"purple","b":"Jul-Aug","m":"D,M","s":"S,L,C","sun":"F","p":322},{"n":"False Dragonhead","bot":"Physostegia virginiana","h":"1'-2'","c":"pink","b":"Aug-Sep","m":"M,W","s":"S,L","sun":"F","p":322},{"n":"Jacob's Ladder","bot":"Polemonium reptans","h":"1/2'-2'","c":"blue","b":"Apr-Jun","m":"M","s":"S,L","sun":"P,S","p":322},{"n":"Great Solomon's Seal","bot":"Polygonatum canaliculatum","h":"1'-4'","c":"green","b":"May-Jun","m":"D,M","s":"S,L,C","sun":"F,P","p":322},{"n":"Prairie Buttercup","bot":"Ranunculus rhomboideus","h":"1/2'","c":"yellow","b":"Jul-Aug","m":"D","s":"S","sun":"F","p":322},{"n":"Yellow Coneflower","bot":"Ratibida pinnata","h":"3'-6'","c":"yellow","b":"Jul-Sep","m":"D,M,W","s":"S,L,C","sun":"F","p":322},{"n":"Meadow Rose","bot":"Rosa blanda","h":"3'-4'","c":"pink-white","b":"Jun-Jul","m":"M","s":"S,L,C","sun":"F","p":322},{"n":"Pasture Rose","bot":"Rosa carolina","h":"1'","c":"pink","b":"Jun-Jul","m":"D,M","s":"S,L","sun":"F","p":322},{"n":"Black-Eyed Susan","bot":"Rudbeckia hirta","h":"1'-3'","c":"yellow","b":"Jul-Sep","m":"D,M","s":"S,L,C","sun":"F,P","p":322},{"n":"Green Headed Coneflower","bot":"Rudbeckia laciniata","h":"3'-6'","c":"yellow","b":"Aug-Sep","m":"W","s":"S,L,C","sun":"F,P","p":322},{"n":"Sweet Black-eyed Susan","bot":"Rudbeckia subtomentosa","h":"3'-6'","c":"yellow","b":"Aug-Oct","m":"M,W","s":"S,L,C","sun":"F,P","p":322},{"n":"Branched Coneflower","bot":"Rudbeckia triloba","h":"2'-5'","c":"yellow","b":"Jul-Oct","m":"M,W","s":"S,L","sun":"F","p":322},{"n":"Wild Petunia","bot":"Ruellia humilis","h":"1'-2'","c":"violet","b":"Jun-Aug","m":"D,M","s":"S,L","sun":"F","p":322},{"n":"Royal Catchfly","bot":"Silene regia","h":"2'-4'","c":"red","b":"Jul-Aug","m":"M","s":"L","sun":"F","p":322},{"n":"Rosinweed","bot":"Silphium integrifolium","h":"2'-6'","c":"yellow","b":"Jul-Sep","m":"M,W","s":"S,L,C","sun":"F","p":322},{"n":"Compassplant","bot":"Silphium laciniatum","h":"3'-10'","c":"yellow","b":"Jun-Sep","m":"D,M","s":"S,L,C","sun":"F","p":322},{"n":"Cupplant","bot":"Silphium perfoliatum","h":"3'-8'","c":"yellow","b":"Jul-Sep","m":"M,W","s":"S,L,C","sun":"F,P","p":322},{"n":"Prairie Dock","bot":"Silphium terebinthinaceum","h":"3'-10'","c":"yellow","b":"Jul-Sep","m":"M,W","s":"S,L,C","sun":"F","p":322},{"n":"Blue Eyed Grass","bot":"Sisyrinchium campestre","h":"<1'","c":"blue-white","b":"Jun","m":"D,M","s":"S,L","sun":"F,P","p":322},{"n":"Mountain Blue Eyed Grass","bot":"Sisyrinchium montanum","h":"<1'","c":"blue","b":"Jun","m":"M","s":"L,C","sun":"F","p":322},{"n":"Sweet-Scented Goldenrod","bot":"Solidago jejunifolia","h":"1'-2'","c":"yellow","b":"Aug-Sep","m":"D","s":"S","sun":"F","p":322},{"n":"Grey Goldenrod","bot":"Solidago nemoralis","h":"1'-2'","c":"yellow","b":"Aug-Oct","m":"D","s":"S,C","sun":"F","p":322},{"n":"Ohio Goldenrod","bot":"Solidago ohioensis","h":"3'","c":"yellow","b":"Jul-Sep","m":"M,W","s":"S,L,C","sun":"F","p":323},{"n":"Stiff Goldenrod","bot":"Solidago rigida","h":"2'-5'","c":"yellow","b":"Aug-Oct","m":"D,M","s":"S,L,C","sun":"F","p":323},{"n":"Showy Goldenrod","bot":"Solidago speciosa","h":"1'-3'","c":"yellow","b":"Jul-Oct","m":"D,M","s":"S,L","sun":"F","p":323},{"n":"Fame Flower","bot":"Talinum rugospermum","h":"1/2'","c":"pink","b":"Jun-Aug","m":"D","s":"S","sun":"F","p":323},{"n":"Meadowrue","bot":"Thalictrum dasycarpum","h":"3'-6'","c":"white","b":"Jun-Jul","m":"W","s":"S,L,C","sun":"F,P","p":323},{"n":"Spiderwort","bot":"Tradescantia ohiensis","h":"2'-4'","c":"blue","b":"May-Jun","m":"D,M","s":"S,L","sun":"F,P","p":323},{"n":"White Ohio Spiderwort","bot":"Tradescantia ohiensis alba","h":"2'-4'","c":"white","b":"May-Jun","m":"D,M","s":"S,L","sun":"F,P","p":323},{"n":"Blue Vervain","bot":"Verbena hastata","h":"2'-5'","c":"blue","b":"Jul-Sep","m":"M,W","s":"S,L,C","sun":"F","p":323},{"n":"Hoary Vervain","bot":"Verbena stricta","h":"2'-4'","c":"blue","b":"Jun-Sep","m":"D,M","s":"S,L","sun":"F","p":323},{"n":"Ironweed","bot":"Vernonia fasciculata","h":"4'-6'","c":"purple","b":"Jul-Sep","m":"W","s":"S,L,C","sun":"F","p":323},{"n":"Culver's Root","bot":"Veronicastrum virginicum","h":"3'-6'","c":"white","b":"Jul-Aug","m":"M,W","s":"S,L,C","sun":"F,P","p":323},{"n":"Birdsfoot Violet","bot":"Viola pedata","h":"<1'","c":"blue-purple","b":"Apr-Jun","m":"D,M","s":"S,L","sun":"F,P","p":323},{"n":"Heartleaf Golden Alexanders","bot":"Zizia aptera","h":"1'-2'","c":"yellow","b":"May-Jun","m":"M","s":"S,L","sun":"F","p":323},{"n":"Golden Alexanders","bot":"Zizia aurea","h":"1'-2'","c":"yellow","b":"May-Jun","m":"M,W","s":"S,L,C","sun":"F","p":323}]};
+
+// ---------- helpers ----------
+const $ = id => document.getElementById(id);
+const rnd = n => Math.floor(Math.random() * n);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+function fnv(str) { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
+const ALPH = "ACDEFGHJKMNPQRTUVWXY34679";
+const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, "");
+function makeCode(name, per, pct, date, mins) {
+  let h = fnv(SALT + "|" + norm(name) + "|" + norm(per) + "|" + Number(pct) + "|" + date + "|" + Number(mins));
+  let out = "";
+  for (let i = 0; i < 6; i++) { out += ALPH[h % ALPH.length]; h = Math.floor(h / ALPH.length) ^ fnv(out + SALT) ; h >>>= 0; }
+  return out.slice(0, 3) + "-" + out.slice(3);
+}
+function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function distinctOthers(correct, pool, n) { const seen = new Set([correct]); const out = []; for (const v of shuffle(pool)) { if (!seen.has(v)) { seen.add(v); out.push(v); } if (out.length === n) break; } return out; }
+
+// ---------- Round 1: Plant Desk (fact bank, several wordings) ----------
+const BANK = [
+  { q: ["Plants that live from year to year and do not need replanting are called:", "Which word means a plant that comes back each year without replanting?"], a: "perennials", d: ["annuals", "biennials", "bulbs"], why: "Perennials live from year to year and do not require replanting.", ref: "p. 307" },
+  { q: ["A nonwoody plant that dies back to the ground each winter and regrows in spring is a:", "Hosta, hollyhocks, and daylilies are examples of:"], a: "herbaceous perennial", d: ["hardy perennial", "woody annual", "rhizome"], why: "A herbaceous perennial is nonwoody and dies back to the ground each winter.", ref: "p. 307" },
+  { q: ["Flowering trees are called:"], a: "hardy perennials", d: ["herbaceous perennials", "biennials", "accents"], why: "The text calls flowering trees hardy perennials.", ref: "p. 307" },
+  { q: ["New cultivars of perennials have been ______ to give more colors, forms, textures, fragrances, and hardiness levels.", "Breeding perennials for new colors and hardiness means they were:"], a: "hybridized", d: ["massed", "mulched", "transplanted"], why: "With new cultivars, perennials have been hybridized.", ref: "p. 307" },
+  { q: ["Planting a variety in groups of three, five, nine, or more is called:", "To ______ plants means to group them in threes, fives, or nines."], a: "mass", d: ["accent", "edge", "divide"], why: "It is important to mass varieties in groups of three, five, nine, or more.", ref: "p. 308" },
+  { q: ["Which group selects a \"Perennial Plant of the Year\"?"], a: "Perennial Plant Association", d: ["National FFA", "USDA", "Extension Service"], why: "The Perennial Plant Association selects a Perennial Plant of the Year.", ref: "p. 307" },
+  { q: ["How wide should an island perennial bed be so you can work it from all sides?", "An island bed should be about ______ wide."], a: "5 feet", d: ["2 feet", "9 feet", "15 feet"], why: "The bed should be 5 feet wide so you can work it without walking on it.", ref: "p. 307" },
+  { q: ["In an island bed, where do the tallest plants go?"], a: "In the center", d: ["On the outer edge", "On the north side only", "Anywhere"], why: "Taller plants go in the center and the shortest on the outer edge.", ref: "p. 307" },
+  { q: ["Why is a 5-foot-wide bed good for the soil?"], a: "Less soil compaction, since you don't walk on it", d: ["It holds more mulch", "It gets more sun", "It needs less fertilizer"], why: "Working from all sides without walking on the bed reduces soil compaction.", ref: "pp. 307-308" },
+  { q: ["If a walkway runs through the bed, how wide may the garden be?"], a: "9 to 15 feet", d: ["2 to 3 feet", "5 feet", "30 to 70 feet"], why: "With a walkway the garden may be 9 to 15 feet wide.", ref: "p. 308" },
+  { q: ["Adding organic matter improves the soil chemical reaction called:"], a: "cation exchange capacity", d: ["photosynthesis", "soil compaction", "germination"], why: "Organic matter improves the cation exchange capacity.", ref: "p. 308" },
+  { q: ["The spacing rule says to plant perennials at ______ of the mature height.", "What fraction of mature height is used for spacing perennials?"], a: "one-half", d: ["one-quarter", "twice", "the same as"], why: "Perennials are planted at one-half the mature height.", ref: "p. 308" },
+  { q: ["O.C. on a plan stands for:"], a: "on center", d: ["organic compost", "open container", "over clay"], why: "18 inches O.C. means on center.", ref: "p. 308" },
+  { q: ["Gertrude Jekyll arranged her borders along which axis?"], a: "North-south", d: ["East-west", "Diagonal", "Circular"], why: "She arranged the garden on a north-south axis.", ref: "p. 308" },
+  { q: ["In a Jekyll border, which colors go on the north end?", "Blue flowers in a Jekyll border are called:"], a: "Blue (cool colors)", d: ["Red (warm colors)", "Yellow (warm colors)", "White"], why: "Blue flowers (cool colors) go on the north; yellow and red (warm) move south.", ref: "p. 308" },
+  { q: ["How deep should organic matter and fertilizer be dug into a perennial bed?"], a: "At least 1 foot", d: ["1 inch", "3 inches", "3 feet"], why: "Dig fertilizer and organic matter to a depth of at least 1 foot.", ref: "p. 315" },
+  { q: ["How often should a soil test be done on each perennial bed?"], a: "Every year", d: ["Every 5 years", "Only once", "Never"], why: "A soil test analysis should be performed on each bed every year.", ref: "p. 315" },
+  { q: ["How thick a layer of mulch goes on a perennial bed, and when?", "When should mulch be applied to a new perennial bed?"], a: "2 to 3 inches, before planting", d: ["6 inches, after planting", "1 inch, in winter only", "No mulch is used"], why: "Apply a 2- to 3-inch layer of mulch before the bed is planted.", ref: "p. 315" },
+  { q: ["Some mulches can change the soil's:"], a: "pH", d: ["color", "texture class", "elevation"], why: "Some mulches influence the pH level of the soil.", ref: "p. 315" },
+  { q: ["The point where the top connects to the roots and where new growth comes from is the:"], a: "crown", d: ["rhizome", "tendril", "holdfast"], why: "The crown is where the top connects to the roots and new growth comes from.", ref: "p. 315" },
+  { q: ["A perennial that flowers in the spring should be divided in the:"], a: "fall", d: ["spring", "summer", "winter"], why: "Spring bloomers are divided and replanted in the fall.", ref: "p. 315" },
+  { q: ["A perennial that flowers in the fall should be divided in the:"], a: "spring", d: ["fall", "summer", "winter"], why: "Fall bloomers are divided and transplanted in the spring.", ref: "p. 315" },
+  { q: ["How long before transplanting should perennial seeds be started indoors?"], a: "6 to 8 weeks", d: ["1 to 2 weeks", "3 to 4 months", "1 year"], why: "Start perennial seeds indoors 6 to 8 weeks before transplanting.", ref: "p. 315" },
+  { q: ["Ornamental grasses are excellent for use as ______ and make attractive edging."], a: "accents", d: ["vines", "bulbs", "biennials"], why: "Ornamental grasses are excellent for use as accents.", ref: "p. 316" },
+  { q: ["Most ornamental grasses prefer a location that is:"], a: "hot, sunny, and well-drained", d: ["cool, shady, and wet", "shady and clay", "indoors"], why: "Most grasses prefer a hot, sunny, well-drained location.", ref: "p. 316" },
+  { q: ["English ivy climbs by using:", "Vines that grip a wall with small rootlike parts use:"], a: "holdfasts", d: ["twining", "tendrils", "rhizomes"], why: "English ivy forms small, rootlike holdfasts.", ref: "p. 316" },
+  { q: ["Clematis and grape climb by:"], a: "tendrils", d: ["holdfasts", "twining stems only", "rhizomes"], why: "Clematis and grape climb by winding tendrils or leaflike appendages.", ref: "p. 316" },
+  { q: ["Bittersweet and wisteria climb by:"], a: "twining", d: ["holdfasts", "tendrils", "suckers"], why: "Bittersweet and wisteria climb by twining.", ref: "p. 316" },
+  { q: ["A deciduous vine on a wall does what in summer?"], a: "Cools the wall", d: ["Heats the wall", "Dries the soil", "Blocks rain"], why: "It creates a cooling effect in summer and lets the sun warm the wall in winter.", ref: "p. 316" },
+  { q: ["Bamboo has what kind of root system?"], a: "rhizome", d: ["taproot", "bulb", "holdfast"], why: "Bamboo has a rhizome root system.", ref: "p. 317" },
+  { q: ["Bamboo can range in height from:"], a: "6 inches to 120 feet", d: ["1 to 3 feet", "6 to 12 feet", "30 to 70 inches"], why: "Bamboo can range from 6 inches to 120 feet.", ref: "p. 317" },
+  { q: ["Which bamboo grows 30 to 70 feet tall?"], a: "Phyllostachys", d: ["Arundinaria pygmaea", "Arundinaria variegata", "Festuca glauca"], why: "Phyllostachys grows tall, 30 to 70 feet.", ref: "p. 317" },
+  { q: ["How can you keep bamboo from spreading into the rest of the landscape?"], a: "Plant it in a container", d: ["Mow it monthly", "Plant it in shade", "Add lime"], why: "Planting bamboo in a container keeps it from spreading.", ref: "p. 317" },
+  { q: ["Prairie gardens are made mostly of:"], a: "native annuals, biennials, and perennials", d: ["tropical houseplants", "only ornamental grasses", "imported bulbs"], why: "Many prairie plants are native annuals, biennials, and perennials.", ref: "p. 317" },
+  { q: ["What is the most economical way to plant a prairie garden?"], a: "Seeding, like seeding a lawn", d: ["Buying full-grown plants", "Sod", "Cuttings"], why: "The most economical way to plant is by seeding just as if seeding a lawn.", ref: "p. 318" },
+  { q: ["Small prairie seeds may be mixed with ______ to space them properly."], a: "sand", d: ["fertilizer", "lime", "mulch"], why: "Small seeds may need to be mixed in sand.", ref: "p. 318" },
+  { q: ["How are prairie gardens maintained?"], a: "Hand pull weeds in summer, mow in fall", d: ["Spray weekly, mow weekly", "Never touch them", "Till every spring"], why: "Hand pull weeds during summer and mow in fall to remove old tops.", ref: "p. 318" },
+];
+
+function round1() {
+  return shuffle(BANK).slice(0, 8).map(b => ({ type: "mc", topic: "Key facts", text: pick(b.q), correct: b.a, options: shuffle([b.a, ...b.d]), why: b.why, ref: b.ref }));
+}
+
+// ---------- Round 2: Chart Detective ----------
+function round2() {
+  const qs = [];
+  const f2 = DATA.f262, f5 = DATA.f265, f6 = DATA.f266, f7 = DATA.f267;
+  const gens = [
+    () => { const r = pick(f2.filter(r => r.sp)); const o = distinctOthers(r.sp, f2.map(x => x.sp).filter(Boolean), 3); return { text: `Figure 26-2: what is the SPACING for ${r.n}?`, correct: r.sp, options: shuffle([r.sp, ...o]), why: `${r.n}: spacing ${r.sp}, height ${r.h}.`, ref: `Fig. 26-2, p. ${r.p}`, topic: "Fig. 26-2 flowering perennials" }; },
+    () => { const r = pick(f2); const o = distinctOthers(r.h, f2.map(x => x.h), 3); return { text: `Figure 26-2: how TALL does ${r.n} grow?`, correct: r.h, options: shuffle([r.h, ...o]), why: `${r.n}: height ${r.h}, spacing ${r.sp}.`, ref: `Fig. 26-2, p. ${r.p}`, topic: "Fig. 26-2 flowering perennials" }; },
+    () => { const r = pick(f2); const o = distinctOthers(r.ex, f2.map(x => x.ex), 3); return { text: `Figure 26-2: what EXPOSURE does ${r.n} need?`, correct: r.ex, options: shuffle([r.ex, ...o]), why: `${r.n} is listed as "${r.ex}."`, ref: `Fig. 26-2, p. ${r.p}`, topic: "Fig. 26-2 flowering perennials" }; },
+    () => { const r = pick(f2.filter(x => x.clue)); const o = distinctOthers(r.n, f2.map(x => x.n), 3); return { text: `Figure 26-2 remarks: "${r.clue}" Which perennial is it?`, correct: r.n, options: shuffle([r.n, ...o]), why: `Remarks for ${r.n}: ${r.rm}`, ref: `Fig. 26-2, p. ${r.p}`, topic: "Fig. 26-2 flowering perennials" }; },
+    () => { const r = pick(f5); const o = distinctOthers(r.n, f5.map(x => x.n), 3); return { text: `Figure 26-5: which ornamental grass is described as "${r.rm}" (height ${r.h})?`, correct: r.n, options: shuffle([r.n, ...o]), why: `${r.n}: ${r.ex}, ${r.h} tall, best use ${r.use}. ${r.rm}`, ref: "Fig. 26-5, p. 316", topic: "Fig. 26-5 ornamental grasses" }; },
+    () => { const r = pick(f5); const o = distinctOthers(r.h, f5.map(x => x.h), 3); return { text: `Figure 26-5: how tall does ${r.n} grow?`, correct: r.h, options: shuffle([r.h, ...o]), why: `${r.n}: height ${r.h}, spacing ${r.sp}.`, ref: "Fig. 26-5, p. 316", topic: "Fig. 26-5 ornamental grasses" }; },
+    () => { const r = pick(f6); const c = pick(r.clues); const o = distinctOthers(r.n, f6.map(x => x.n), 3); return { text: `Figure 26-6: which vine ${c}?`, correct: r.n, options: shuffle([r.n, ...o]), why: r.rm, ref: "Fig. 26-6, p. 317", topic: "Fig. 26-6 vines" }; },
+    () => { const r = pick(f7); const o = distinctOthers(r.b, f7.map(x => x.b), 3); return { text: `Figure 26-7: when does ${r.n} (${r.bot}) bloom?`, correct: r.b, options: shuffle([r.b, ...o]), why: `${r.n}: ${r.h}, ${r.c}, blooms ${r.b}, moisture ${r.m}, soil ${r.s}.`, ref: `Fig. 26-7, p. ${r.p}`, topic: "Fig. 26-7 wildflowers" }; },
+    () => { const r = pick(f7); const o = distinctOthers(r.m, f7.map(x => x.m), 3); return { text: `Figure 26-7: what MOISTURE code is listed for ${r.n}? (D dry, M medium, W wet)`, correct: r.m, options: shuffle([r.m, ...o]), why: `${r.n}: moisture ${r.m}, soil ${r.s}.`, ref: `Fig. 26-7, p. ${r.p}`, topic: "Fig. 26-7 wildflowers" }; },
+    () => { const r = pick(f7); const o = distinctOthers(r.bot, f7.map(x => x.bot), 3); return { text: `Figure 26-7: what is the botanical name of ${r.n}?`, correct: r.bot, options: shuffle([r.bot, ...o]), why: `${r.n} is ${r.bot}.`, ref: `Fig. 26-7, p. ${r.p}`, topic: "Fig. 26-7 wildflowers" }; },
+  ];
+  // two from each family-ish, 8 total, no duplicate question text
+  const order = shuffle([0, 1, 2, 3, 4, 5, 6, 6, 7, 8, 9]).slice(0, 8);
+  const seen = new Set();
+  for (const g of order) { let q, tries = 0; do { q = gens[g](); tries++; } while (seen.has(q.text) && tries < 20); seen.add(q.text); q.type = "mc"; qs.push(q); }
+  return qs;
+}
+
+// ---------- Round 3: Crew Math ----------
+function round3() {
+  const types = [
+    () => { const ft = pick([2, 3, 4, 5, 6]); return { text: `A perennial grows ${ft} feet tall. Using the spacing rule, how many inches apart (O.C.) should you plant it?`, ans: ft * 12 / 2, unit: "inches", why: `${ft} ft = ${ft * 12} in. One-half of that is ${ft * 6} in.`, ref: "p. 308" }; },
+    () => { const r = pick(DATA.f262.filter(x => /^\d+"$/.test(x.h))); const h = parseInt(r.h); return { text: `${r.n} grows ${r.h} tall (Fig. 26-2). Using the half-height spacing rule, how many inches apart should you plant it?`, ans: h / 2, unit: "inches", why: `One-half of ${h} in. is ${h / 2} in. (The chart's own spacing column may differ; this question uses the p. 308 rule.)`, ref: "p. 308; Fig. 26-2" }; },
+    () => { const w = pick([4, 5, 10]), l = pick([10, 15, 20, 25, 30]); const a = w * l; return { text: `A bed is ${w} ft by ${l} ft. How many pounds of 5-10-10 do you need at 2 lb per 100 sq ft?`, ans: +(a / 100 * 2).toFixed(2), unit: "lb", why: `${w} x ${l} = ${a} sq ft. ${a} / 100 x 2 = ${+(a / 100 * 2).toFixed(2)} lb.`, ref: "p. 315" }; },
+    () => { const w = pick([4, 5, 10]), l = pick([10, 20, 30, 40]); const a = w * l; return { text: `A bed is ${w} ft by ${l} ft. How many pounds of bone meal do you need at 3 lb per 100 sq ft?`, ans: +(a / 100 * 3).toFixed(2), unit: "lb", why: `${w} x ${l} = ${a} sq ft. ${a} / 100 x 3 = ${+(a / 100 * 3).toFixed(2)} lb.`, ref: "p. 315" }; },
+    () => { const w = pick([5, 10]), l = pick([10, 20, 30, 50]); const a = w * l; return { text: `A bed is ${w} ft by ${l} ft. How many pounds of 14-14-14 time-release fertilizer at 2 lb per 100 sq ft?`, ans: +(a / 100 * 2).toFixed(2), unit: "lb", why: `${a} sq ft / 100 x 2 = ${+(a / 100 * 2).toFixed(2)} lb.`, ref: "p. 315" }; },
+    () => { const [sp, len] = pick([[12, 10], [12, 15], [18, 12], [18, 18], [24, 16], [24, 20], [18, 24]]); return { text: `You plant one row down a ${len}-foot border with plants ${sp} inches O.C. Divide the row length by the spacing. How many plants?`, ans: len * 12 / sp, unit: "plants", why: `${len} ft = ${len * 12} in. ${len * 12} / ${sp} = ${len * 12 / sp} plants.`, ref: "p. 308" }; },
+  ];
+  return shuffle(types).slice(0, 5).map(t => Object.assign(t(), { type: "num", topic: "Spacing and fertilizer math" }));
+}
+
+// ---------- Round 4: Site Match ----------
+const MOIST = { D: "dry", M: "medium", W: "wet" }, SOIL = { S: "sand", L: "loam", C: "clay" }, SUN = { F: "full sun", P: "partial sun", S: "shade" };
+const has = (s, k) => s.split(",").includes(k);
+function round4() {
+  const f7 = DATA.f267, out = [], used = new Set();
+  while (out.length < 6) {
+    const t = pick(f7); if (used.has(t.n)) continue;
+    const m = pick(t.m.split(",")), s = pick(t.s.split(",")), su = pick(t.sun.split(","));
+    const fits = r => has(r.m, m) && has(r.s, s) && has(r.sun, su) && r.c === t.c;
+    const bad = shuffle(f7.filter(r => !fits(r) && r.n !== t.n));
+    // prefer distractors with the same color so the chart must be checked
+    const same = bad.filter(r => r.c === t.c), other = bad.filter(r => r.c !== t.c);
+    const ds = [...same.slice(0, 2), ...other].slice(0, 3);
+    if (ds.length < 3) continue;
+    used.add(t.n);
+    const reason = r => { const miss = []; if (!has(r.m, m)) miss.push(`moisture ${r.m}`); if (!has(r.s, s)) miss.push(`soil ${r.s}`); if (!has(r.sun, su)) miss.push(`sun ${r.sun.split(",").map(x => SUN[x]).join("/")}`); if (r.c !== t.c) miss.push(`color ${r.c}`); return `${r.n} does not fit (${miss.join(", ")})`; };
+    out.push({ type: "mc", topic: "Fig. 26-7 site matching", text: `A client's site is ${MOIST[m]} with ${SOIL[s]} soil in ${SUN[su]}. They want ${t.c} flowers. Which wildflower fits every need?`,
+      tags: [`Moisture: ${m}`, `Soil: ${s}`, `Sun: ${SUN[su]}`, `Color: ${t.c}`], correct: t.n, options: shuffle([t.n, ...ds.map(r => r.n)]),
+      why: `${t.n} (${t.bot}): moisture ${t.m}, soil ${t.s}, sun ${t.sun.split(",").map(x => SUN[x]).join("/")}, ${t.c}. ` + ds.map(reason).join("; ") + ".", ref: `Fig. 26-7, p. ${t.p}` });
+  }
+  return out;
+}
+
+const ROUNDS = [
+  { key: "desk", name: "Plant Desk", pay: 100, gen: round1, intro: "Answer customer questions at the front desk. Each right answer earns a $100 consultation fee.", review: "Reread pp. 307-318 and your guided notes Parts 1-11." },
+  { key: "chart", name: "Chart Detective", pay: 150, gen: round2, intro: "Pull the facts from the textbook charts. Keep your book open to Figures 26-2, 26-5, 26-6, and 26-7. $150 each.", review: "Practice reading across rows in Figs. 26-2, 26-5, 26-6, and 26-7 (pp. 309-323)." },
+  { key: "math", name: "Crew Math", pay: 200, gen: round3, intro: "Figure spacing and fertilizer for the crew. Type a number. Use a calculator if you need one. $200 each.", review: "Review the half-height spacing rule (p. 308) and fertilizer rates per 100 sq ft (p. 315)." },
+  { key: "site", name: "Site Match", pay: 150, gen: round4, intro: "Match each client's site to ONE wildflower in Figure 26-7. Every need must fit: moisture, soil, sun, and color. $150 each.", review: "Review the Fig. 26-7 codes: D/M/W moisture, S/L/C soil, and the sun symbols (pp. 318-323)." },
+];
+
+// ---------- state ----------
+let S = null;
+function show(id) { ["start", "teacher", "intro", "play", "done"].forEach(x => $(x).classList.toggle("hidden", x !== id)); window.scrollTo(0, 0); }
+function bestText() { const b = store("u26border_best"); $("best").textContent = b ? "Best score on this device: " + b : ""; }
+bestText();
+
+$("go").onclick = () => {
+  const fn = $("fn").value.trim(), ln = $("ln").value.trim(), per = $("per").value;
+  if (!fn || !ln) { $("startErr").textContent = "Type your first and last name."; return; }
+  if (!per) { $("startErr").textContent = "Choose your class period."; return; }
+  $("startErr").textContent = "";
+  S = { name: fn + " " + ln, per, start: Date.now(), r: 0, i: 0, money: 0, results: ROUNDS.map(() => ({ right: 0, total: 0 })), qs: null };
+  $("hudMoney").classList.remove("hidden");
+  startRound();
+};
+function startRound() {
+  const R = ROUNDS[S.r];
+  S.qs = R.gen(); S.i = 0;
+  $("introKicker").textContent = `Job ${S.r + 1} of ${ROUNDS.length}`;
+  $("introTitle").textContent = R.name;
+  $("introText").textContent = R.intro;
+  $("hudRound").textContent = `Job ${S.r + 1}: ${R.name}`;
+  show("intro");
+}
+$("introGo").onclick = () => { show("play"); renderQ(); };
+
+function renderQ() {
+  const R = ROUNDS[S.r], q = S.qs[S.i];
+  $("qKicker").textContent = R.name;
+  $("qCount").textContent = `Question ${S.i + 1} of ${S.qs.length}`;
+  $("bar").style.width = (S.i / S.qs.length * 100) + "%";
+  $("qText").textContent = q.text;
+  $("qTags").innerHTML = (q.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join("");
+  $("fb").className = "fb"; $("fb").innerHTML = "";
+  $("next").classList.add("hidden");
+  const opts = $("opts"); opts.innerHTML = "";
+  if (q.type === "mc") {
+    $("numBox").classList.add("hidden");
+    q.options.forEach(o => { const b = document.createElement("button"); b.className = "opt"; b.textContent = o; b.onclick = () => answer(o === q.correct, b, o); opts.appendChild(b); });
+  } else {
+    $("numBox").classList.remove("hidden"); $("numIn").value = ""; $("numIn").disabled = false; $("numGo").disabled = false; $("numIn").focus();
+  }
+}
+$("numGo").onclick = () => {
+  const q = S.qs[S.i]; const v = parseFloat($("numIn").value.replace(/,/g, ""));
+  if (isNaN(v)) { $("fb").className = "fb show bad"; $("fb").textContent = "Type a number first."; return; }
+  $("numIn").disabled = true; $("numGo").disabled = true;
+  answer(Math.abs(v - q.ans) < 0.011, null, v);
+};
+$("numIn").addEventListener("keydown", e => { if (e.key === "Enter" && !$("numGo").disabled) $("numGo").click(); });
+
+function answer(ok, btn, val) {
+  const R = ROUNDS[S.r], q = S.qs[S.i], res = S.results[S.r];
+  res.total++; if (ok) { res.right++; S.money += R.pay; }
+  $("hudMoney").textContent = "$" + S.money.toLocaleString();
+  if (q.type === "mc") [...$("opts").children].forEach(b => { b.disabled = true; if (b.textContent === q.correct) b.classList.add("right"); else if (b === btn) b.classList.add("wrong"); });
+  const fb = $("fb");
+  fb.className = "fb show " + (ok ? "good" : "bad");
+  const ansTxt = q.type === "num" ? `${q.ans} ${q.unit}` : q.correct;
+  fb.innerHTML = `<b>${ok ? "Correct! +$" + R.pay : "Not quite. Answer: " + esc(ansTxt)}</b><br>${esc(q.why)} <span class="ref">(${esc(q.ref)})</span>`;
+  $("next").classList.remove("hidden");
+  $("next").textContent = S.i + 1 < S.qs.length ? "Next" : (S.r + 1 < ROUNDS.length ? "Next job" : "See my certificate");
+  $("next").focus();
+}
+$("next").onclick = () => {
+  S.i++;
+  if (S.i < S.qs.length) return renderQ();
+  S.r++;
+  if (S.r < ROUNDS.length) return startRound();
+  finish();
+};
+
+function finish() {
+  const right = S.results.reduce((a, b) => a + b.right, 0), total = S.results.reduce((a, b) => a + b.total, 0);
+  const pct = Math.round(right / total * 100);
+  const now = new Date(); const mins = Math.max(1, Math.round((Date.now() - S.start) / 60000));
+  const date = ymd(now);
+  $("cName").textContent = S.name;
+  $("cPer").textContent = S.per;
+  $("cPct").textContent = pct + "%";
+  $("cItems").textContent = `${right} of ${total}`;
+  $("cMoney").textContent = "$" + S.money.toLocaleString();
+  $("cMin").textContent = mins;
+  $("cDate").textContent = date + " " + now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  $("cCode").textContent = makeCode(S.name, S.per, pct, date, mins);
+  $("cTable").innerHTML = "<tr><th>Job</th><th>Correct</th><th>Topic</th></tr>" + ROUNDS.map((R, i) => `<tr><td>${R.name}</td><td>${S.results[i].right} / ${S.results[i].total}</td><td>${S.results[i].right === S.results[i].total ? "Solid" : "Review"}</td></tr>`).join("");
+  const weak = ROUNDS.filter((R, i) => S.results[i].right / S.results[i].total < 0.8).map(R => `${R.name}: ${R.review}`);
+  $("cReview").textContent = weak.length ? "Topics to review. " + weak.join(" ") : "Great work. No job scored under 80%.";
+  const prev = parseInt(store("u26border_best") || "0", 10);
+  if (pct > prev) store("u26border_best", String(pct) + "%");
+  $("hudRound").textContent = "Job complete";
+  show("done");
+}
+$("print").onclick = () => window.print();
+$("again").onclick = () => { bestText(); $("hudMoney").classList.add("hidden"); $("hudMoney").textContent = "$0"; $("hudRound").textContent = "Unit 26: Perennials, Grasses, Vines, Bamboos & Prairie Gardens"; show("start"); };
+
+// ---------- teacher ----------
+$("teacherLink").onclick = () => { $("tout").textContent = ""; $("tdate").value = ymd(new Date()); show("teacher"); };
+$("tback").onclick = () => show("start");
+$("tcheck").onclick = () => {
+  if ($("tpin").value !== TEACHER_PIN) { $("tout").style.color = "var(--bad)"; $("tout").textContent = "Wrong PIN."; return; }
+  const code = makeCode($("tname").value, $("tper").value, parseInt($("tpct").value, 10), $("tdate").value.trim(), parseInt($("tmin").value, 10));
+  const typed = $("tcode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const ok = typed === code.replace("-", "");
+  $("tout").style.color = ok ? "var(--ok)" : "var(--bad)";
+  $("tout").textContent = ok ? "MATCH: this certificate is valid." : "NO MATCH. Expected " + code + " for these values. Check each field.";
+};
+window.__u26 = { ROUNDS, DATA, makeCode, BANK };
+</script>
+</body>
+</html>
