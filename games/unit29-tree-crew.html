@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tree Crew Dispatch: Unit 29 Deciduous Trees</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2F6B3A;--bad:#9B2C1F;--paper:#FFFDF8}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.45;overflow-x:hidden}
+h1,h2,h3,.serif{font-family:Cambria,Georgia,"Times New Roman",serif}
+header.bar{background:var(--red);color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+header.bar .brand{font-family:Cambria,Georgia,serif;font-weight:700;font-size:18px;letter-spacing:.3px}
+header.bar .brand small{display:block;font-family:Calibri,"Segoe UI",Roboto,sans-serif;font-weight:400;font-size:12px;opacity:.85;letter-spacing:1px;text-transform:uppercase}
+.hud{display:flex;gap:8px;flex-wrap:wrap;font-size:14px}
+.hud span{background:rgba(255,255,255,.14);border-radius:999px;padding:3px 10px;white-space:nowrap}
+main{max-width:760px;margin:0 auto;padding:18px 16px 48px}
+.card{background:var(--paper);border:1px solid var(--tan);border-radius:12px;padding:18px;box-shadow:0 2px 0 rgba(43,33,24,.06);margin-bottom:16px}
+.kicker{color:var(--green);font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:30px;margin:4px 0 6px;line-height:1.15}
+h2{font-size:23px;margin:2px 0 8px;color:var(--red);line-height:1.2}
+p{margin:6px 0 10px}
+.muted{color:var(--muted)}
+label{display:block;font-weight:700;font-size:14px;margin:10px 0 4px}
+input,select{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--tan);border-radius:8px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1 1 200px;min-width:0}
+button{font:inherit;cursor:pointer;border-radius:10px;border:0}
+.btn{background:var(--green);color:#fff;padding:11px 18px;font-weight:700;font-size:16px}
+.btn:hover{filter:brightness(1.08)}
+.btn.red{background:var(--red)}.btn.ghost{background:transparent;color:var(--green);border:2px solid var(--green)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.linkbtn{background:none;color:var(--muted);text-decoration:underline;font-size:13px;padding:4px}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin-top:6px}
+.best{background:var(--cream);border-left:4px solid var(--gold);padding:8px 12px;border-radius:6px;font-size:15px;margin:10px 0}
+.rounds{list-style:none;padding:0;margin:10px 0}
+.rounds li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--tan)}
+.rounds li b{background:var(--green);color:#fff;border-radius:50%;width:26px;height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;font-size:14px}
+/* job ticket */
+.ticket{position:relative;border-left:8px solid var(--green)}
+.ticket .tophead{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted);border-bottom:1px dashed var(--tan);padding-bottom:8px;margin-bottom:10px}
+.ticket .tophead b{color:var(--red);font-family:Cambria,Georgia,serif;font-size:15px}
+.client{background:var(--cream);border-radius:8px;padding:10px 12px;margin:6px 0 12px;font-style:italic}
+.client strong{font-style:normal;color:var(--green)}
+.prompt{font-size:19px;font-weight:700;margin:4px 0 12px;font-family:Cambria,Georgia,serif}
+.opts{display:grid;gap:10px}
+.opt{background:#fff;border:2px solid var(--tan);color:var(--ink);text-align:left;padding:12px 14px;font-size:16px;line-height:1.3;display:flex;gap:10px;align-items:flex-start;width:100%}
+.opt:hover:not(:disabled){border-color:var(--green);background:#f9f6ef}
+.opt .let{flex:0 0 26px;height:26px;border-radius:6px;background:var(--cream);color:var(--green);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+.opt .sci{display:block;font-size:13px;color:var(--muted);font-style:italic}
+.opt.right{border-color:var(--ok);background:#ecf5ee}.opt.right .let{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:#fbeeec}.opt.wrong .let{background:var(--bad);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:14px;border-radius:10px;padding:12px 14px;border:1px solid var(--tan)}
+.fb.good{background:#ecf5ee;border-color:#b7d3bd}.fb.bad{background:#fbeeec;border-color:#e3b9b2}
+.fb h3{margin:0 0 4px;font-size:18px}.fb.good h3{color:var(--ok)}.fb.bad h3{color:var(--bad)}
+.ref{display:inline-block;margin-top:6px;font-size:13px;color:var(--muted);font-style:italic}
+.next{margin-top:14px;display:flex;justify-content:flex-end}
+.progress{height:8px;background:var(--tan);border-radius:999px;overflow:hidden;margin:4px 0 14px}
+.progress i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);font-family:Cambria,Georgia,serif;font-weight:700;padding:4px 12px;border-radius:6px;transform:rotate(-3deg);letter-spacing:1px}
+table.brk{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px}
+table.brk th,table.brk td{border:1px solid var(--tan);padding:6px 8px;text-align:left;vertical-align:top}
+table.brk th{background:var(--green);color:#fff;font-family:Cambria,Georgia,serif;font-weight:700}
+table.brk td.n{text-align:center;white-space:nowrap}
+.review{color:var(--bad);font-weight:700}.okk{color:var(--ok);font-weight:700}
+/* certificate */
+#cert{border:6px double var(--red);background:var(--paper);padding:22px 18px;text-align:center;border-radius:6px}
+#cert .ck{color:var(--green);letter-spacing:3px;font-size:12px;font-weight:700;text-transform:uppercase}
+#cert h1{color:var(--red);font-size:28px}
+#cert .who{font-family:Cambria,Georgia,serif;font-size:28px;border-bottom:2px solid var(--tan);display:inline-block;padding:0 14px 2px;margin:6px 0 4px;max-width:100%;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:14px 0}
+.grid div{background:var(--cream);border-radius:8px;padding:8px}
+.grid small{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px}
+.grid b{font-size:18px;font-family:Cambria,Georgia,serif}
+.code{font-family:"Courier New",Consolas,monospace;font-size:26px;font-weight:700;letter-spacing:4px;color:var(--red);background:#fff;border:2px dashed var(--red);display:inline-block;padding:4px 14px;border-radius:8px;margin:4px 0}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.hidden{display:none!important}
+.tc-result{margin-top:10px;padding:10px;border-radius:8px;font-weight:700}
+.tc-result.ok{background:#ecf5ee;color:var(--ok)}.tc-result.no{background:#fbeeec;color:var(--bad)}
+footer.small{text-align:center;color:var(--muted);font-size:12px;padding:10px}
+@media (max-width:480px){h1{font-size:25px}.prompt{font-size:17px}.code{font-size:22px;letter-spacing:2px}#cert .who{font-size:23px}}
+@media print{
+  body{background:#fff}
+  header.bar,footer.small,.noprint,#game>*:not(#endScreen),#endScreen>*:not(#certWrap){display:none!important}
+  #certWrap .actions{display:none!important}
+  main{padding:0;max-width:none}
+  #cert{break-inside:avoid}
+  .card{box-shadow:none}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">Tree Crew Dispatch<small>North Paulding Ag • Unit 29 Deciduous Trees</small></div>
+  <div class="hud hidden" id="hud"><span id="hudRound">Round 1</span><span id="hudScore">$0</span><span id="hudCount">0 / 0</span></div>
+</header>
+
+<main id="game">
+  <!-- START -->
+  <section id="startScreen">
+    <div class="card">
+      <div class="kicker">Introductory Horticulture • Section 7 • Unit 29</div>
+      <h1>Tree Crew Dispatch</h1>
+      <p>You just got hired as crew lead for a Paulding County landscape company. Work orders are coming in. Pick the right tree, the right placement, and the right planting method. Each job done right pays the company <b>$100</b>.</p>
+      <ol class="rounds">
+        <li><b>1</b><div><strong>Shop Talk:</strong> key terms the crew uses on every job.</div></li>
+        <li><b>2</b><div><strong>Site Visits:</strong> what job is this tree doing in the landscape?</div></li>
+        <li><b>3</b><div><strong>Nursery Order:</strong> pick the one tree from Figure 29-11 that fits the client.</div></li>
+        <li><b>4</b><div><strong>Planting Day:</strong> bare root, B&amp;B, container, staking, and wrapping.</div></li>
+        <li><b>5</b><div><strong>Crew Math:</strong> windbreaks, fertilizer, and mulch numbers.</div></li>
+      </ol>
+      <div class="row">
+        <div><label for="fname">First name</label><input id="fname" autocomplete="given-name" maxlength="30"></div>
+        <div><label for="lname">Last name</label><input id="lname" autocomplete="family-name" maxlength="30"></div>
+      </div>
+      <label for="period">Class period</label>
+      <select id="period"><option value="">Choose your period</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+      <div class="err" id="startErr"></div>
+      <div id="bestBox" class="best hidden"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn red" id="startBtn">Clock in and start</button>
+        <button class="linkbtn" id="teacherLink">Teacher check</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHER CHECK -->
+  <section id="teacherScreen" class="hidden">
+    <div class="card">
+      <div class="kicker">Teacher check</div>
+      <h2>Verify a completion code</h2>
+      <div id="pinStep">
+        <label for="pin">Teacher PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="10">
+        <div class="err" id="pinErr"></div>
+        <div class="actions" style="justify-content:flex-start"><button class="btn" id="pinBtn">Unlock</button><button class="btn ghost" id="tcBack1">Back</button></div>
+      </div>
+      <div id="tcStep" class="hidden">
+        <p class="muted">Type exactly what is on the student's certificate.</p>
+        <div class="row"><div><label for="tcName">Student name</label><input id="tcName"></div><div><label for="tcPeriod">Period</label><input id="tcPeriod"></div></div>
+        <div class="row"><div><label for="tcPct">Percent (number only)</label><input id="tcPct" inputmode="numeric"></div><div><label for="tcMin">Minutes played</label><input id="tcMin" inputmode="numeric"></div></div>
+        <div class="row"><div><label for="tcDate">Date (YYYY-MM-DD)</label><input id="tcDate" placeholder="2026-10-23"></div><div><label for="tcCode">Completion code</label><input id="tcCode" placeholder="XXX-XXX"></div></div>
+        <div class="actions" style="justify-content:flex-start"><button class="btn" id="tcCheck">Check code</button><button class="btn ghost" id="tcBack2">Back</button></div>
+        <div id="tcResult" class="tc-result hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROUND INTRO -->
+  <section id="introScreen" class="hidden">
+    <div class="card ticket">
+      <div class="kicker" id="introKicker">Round 1 of 5</div>
+      <h2 id="introTitle"></h2>
+      <p id="introText"></p>
+      <p class="ref" id="introRef"></p>
+      <div class="next"><button class="btn" id="introGo">Start round</button></div>
+    </div>
+  </section>
+
+  <!-- QUESTION -->
+  <section id="qScreen" class="hidden">
+    <div class="progress"><i id="prog"></i></div>
+    <div class="card ticket">
+      <div class="tophead"><b id="tkNum">Work Order #1001</b><span id="tkRound"></span></div>
+      <div class="client hidden" id="client"></div>
+      <div class="prompt" id="prompt"></div>
+      <div class="opts" id="opts"></div>
+      <div id="fb" class="fb hidden"></div>
+      <div class="next hidden" id="nextWrap"><button class="btn" id="nextBtn">Next work order</button></div>
+    </div>
+  </section>
+
+  <!-- ROUND SUMMARY -->
+  <section id="sumScreen" class="hidden">
+    <div class="card">
+      <div class="kicker" id="sumKicker"></div>
+      <h2 id="sumTitle"></h2>
+      <p id="sumText"></p>
+      <div class="next"><button class="btn" id="sumGo">Next round</button></div>
+    </div>
+  </section>
+
+  <!-- END -->
+  <section id="endScreen" class="hidden">
+    <div id="certWrap">
+      <div id="cert">
+        <div class="ck">North Paulding Ag • Introductory Horticulture • Unit 29</div>
+        <h1>Tree Crew Certificate</h1>
+        <div class="muted">This certifies that</div>
+        <div class="who" id="cName"></div>
+        <div class="muted" id="cPeriod"></div>
+        <p style="margin-top:10px">completed <b>Tree Crew Dispatch: Deciduous Trees</b> and earned the crew rating</p>
+        <div class="stamp" id="cRating"></div>
+        <div class="grid">
+          <div><small>Score</small><b id="cPct"></b></div>
+          <div><small>Jobs done right</small><b id="cCorrect"></b></div>
+          <div><small>Contract earnings</small><b id="cMoney"></b></div>
+          <div><small>Minutes played</small><b id="cMin"></b></div>
+          <div><small>Date and time</small><b id="cDate"></b></div>
+        </div>
+        <div class="muted" style="font-size:13px">Completion code</div>
+        <div class="code" id="cCode"></div>
+        <div class="actions"><button class="btn red" id="printBtn">Print / Save as PDF</button><button class="btn" id="againBtn">Play again</button></div>
+      </div>
+    </div>
+    <div class="card noprint" style="margin-top:16px">
+      <h2>Job report by round</h2>
+      <table class="brk"><thead><tr><th>Round</th><th>Right</th><th>What to do next</th></tr></thead><tbody id="brkBody"></tbody></table>
+      <p class="muted" style="font-size:14px;margin-top:10px">Every replay pulls new work orders and new numbers, so playing again is real practice.</p>
+    </div>
+  </section>
+</main>
+<footer class="small">Facts from Introductory Horticulture, Unit 29 (pp. 347 to 365). Built for North Paulding FFA.</footer>
+
+<script>
+(function(){
+"use strict";
+/* ---------- settings ---------- */
+var TEACHER_PIN = "0545";
+var SALT = "NPFFA-U29-TREECREW";
+var PAY = 100;
+var STORE_KEY = "npffa_u29_treecrew_best";
+var ALPHA = "ACDEFGHJKMNPQRTUVWXY3479";
+
+/* ---------- helpers ---------- */
+function $(id){return document.getElementById(id);}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a,n){return shuffle(a).slice(0,n);}
+function rint(lo,hi){return lo+Math.floor(Math.random()*(hi-lo+1));}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+function show(id){["startScreen","teacherScreen","introScreen","qScreen","sumScreen","endScreen"].forEach(function(s){$(s).classList.toggle("hidden",s!==id);});window.scrollTo(0,0);}
+function norm(s){return String(s||"").toLowerCase().replace(/\s+/g," ").trim();}
+function fnv(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h>>>0;}
+function makeCode(name,period,pct,date,mins){
+  var h=fnv(SALT+"|"+norm(name)+"|"+norm(period)+"|"+String(parseInt(pct,10))+"|"+String(date).trim()+"|"+String(parseInt(mins,10)));
+  var out="";for(var i=0;i<6;i++){out+=ALPHA.charAt(h%ALPHA.length);h=Math.floor(h/ALPHA.length);}
+  return out.slice(0,3)+"-"+out.slice(3);
+}
+function ymd(d){function p(n){return(n<10?"0":"")+n;}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+function store(get,val){try{if(get)return localStorage.getItem(STORE_KEY);localStorage.setItem(STORE_KEY,val);}catch(e){return null;}return null;}
+
+/* ---------- trees from Figure 29-11 (pp. 351 to 357) ---------- */
+var T = {
+  jmaple:{n:"Japanese maple",s:"Acer palmatum",sz:"small",p:351},
+  amur:{n:"Amur maple 'Flame'",s:"Acer ginnala",sz:"small",p:351},
+  redbud:{n:"Redbud (Judas tree)",s:"Cercis canadensis",sz:"small",p:351},
+  oldman:{n:"Old man's beard",s:"Chionanthus virginicus",sz:"small",p:351},
+  dogwood:{n:"Flowering dogwood",s:"Cornus florida",sz:"small",p:351},
+  kousa:{n:"Chinese (Kousa) dogwood",s:"Cornus kousa",sz:"small",p:351},
+  cockspur:{n:"Cockspur hawthorn",s:"Crataegus crusgalli",sz:"small",p:351},
+  pauls:{n:"Paul's scarlet hawthorn",s:"Crataegus oxyacantha pauli",sz:"small",p:351},
+  saucer:{n:"Saucer magnolia",s:"Magnolia soulangeana",sz:"small",p:351},
+  star:{n:"Star magnolia",s:"Magnolia stellata",sz:"small",p:352},
+  crab:{n:"Japanese flowering crabapple",s:"Malus floribunda",sz:"small",p:352},
+  plum:{n:"Thundercloud plum",s:"Prunus cerasifera 'Thundercloud'",sz:"small",p:352},
+  kwanzan:{n:"Kwanzan cherry",s:"Prunus serrulata",sz:"small",p:352},
+  weepcherry:{n:"Weeping cherry",s:"Prunus subhirtella 'Pendula'",sz:"small",p:352},
+  lilac:{n:"Japanese tree lilac",s:"Syringa reticulata",sz:"small",p:352},
+  horse:{n:"Red horsechestnut",s:"Aesculus carnea",sz:"medium",p:352},
+  crimson:{n:"Crimson King maple",s:"Acer platanoides 'Crimson King'",sz:"medium",p:353},
+  emerald:{n:"Emerald Queen maple",s:"Acer platanoides 'Emerald Queen'",sz:"medium",p:353},
+  october:{n:"October Glory maple",s:"Acer rubrum 'October Glory'",sz:"medium",p:353},
+  redsunset:{n:"Red Sunset maple",s:"Acer rubrum 'Red Sunset'",sz:"medium",p:353},
+  cutbirch:{n:"Cutleaf weeping birch",s:"Betula pendula 'Laciniata'",sz:"medium",p:353},
+  eurobirch:{n:"Weeping European birch",s:"Betula pendula",sz:"medium",p:353},
+  pecan:{n:"Pecan",s:"Carya illinoinensis",sz:"medium",p:353},
+  katsura:{n:"Katsura tree",s:"Cercidiphyllum japonicum",sz:"medium",p:353},
+  beech:{n:"Copper beech",s:"Fagus sylvatica 'Atropurpurea'",sz:"medium",p:354},
+  frank:{n:"Franklinia tree",s:"Franklinia alatamaha",sz:"medium",p:354},
+  ash:{n:"Green ash 'Marshall'",s:"Fraxinus pennsylvanica lanceolata",sz:"medium",p:354},
+  shade:{n:"Shademaster honeylocust",s:"Gleditsia triacanthos 'Shademaster'",sz:"medium",p:354},
+  sweetbay:{n:"Sweet bay",s:"Magnolia virginiana",sz:"medium",p:354},
+  liveoak:{n:"Live oak",s:"Quercus virginiana",sz:"medium",p:354},
+  sourwood:{n:"Sourwood",s:"Oxydendrum arboreum",sz:"medium",p:354},
+  mtash:{n:"European mountain ash",s:"Sorbus aucuparia",sz:"medium",p:354},
+  thornless:{n:"Thornless honeylocust",s:"Gleditsia triacanthos 'Inermis'",sz:"large",p:356},
+  walnut:{n:"Black walnut",s:"Juglans nigra",sz:"large",p:356},
+  sweetgum:{n:"Sweet gum",s:"Liquidambar styraciflua",sz:"large",p:356},
+  tulip:{n:"Tulip tree",s:"Liriodendron tulipifera",sz:"large",p:356},
+  cucumber:{n:"Cucumber tree",s:"Magnolia acuminata",sz:"large",p:356},
+  blackgum:{n:"Black gum",s:"Nyssa sylvatica",sz:"large",p:356},
+  sycamore:{n:"Sycamore",s:"Platanus occidentalis",sz:"large",p:356},
+  poplar:{n:"Lombardy poplar",s:"Populus nigra 'Italica'",sz:"large",p:356},
+  whiteoak:{n:"White oak",s:"Quercus alba",sz:"large",p:357},
+  redoak:{n:"Red oak",s:"Quercus borealis",sz:"large",p:357},
+  scarlet:{n:"Scarlet oak",s:"Quercus coccinea",sz:"large",p:357},
+  pinoak:{n:"Pin oak",s:"Quercus palustris",sz:"large",p:357},
+  amlinden:{n:"American linden",s:"Tilia americana",sz:"large",p:357},
+  littlelinden:{n:"Little leaf linden",s:"Tilia cordata",sz:"large",p:357},
+  elm:{n:"American elm",s:"Ulmus americana",sz:"large",p:357}
+};
+
+/* ---------- Round 1: key terms, several wordings each ---------- */
+var TERMS = [
+  {t:"accent",p:"pp. 348 to 349",d:["using a tree to draw attention to a certain area of the landscape","a flowering or gracefully branched tree used as a focal point","a tree used as a terminal planting at the end of a hedge or wall"]},
+  {t:"containerized",p:"p. 359",d:["a tree grown and sold in a basket or a plastic or metal can","nursery stock that can be transplanted at any time of year","stock that becomes root-bound if left in its pot too long"]},
+  {t:"contorted",p:"p. 348",d:["a twisted branching habit used to make a tree an accent","branches that twist and curl, giving the tree an unusual look"]},
+  {t:"deciduous",p:"p. 350",d:["a tree that drops its leaves each fall and regrows them in spring","the type of tree that shades a house in summer and lets sun through in winter"]},
+  {t:"fastigiated",p:"p. 348",d:["a narrow, upright branching habit","branches that grow tight and straight up, like a column"]},
+  {t:"hardiness",p:"p. 350",d:["the ability of a tree to live in a particular climate zone","a rating shown with U.S. zones based on average low temperature"]},
+  {t:"monotony",p:"p. 349",d:["a dull, repeated look, like a long plain wall or fence","the boring sameness that a zigzag tree planting helps break up"]},
+  {t:"privacy",p:"p. 348",d:["what a carefully placed tree creates by screening a porch or terrace","keeping a patio or terrace out of view from neighbors with a tree"]},
+  {t:"tree wrap",p:"p. 361",d:["commercial paper wound around a new trunk to prevent sunscald","2 to 3 inch wide material that protects thin bark in winter"]},
+  {t:"weeping",p:"p. 348",d:["a branching habit where branches hang downward","the form of the 'Pendula' cherry, with drooping branches"]}
+];
+function buildTerms(){
+  return pick(TERMS,6).map(function(x){
+    var others=pick(TERMS.filter(function(y){return y.t!==x.t;}),3);
+    var asDef=Math.random()<0.6;
+    if(asDef){
+      return {prompt:"Which crew term means "+pick(x.d,1)[0]+"?",options:[x.t].concat(others.map(function(o){return o.t;})),answer:x.t,
+        why:"“"+x.t+"” is a Unit 29 key term. Look for it in bold in the text.",ref:x.p};
+    }
+    var right=pick(x.d,1)[0];
+    return {prompt:"A new hire asks what “"+x.t+"” means. Which is correct?",options:[right].concat(others.map(function(o){return pick(o.d,1)[0];})),answer:right,
+      why:"“"+x.t+"” means "+right+".",ref:x.p};
+  });
+}
+
+/* ---------- Round 2: uses of trees (pp. 348 to 349) ---------- */
+var USES = {
+  shade:{n:"Provide shade",p:"p. 348, Fig. 29-1"},
+  frame:{n:"Frame the house",p:"p. 348, Fig. 29-2"},
+  soften:{n:"Soften lines",p:"p. 348, Fig. 29-3"},
+  bare:{n:"Relieve bare spots",p:"p. 348, Fig. 29-4"},
+  screen:{n:"Screen an object",p:"p. 348, Fig. 29-5"},
+  view:{n:"Frame a view",p:"p. 348, Fig. 29-6"},
+  privacy:{n:"Ensure privacy",p:"p. 348, Fig. 29-7"},
+  accent:{n:"Accent the landscape",p:"pp. 348 to 349, Fig. 29-8"},
+  monotony:{n:"Break monotony",p:"p. 349, Fig. 29-9"},
+  wind:{n:"Windbreak",p:"p. 349, Fig. 29-10"}
+};
+var SITES = [
+  {c:"The Hendersons",x:"Our west windows bake every afternoon in July. We want the rooms cooler.",u:"shade",why:"A well-placed shade tree can lower summer room temperature by as much as 20 degrees."},
+  {c:"A homeowner on a long drive",x:"Our house sits way back from the road. We want people driving by to notice the house first.",u:"frame",why:"Trees can make the house the center of interest; the farther it is set back, the better they frame it."},
+  {c:"A ranch-style home",x:"The roofline looks flat and harsh. Can a tree behind the house make it look less boxy?",u:"soften",why:"A tree placed at the back of a home softens the lines of the house."},
+  {c:"A brick house",x:"The end wall of the house has no windows and looks bare. Shrubs alone did not help.",u:"bare",why:"A small or medium tree near the side of the house relieves the bare end wall."},
+  {c:"A family with a big propane tank",x:"The tank sticks out like a sore thumb in the side yard.",u:"screen",why:"A tree or group of trees can partially screen an object that would stand out too strongly."},
+  {c:"A lake house",x:"From our terrace we can see the mountains. We want tall trees on each side to set up that view.",u:"view",why:"Tall trees with an underplanting of shrubs frame a view from a house or terrace."},
+  {c:"A couple with a back porch",x:"The neighbors can see right onto our porch. We want to sit out there without being watched.",u:"privacy",why:"A carefully positioned tree can create privacy by screening a porch or terrace."},
+  {c:"A church entrance",x:"We want one eye-catching weeping tree to pull people's attention to the front garden.",u:"accent",why:"Flowering trees or weeping, fastigiated, or contorted trees are used as accents to direct attention."},
+  {c:"A business",x:"We have a 150-foot plain white brick wall. It looks boring. Plant trees in a zigzag along it.",u:"monotony",why:"Plantings placed off-center in a zigzag break the monotony of a long wall or fence."},
+  {c:"A farmhouse",x:"Cold north and northwest winds hit the house all winter. Plant tall evergreens about 50 feet out.",u:"wind",why:"Tall evergreens about 50 feet from the house protect it from north and northwest winter winds."},
+  {c:"A new subdivision lot",x:"The end of the hedge just stops. We want a flowering tree to finish it off.",u:"accent",why:"Accent trees can act as a terminal planting for a hedge or wall."},
+  {c:"A school",x:"The dumpster pad is the first thing visitors see. Hide it partly with a group of trees.",u:"screen",why:"A group of trees can partially screen an object that stands out too strongly."},
+  {c:"A homeowner",x:"We want lower cooling bills in summer but warm sun in winter, so plant deciduous trees on the south side.",u:"shade",why:"Deciduous trees on the south, east, or west shade the house in summer and let sun in during winter (Green Tip)."},
+  {c:"A wooden privacy fence owner",x:"The fence is attractive but it is one long, plain line. Soften it with off-center plantings.",u:"monotony",why:"Fencing can become monotonous unless softened by off-center planting."}
+];
+function buildUses(){
+  var keys=Object.keys(USES);
+  return pick(SITES,6).map(function(s){
+    var others=pick(keys.filter(function(k){return k!==s.u;}),3);
+    return {client:s.c,clientText:s.x,prompt:"What job is the tree doing for this client?",
+      options:[USES[s.u].n].concat(others.map(function(k){return USES[k].n;})),answer:USES[s.u].n,why:s.why,ref:USES[s.u].p};
+  });
+}
+
+/* ---------- Round 3: nursery order, one best tree (Figure 29-11) ---------- */
+/* each: a = answer key, d = distractors that do NOT match the request, why = chart evidence */
+var ORDERS = [
+  {c:"A builder",x:"I need a quick temporary screen between two new houses until the hedge grows in.",a:"poplar",d:["whiteoak","star","katsura","redbud","sourwood"],why:"Lombardy poplar's ornamental use is “quick temporary screen.” The chart warns it is short-lived."},
+  {c:"A furniture maker",x:"I want a large nut tree whose wood is used to make furniture.",a:"walnut",d:["sycamore","poplar","sweetgum","elm","pinoak"],why:"Black walnut is listed as nut producing, and its wood is used to make furniture."},
+  {c:"A garden club",x:"We want a medium tree that flowers late in the season, in September.",a:"frank",d:["sourwood","sweetbay","horse","mtash","lilac"],why:"Franklinia blooms white in September; the remarks say “late fall flower.”"},
+  {c:"A homeowner",x:"I want a tree with white bark in winter. I know I have to watch for bronze birch borer.",a:"eurobirch",d:["katsura","cutbirch","pecan","emerald","beech"],why:"Weeping European birch: white bark in winter; bronze birch borer can be a problem."},
+  {c:"A farm entrance",x:"We want a small border tree with double scarlet flowers in late May, and we don't mind thorns.",a:"pauls",d:["cockspur","kousa","dogwood","crab","plum"],why:"Paul's scarlet hawthorn has double scarlet late-May flowers, is used for borders, and is listed as thorny."},
+  {c:"A homeowner with a creek",x:"My spot is moist and shady. I want a small tree with white, feathery flowers.",a:"oldman",d:["redbud","star","crab","weepcherry","plum"],why:"Old man's beard has white feathery late-May flowers and does well in a moist, shady site."},
+  {c:"A park",x:"We want a small border tree with purplish pink flowers that blooms at the same time as our dogwoods.",a:"redbud",d:["kousa","saucer","lilac","jmaple","cockspur"],why:"Redbud: purplish pink mid-May flowers, border use, blooms the same time as dogwood."},
+  {c:"A homeowner",x:"I want a small tree with red leaves all summer, dark purple in fall, and purplish fruit.",a:"plum",d:["redbud","dogwood","weepcherry","crab","oldman"],why:"Thundercloud plum has red summer color, dark purple fall color, and dark purplish fruit."},
+  {c:"A shopping center",x:"We want a medium accent maple with red-purple leaves all summer.",a:"crimson",d:["emerald","october","redsunset","amur","shade"],why:"Crimson King maple has red-purple summer color and brilliant foliage."},
+  {c:"A bank lawn",x:"We need a medium tree with white flowers in mid-July and red fall color.",a:"sourwood",d:["frank","sweetbay","katsura","horse","shade"],why:"Sourwood: white mid-July flowers, red fall color, late summer flower and good fall color."},
+  {c:"A memorial garden",x:"We want a small specimen with a weeping form and double pink flowers in early April.",a:"weepcherry",d:["kwanzan","star","cutbirch","crab","plum"],why:"Weeping cherry: weeping form, double pink early-April flowers, excellent accent plant."},
+  {c:"A city arborist",x:"I need a large tree with red to scarlet fall color and corky ridges on the stem. I know it is hard to transplant.",a:"sweetgum",d:["redoak","blackgum","tulip","sycamore","thornless"],why:"Sweet gum: red to scarlet fall color, corky ridges on the stem, difficult to transplant."},
+  {c:"A street crew",x:"We want an oak for street planting that transplants easily.",a:"redoak",d:["scarlet","whiteoak","liveoak","pinoak","walnut"],why:"Red oak is listed for specimen and street use and transplants easily. Scarlet oak is difficult to transplant."},
+  {c:"A sawmill owner",x:"I want a large specimen tree known as an excellent lumber tree, even if it grows slowly.",a:"whiteoak",d:["redoak","poplar","sweetgum","blackgum","littlelinden"],why:"White oak: excellent lumber tree, slow grower."},
+  {c:"A historic town",x:"We want a vase-shaped street tree, but we know it may have trouble with Dutch elm disease.",a:"elm",d:["kwanzan","littlelinden","pinoak","thornless","ash"],why:"American elm: vase form, street use, possible problem with Dutch elm disease."},
+  {c:"A school campus",x:"We want a large timber tree with tulip-shaped greenish yellow flowers in mid-June.",a:"tulip",d:["cucumber","thornless","walnut","sycamore","blackgum"],why:"Tulip tree: tulip-shaped greenish yellow mid-June flowers; timber tree and fall color."},
+  {c:"A bird watcher",x:"I want a large tree with red fall color and small blue berries in midsummer.",a:"blackgum",d:["sweetgum","cucumber","mtash","redoak","tulip"],why:"Black gum: red fall color, small blue berries in midsummer."},
+  {c:"A homeowner",x:"I want a conical medium tree with dark purple summer leaves that turn copper in fall.",a:"beech",d:["crimson","plum","katsura","emerald","eurobirch"],why:"Copper beech: conical form, dark purple summer color, copper fall color."},
+  {c:"A small courtyard",x:"I want a small pyramidal tree with creamy white flowers and cherry-like bark.",a:"lilac",d:["kwanzan","star","oldman","crab","cockspur"],why:"Japanese tree lilac: pyramidal, small creamy white flowers, cherry-like bark."},
+  {c:"A coastal Georgia client",x:"I want a wide-spreading tree, hardiness zone 7, that stays green in the southern U.S.",a:"liveoak",d:["whiteoak","pinoak","shade","sycamore","redoak"],why:"Live oak: rounded, wide-spreading, zone 7, evergreen in the southern United States."},
+  {c:"A wildlife lover",x:"I want a pyramidal medium tree with clusters of white flowers and bright red berries in fall.",a:"mtash",d:["cockspur","blackgum","sourwood","lilac","horse"],why:"European mountain ash: pyramidal, clusters of white flowers, bright red berries in a cluster in fall."},
+  {c:"An office park",x:"I want a medium tree for massing, with open branching and fine texture.",a:"shade",d:["thornless","ash","october","pecan","katsura"],why:"Shademaster honeylocust: fine texture, ornamental use is massing, open branching."},
+  {c:"A sandy lot owner",x:"I want a small tree with bright red fruit in fall. My soil is sandy.",a:"cockspur",d:["pauls","redbud","plum","star","jmaple"],why:"Cockspur hawthorn: bright red fruit in fall; needs sandy soil."},
+  {c:"A homeowner up north",x:"I want a small maple with fragrant flowers, zone 2, that I can use for screening.",a:"amur",d:["jmaple","crimson","redsunset","star","lilac"],why:"Amur maple 'Flame': hardiness 2, specimen and screening, fragrant flowers."},
+  {c:"A sunny new lawn",x:"I want an upright oval medium maple with dark green leaves and yellow fall color. It gets full sun.",a:"emerald",d:["october","crimson","redsunset","amur","jmaple"],why:"Emerald Queen maple: upright oval, dark green, yellow fall, needs full sun."},
+  {c:"A southern homestead",x:"I want one tree that gives shade and a nut crop, and grows best in rich bottomland.",a:"pecan",d:["whiteoak","sycamore","sweetgum","shade","tulip"],why:"The pecan is the book's best example of a multiple use tree: nut tree plus shade and accent (p. 350)."}
+];
+function buildOrders(){
+  return pick(ORDERS,8).map(function(o){
+    var ds=pick(o.d,3);
+    var opts=[o.a].concat(ds).map(function(k){return {key:k,html:esc(T[k].n)+'<span class="sci">'+esc(T[k].s)+" • "+T[k].sz+"</span>"};});
+    var t=T[o.a];
+    return {client:o.c,clientText:o.x,prompt:"Which tree do you order from the nursery?",options:opts,answer:o.a,why:o.why,ref:"Figure 29-11, p. "+t.p};
+  });
+}
+
+/* ---------- Round 4: planting day ---------- */
+var STOCK = ["Bare root","Balled and burlapped","Containerized"];
+var PLANT = [
+  {q:"Which nursery stock can be transplanted at any time of the year?",o:STOCK,a:"Containerized",w:"Container stock can be moved any time of year without disturbing the root system.",p:"p. 359"},
+  {q:"Which stock is dug while the tree is dormant, with no soil left on the roots?",o:STOCK,a:"Bare root",w:"Bare root trees are dug dormant and no soil is left on the roots, hence the name.",p:"p. 359"},
+  {q:"Which stock is usually the least expensive and cheapest to ship in large numbers?",o:STOCK,a:"Bare root",w:"Bare-root stock is usually less expensive and costs less to ship in quantity.",p:"p. 359"},
+  {q:"Which stock has its soil ball held by burlap, twine, and nails?",o:STOCK,a:"Balled and burlapped",w:"B&B trees have a ball of soil held by burlap secured with twine and nails.",p:"p. 359"},
+  {q:"A B&B tree has a root ball larger than 20 inches. What should be done?",o:["Drum lace it","Butterfly the roots","Remove all the burlap first","Plant it bare root"],a:"Drum lace it",w:"Root balls larger than 20 inches should be drum laced for added support.",p:"p. 359"},
+  {q:"Roots are circling a container root ball and will not straighten. What do you do?",o:["Cut them at the edge of the ball (butterflying)","Plant it deeper so they straighten","Wrap them in burlap","Leave them; they will fix themselves"],a:"Cut them at the edge of the ball (butterflying)",w:"Cutting circling roots at the edge of the ball is called butterflying. It stops roots from girdling.",p:"p. 360"},
+  {q:"How high should the berm (ring) around a new tree be?",o:["About 3 inches","About 12 inches","About 1 inch","No berm is needed"],a:"About 3 inches",w:"Form a ring (berm) about 3 inches high and fill the saucer with water.",p:"p. 360"},
+  {q:"How wide should the hole be for a balled and burlapped tree?",o:["1½ to 2 times wider than the ball","Exactly as wide as the ball","4 to 5 times wider than the ball","Half as wide as the ball"],a:"1½ to 2 times wider than the ball",w:"Dig a hole one and one-half to two times larger across than the ball.",p:"p. 360"},
+  {q:"Where should the top of a B&B root ball sit in the hole?",o:["Slightly above ground level","3 inches below ground level","Even with the bottom of the hole","Buried under 6 inches of soil"],a:"Slightly above ground level",w:"Set it slightly above ground level to allow for sinking caused by settling.",p:"p. 360"},
+  {q:"Staking or guying must be finished within how long after planting?",o:["48 hours","2 weeks","1 month","The next spring"],a:"48 hours",w:"Both procedure boxes say staking or guying must be completed within 48 hours of planting.",p:"pp. 361 and 363"},
+  {q:"How much should a staked tree be able to sway?",o:["1 to 3 inches","Not at all; pull wires tight","1 to 2 feet","6 to 8 inches"],a:"1 to 3 inches",w:"Leave a 1 to 3 inch sway; wires should not be pulled tight.",p:"p. 361"},
+  {q:"At what angle are guying stakes driven?",o:["30 degrees, with 4 or 5 inches showing","90 degrees, straight down","45 degrees, flush with the ground","10 degrees, leaning away"],a:"30 degrees, with 4 or 5 inches showing",w:"Guying stakes go in at a 30-degree angle, point toward the tree, until 4 or 5 inches show.",p:"p. 363"},
+  {q:"When wrapping a trunk, how much should each turn overlap?",o:["About one-half the width","None; butt the edges","About one-tenth the width","Wrap the same spot twice"],a:"About one-half the width",w:"Each turn of wrap should overlap about one-half the width of the previous wrap.",p:"p. 361"},
+  {q:"Which is NOT a reason for wrapping a newly planted trunk?",o:["To make the leaves grow faster","To prevent sunscald","To reduce water loss","To reduce pests on the trunk"],a:"To make the leaves grow faster",w:"Wrap prevents sunscald, bark damage, and water loss and reduces pests. It does not speed leaf growth.",p:"p. 361"},
+  {q:"How much fertilizer does a tree need its first growing season after planting?",o:["None","2 lb of nitrogen per 1000 sq ft","A full bag of 5-10-5","Weekly liquid feed"],a:"None",w:"No fertilizer is needed for the first growing season after planting.",p:"p. 362"},
+  {q:"Without enough rain, how should you water a new tree?",o:["At least 1 inch at a time, every week from April through October","A light sprinkle every day","Once a month all year","Only when the leaves wilt"],a:"At least 1 inch at a time, every week from April through October",w:"Never add less than 1 inch at one time. Repeat every week April through October if rain is short.",p:"p. 362"},
+  {q:"Why must staking ties be removed after about 2 years?",o:["The hose can girdle the trunk","Stakes attract termites","The tree needs the wire for nutrients","It is only for looks"],a:"The hose can girdle the trunk",w:"The tree grows over the hose, weakening it; in a storm the top could snap off.",p:"p. 362"},
+  {q:"What wire is used inside the rubber hose for staking?",o:["12 to 14 gauge soft steel","Thin copper speaker wire","Barbed wire","Nylon fishing line"],a:"12 to 14 gauge soft steel",w:"Slip 12 to 14 gauge soft steel wire through the rubber garden hose.",p:"p. 361"},
+  {q:"While waiting to plant, how do you protect bare roots?",o:["Cover them with damp peat moss, sawdust, or burlap","Let them air dry in the sun","Soak them in fertilizer overnight","Wrap them in plastic and leave them in the truck"],a:"Cover them with damp peat moss, sawdust, or burlap",w:"Bare roots should never dry out. Keep them covered with damp material, away from wind and sun.",p:"p. 359"},
+  {q:"Why water slowly with a hose right after planting?",o:["To settle soil and remove air pockets","To wash the soil off the roots","To cool the leaves","To push the tree deeper"],a:"To settle soil and remove air pockets",w:"Slow water settles soil around roots and eliminates air pockets that dry roots out.",p:"p. 360"},
+  {q:"Where should mulch stop near the trunk?",o:["About 1 inch away; never touching the trunk","Piled up against the trunk","Right against the bark","2 feet away from the trunk"],a:"About 1 inch away; never touching the trunk",w:"Keep mulch about 1 inch from the trunk. Never let it touch the tree; this discourages pests.",p:"p. 360"},
+  {q:"Where do you place staking stakes?",o:["Parallel to walks and buildings, outside the ball","Through the center of the root ball","Against the trunk","Only on the north side"],a:"Parallel to walks and buildings, outside the ball",w:"Place stakes parallel to walks and buildings, outside the tree ball. Never drive a stake through the ball.",p:"p. 361"}
+];
+function buildPlant(){
+  return pick(PLANT,8).map(function(x){return {prompt:x.q,options:x.o.slice(),answer:x.a,why:x.w,ref:x.p};});
+}
+
+/* ---------- Round 5: crew math (randomized numbers) ---------- */
+function numOpts(ans,cands){
+  var seen={},out=[];
+  [ans].concat(cands).forEach(function(v){v=Math.round(v*10)/10;if(v>0&&!seen[v]&&out.length<4){seen[v]=1;out.push(v);}});
+  var k=1;while(out.length<4){var v=Math.round((ans+k*(k%2?3:-2))*10)/10;if(v>0&&!seen[v]){seen[v]=1;out.push(v);}k++;}
+  return out;
+}
+function fmt(v,unit){return (Math.round(v*10)/10)+" "+unit;}
+var MATH = [
+  function(){var h=rint(8,20),max=Math.random()<0.5,ans=max?10*h:7*h;
+    var o=numOpts(ans,[max?7*h:10*h,5*h,15*h,h*2]);
+    return {client:"A cattle farmer",clientText:"My row of evergreens is "+h+" feet tall.",
+      prompt:"What is the "+(max?"most":"least")+" protection, in feet behind the break, the rule of thumb promises?",
+      options:o.map(function(v){return fmt(v,"feet");}),answer:fmt(ans,"feet"),
+      why:"Rule: 7 to 10 feet of protection for every 1 foot of height. "+h+" × "+(max?10:7)+" = "+ans+" feet.",ref:"p. 349"};},
+  function(){var d=rint(2,9),ans=2*d,o=numOpts(ans,[d,3*d,4*d,2*d+2]);
+    return {client:"A homeowner",clientText:"My tree trunk measures "+d+" inches across, 3 feet above the ground.",
+      prompt:"How many pounds of 5-10-5 fertilizer does it get?",options:o.map(function(v){return fmt(v,"lb");}),answer:fmt(ans,"lb"),
+      why:"Use 2 lb of 5-10-5 per 1 inch of trunk diameter at 3 feet high. 2 × "+d+" = "+ans+" lb.",ref:"p. 362, Fig. 29-23"};},
+  function(){var c=2*rint(15,45),ans=c/2,o=numOpts(ans,[c,Math.round(c/4),ans+5,ans-4]);
+    return {client:"Your crew",clientText:"The drip line circle measures "+c+" feet around.",
+      prompt:"Fertilizer holes go about 2 feet apart around the drip line. How many holes?",options:o.map(function(v){return fmt(v,"holes");}),answer:fmt(ans,"holes"),
+      why:"Holes are about 2 feet apart, so divide the distance around by 2. "+c+" ÷ 2 = "+ans+" holes.",ref:"p. 362"};},
+  function(){var a=pick([500,1000,1500,2000,2500,3000],1)[0],r=rint(2,4),ans=a/1000*r,o=numOpts(ans,[a/1000*(r+1),r,a*r/100,a/1000]);
+    return {client:"A second-year client",clientText:"The area under the drip line is "+a+" square feet. Use "+r+" lb of nitrogen per 1000 sq ft.",
+      prompt:"How many pounds of actual nitrogen for the year?",options:o.map(function(v){return fmt(v,"lb N");}),answer:fmt(ans,"lb N"),
+      why:"("+a+" ÷ 1000) × "+r+" = "+(Math.round(ans*10)/10)+" lb of nitrogen. The book allows 2 to 4 lb per 1000 sq ft in year two.",ref:"p. 362"};},
+  function(){var x=3*rint(2,8),ans=2*x/3,o=numOpts(ans,[x/3,x,x+3,x/2]);
+    return {client:"A homeowner",clientText:"It is "+x+" feet from my trunk out to the drip line.",
+      prompt:"Using the rule of thumb, how far out from the trunk should the mulch go?",options:o.map(function(v){return fmt(v,"feet");}),answer:fmt(ans,"feet"),
+      why:"Mulch two-thirds of the distance to the drip line. "+x+" × 2/3 = "+(Math.round(ans*10)/10)+" feet.",ref:"p. 362"};}
+];
+function buildMath(){return shuffle(MATH).map(function(f){return f();});}
+
+var ROUNDS = [
+  {title:"Shop Talk",topic:"Key terms",text:"Before the truck leaves the shop, prove you know the words the crew uses.",ref:"Key Terms, pp. 347 to 361",build:buildTerms,review:"Review the Key Terms table in your guided notes."},
+  {title:"Site Visits",topic:"Uses of trees",text:"Clients describe their problem. Name the job the tree will do in the landscape.",ref:"The Uses of Trees, pp. 348 to 349",build:buildUses,review:"Reread pp. 348 to 349 and Figures 29-1 to 29-10."},
+  {title:"Nursery Order",topic:"Choosing the right tree",text:"Read each client request and order the ONE tree from Figure 29-11 that fits every detail.",ref:"Figure 29-11, pp. 351 to 357",build:buildOrders,review:"Practice reading Figure 29-11, especially the Remarks column."},
+  {title:"Planting Day",topic:"Planting, staking, wrapping",text:"The trees are on the truck. Show the crew how to plant, stake, wrap, and care for them.",ref:"pp. 359 to 363",build:buildPlant,review:"Reread pp. 359 to 363, including both Procedure boxes."},
+  {title:"Crew Math",topic:"Crew math",text:"Run the numbers for windbreaks, fertilizer, and mulch. Numbers change every game.",ref:"pp. 349 and 362",build:buildMath,review:"Redo the Run the Numbers box in your guided notes."}
+];
+
+/* ---------- state ---------- */
+var S=null;
+function newGame(name,period){
+  S={name:name,period:period,start:Date.now(),round:0,qi:0,money:0,ticket:1000+rint(1,400),
+     qs:ROUNDS.map(function(r){return r.build();}),right:ROUNDS.map(function(){return 0;})};
+  S.total=S.qs.reduce(function(a,b){return a+b.length;},0);S.done=0;
+}
+function hud(){
+  $("hud").classList.remove("hidden");
+  $("hudRound").textContent="Round "+(S.round+1)+" of "+ROUNDS.length;
+  $("hudScore").textContent="$"+S.money.toLocaleString();
+  $("hudCount").textContent=S.done+" / "+S.total;
+  $("prog").style.width=(100*S.done/S.total)+"%";
+}
+function showIntro(){
+  var r=ROUNDS[S.round];
+  $("introKicker").textContent="Round "+(S.round+1)+" of "+ROUNDS.length;
+  $("introTitle").textContent=r.title;$("introText").textContent=r.text;$("introRef").textContent=r.ref;
+  hud();show("introScreen");
+}
+function showQ(){
+  var q=S.qs[S.round][S.qi];S.ticket++;
+  window.__cur=q; /* used by automated tests */
+  $("tkNum").textContent="Work Order #"+S.ticket;
+  $("tkRound").textContent=ROUNDS[S.round].title+" • "+(S.qi+1)+" of "+S.qs[S.round].length;
+  if(q.client){$("client").innerHTML="<strong>"+esc(q.client)+":</strong> “"+esc(q.clientText)+"”";$("client").classList.remove("hidden");}
+  else $("client").classList.add("hidden");
+  $("prompt").textContent=q.prompt;
+  var box=$("opts");box.innerHTML="";
+  var opts=shuffle(q.options);
+  opts.forEach(function(o,i){
+    var b=document.createElement("button");b.className="opt";b.type="button";
+    var val=(typeof o==="object")?o.key:String(o);
+    b.setAttribute("data-val",val);
+    b.innerHTML='<span class="let">'+"ABCD".charAt(i)+"</span><span>"+((typeof o==="object")?o.html:esc(o))+"</span>";
+    b.addEventListener("click",function(){answer(b,val);});
+    box.appendChild(b);
+  });
+  $("fb").classList.add("hidden");$("nextWrap").classList.add("hidden");
+  hud();show("qScreen");
+}
+function answer(btn,val){
+  var q=S.qs[S.round][S.qi];
+  var ok=(val===String(q.answer));
+  Array.prototype.forEach.call($("opts").children,function(b){
+    b.disabled=true;if(b.getAttribute("data-val")===String(q.answer))b.classList.add("right");
+  });
+  if(!ok)btn.classList.add("wrong");
+  if(ok){S.right[S.round]++;S.money+=PAY;}
+  S.done++;
+  var fb=$("fb");fb.className="fb "+(ok?"good":"bad");
+  var rightLabel=(typeof q.options[0]==="object")?T[q.answer].n:q.answer;
+  fb.innerHTML="<h3>"+(ok?"Job done right. +$"+PAY:"Callback! The right call was: "+esc(rightLabel))+"</h3><div>"+esc(q.why)+'</div><span class="ref">Textbook: '+esc(q.ref)+"</span>";
+  var last=(S.qi===S.qs[S.round].length-1);
+  $("nextBtn").textContent=last?(S.round===ROUNDS.length-1?"Finish shift":"Finish round"):"Next work order";
+  $("nextWrap").classList.remove("hidden");hud();
+  $("nextBtn").focus();
+}
+function next(){
+  S.qi++;
+  if(S.qi<S.qs[S.round].length){showQ();return;}
+  var r=ROUNDS[S.round],n=S.qs[S.round].length,k=S.right[S.round];
+  if(S.round===ROUNDS.length-1){finish();return;}
+  $("sumKicker").textContent="Round "+(S.round+1)+" complete";
+  $("sumTitle").textContent=r.title+": "+k+" of "+n+" right";
+  $("sumText").textContent=(k/n>=0.8?"Nice work. The client is happy.":"Some callbacks there. "+r.review)+" Total earnings so far: $"+S.money.toLocaleString()+".";
+  $("sumGo").textContent="Start Round "+(S.round+2);
+  show("sumScreen");
+}
+function rating(p){return p>=90?"LEAD ARBORIST":p>=80?"CREW LEADER":p>=70?"LANDSCAPE TECH":"APPRENTICE";}
+function finish(){
+  var correct=S.right.reduce(function(a,b){return a+b;},0);
+  var pct=Math.round(100*correct/S.total);
+  var mins=Math.max(1,Math.round((Date.now()-S.start)/60000));
+  var now=new Date(),date=ymd(now);
+  var code=makeCode(S.name,S.period,pct,date,mins);
+  $("cName").textContent=S.name;$("cPeriod").textContent="Period "+S.period;
+  $("cRating").textContent=rating(pct);$("cPct").textContent=pct+"%";
+  $("cCorrect").textContent=correct+" of "+S.total;$("cMoney").textContent="$"+S.money.toLocaleString();
+  $("cMin").textContent=String(mins);
+  $("cDate").textContent=date+" "+now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+  $("cCode").textContent=code;
+  var tb=$("brkBody");tb.innerHTML="";
+  ROUNDS.forEach(function(r,i){
+    var n=S.qs[i].length,k=S.right[i],good=k/n>=0.8;
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+(i+1)+". "+esc(r.title)+"<br><span class='muted' style='font-size:13px'>"+esc(r.topic)+"</span></td><td class='n'>"+k+" / "+n+"</td><td>"+(good?"<span class='okk'>Solid.</span>":"<span class='review'>Review:</span> "+esc(r.review))+"</td>";
+    tb.appendChild(tr);
+  });
+  var best=null;try{best=JSON.parse(store(true)||"null");}catch(e){best=null;}
+  if(!best||pct>best.pct){store(false,JSON.stringify({pct:pct,name:S.name,date:date}));}
+  window.__result={pct:pct,correct:correct,total:S.total,mins:mins,date:date,code:code,name:S.name,period:S.period};
+  $("hud").classList.add("hidden");
+  show("endScreen");
+}
+function loadBest(){
+  var b=null;try{b=JSON.parse(store(true)||"null");}catch(e){b=null;}
+  if(b&&typeof b.pct==="number"){$("bestBox").textContent="Best score on this device: "+b.pct+"% ("+b.name+", "+b.date+")";$("bestBox").classList.remove("hidden");}
+}
+
+/* ---------- wiring ---------- */
+$("startBtn").addEventListener("click",function(){
+  var f=$("fname").value.trim(),l=$("lname").value.trim(),p=$("period").value;
+  if(!f||!l){$("startErr").textContent="Type your first and last name.";return;}
+  if(!p){$("startErr").textContent="Choose your class period.";return;}
+  $("startErr").textContent="";newGame(f+" "+l,p);showIntro();
+});
+$("introGo").addEventListener("click",showQ);
+$("nextBtn").addEventListener("click",next);
+$("sumGo").addEventListener("click",function(){S.round++;S.qi=0;showIntro();});
+$("printBtn").addEventListener("click",function(){window.print();});
+$("againBtn").addEventListener("click",function(){loadBest();show("startScreen");});
+$("teacherLink").addEventListener("click",function(){$("pin").value="";$("pinErr").textContent="";$("pinStep").classList.remove("hidden");$("tcStep").classList.add("hidden");show("teacherScreen");});
+$("tcBack1").addEventListener("click",function(){show("startScreen");});
+$("tcBack2").addEventListener("click",function(){show("startScreen");});
+$("pinBtn").addEventListener("click",function(){
+  if($("pin").value.trim()===TEACHER_PIN){$("pinStep").classList.add("hidden");$("tcStep").classList.remove("hidden");$("tcDate").value=ymd(new Date());}
+  else $("pinErr").textContent="That PIN is not right.";
+});
+$("tcCheck").addEventListener("click",function(){
+  var want=makeCode($("tcName").value,$("tcPeriod").value,String($("tcPct").value).replace("%",""),$("tcDate").value,$("tcMin").value);
+  var got=$("tcCode").value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+  var ok=got===want.replace("-","");
+  var r=$("tcResult");r.classList.remove("hidden");r.className="tc-result "+(ok?"ok":"no");
+  r.textContent=ok?"Match. This certificate is genuine.":"No match. Check each field, or the certificate was changed.";
+});
+document.addEventListener("keydown",function(e){
+  if($("qScreen").classList.contains("hidden"))return;
+  var k=e.key.toUpperCase(),i="ABCD".indexOf(k);
+  if(i>=0&&$("nextWrap").classList.contains("hidden")){var b=$("opts").children[i];if(b&&!b.disabled)b.click();}
+});
+window.__makeCode=makeCode;window.__data={T:T,ORDERS:ORDERS,PLANT:PLANT,SITES:SITES,USES:USES,TERMS:TERMS};
+loadBest();
+})();
+</script>
+</body>
+</html>
