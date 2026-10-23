@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backyard Blueprint | Unit 34 Design-Build Firm</title>
+<!-- North Paulding FFA. Fully self-contained: no outside fonts, scripts, or images.
+     Unit 34: Principles of Landscaping, Maintenance, Xeriscaping, Water Gardens, Irrigation, and Green Roofs
+     Introductory Horticulture, Section 7, pp. 406-430 -->
+<style>
+html{color-scheme:light}
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2F7A4A;--bad:#A8392B;--paper:#FFFDF8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.45}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;margin:0 0 .4em}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+.card{background:var(--paper);border:1px solid var(--tan);border-radius:12px;padding:18px;margin:0 0 14px;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+.kicker{color:var(--green);font-weight:700;letter-spacing:.08em;font-size:13px;text-transform:uppercase}
+.muted{color:var(--muted)}
+.hide{display:none!important}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input,select{width:100%;padding:10px 12px;font-size:17px;border:1px solid var(--tan);border-radius:8px;background:#fff;color:var(--ink)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--tan);background:#fff;color:var(--ink);padding:10px 14px}
+.btn{background:var(--green);color:#fff;border-color:var(--green);font-weight:700;padding:12px 18px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.red{background:var(--red);border-color:var(--red)}
+.link{background:none;border:none;color:var(--muted);text-decoration:underline;padding:4px;font-size:14px}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opt{text-align:left;width:100%;padding:12px 14px}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:#E3F1E7;border-color:var(--ok);font-weight:700}
+.opt.wrong{background:#F7E1DD;border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:10px;border-left:5px solid var(--ok);background:#EEF6F0}
+.fb.no{border-color:var(--bad);background:#FBEDEA}
+.pg{color:var(--muted);font-style:italic;font-size:14px}
+.top{position:sticky;top:0;z-index:5;background:var(--green);color:#fff}
+.top .wrap{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 16px;flex-wrap:wrap}
+.top b{font-family:Cambria,Georgia,serif}
+.stat{font-size:15px;white-space:nowrap}
+.phases{display:flex;gap:4px;width:100%}
+.phases span{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.25)}
+.phases span.done{background:var(--tan)}
+.phases span.now{background:var(--gold)}
+.client{background:var(--cream);border-left:5px solid var(--gold);padding:10px 14px;border-radius:8px;margin:8px 0 12px}
+.sortcard{border:1px solid var(--tan);border-radius:10px;padding:10px;margin:8px 0;background:#fff}
+.sortcard .bk{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sortcard .bk button{flex:1 1 140px;padding:8px;font-size:15px}
+.sortcard .bk button.sel{background:var(--green);color:#fff;border-color:var(--green)}
+.sortcard.right{border-color:var(--ok);background:#EEF6F0}
+.sortcard.wrong{border-color:var(--bad);background:#FBEDEA}
+.orderlist{display:grid;gap:6px;margin:10px 0}
+.orderlist button{text-align:left;padding:10px 12px}
+.slot{border:2px dashed var(--tan);border-radius:10px;padding:10px 12px;min-height:44px;background:#fff;display:flex;gap:8px;align-items:center}
+.slot.filled{border-style:solid;border-color:var(--green)}
+.slot.right{background:#EEF6F0;border-color:var(--ok)}
+.slot.wrong{background:#FBEDEA;border-color:var(--bad)}
+.slot .n{font-weight:700;color:var(--green);min-width:22px}
+.numrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.numrow input{max-width:200px}
+.big{font-size:20px}
+table{border-collapse:collapse;width:100%}
+td,th{padding:6px 8px;border-bottom:1px solid var(--tan);text-align:left;font-size:15px}
+.cert{border:3px double var(--red);background:var(--paper);padding:22px;border-radius:6px;text-align:center}
+.cert h2{color:var(--red);font-size:28px}
+.cert .who{font-family:Cambria,Georgia,serif;font-size:26px;font-weight:700;margin:6px 0}
+.cert .code{font-family:Consolas,"Courier New",monospace;font-size:26px;letter-spacing:.12em;color:var(--green);font-weight:700}
+.cert .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:14px 0;text-align:center}
+.cert .grid div{background:var(--cream);border-radius:8px;padding:8px}
+.cert .grid b{display:block;font-size:20px;font-family:Cambria,Georgia,serif}
+.stars{color:var(--gold);font-size:22px;letter-spacing:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.row > *{flex:1 1 160px}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+@media print{
+  body{background:#fff}
+  body *{visibility:hidden}
+  #certificate,#certificate *{visibility:visible}
+  #certificate{position:absolute;left:0;top:0;width:100%}
+  .noprint{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="top hide" id="topbar">
+  <div class="wrap">
+    <div><b>Backyard Blueprint</b> <span class="stat" id="phaseName"></span></div>
+    <div class="stat">Profit <b id="profit">$0</b> &nbsp; <span id="stars"></span></div>
+    <div class="phases" id="phaseBar"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- START -->
+<section id="startScreen">
+  <div class="card">
+    <div class="kicker">Unit 34 &bull; Design-Build Challenge</div>
+    <h1>Backyard Blueprint</h1>
+    <p>You just opened your own <b>design-build landscape firm</b>. Your first client is the Ridley family, and you will take their backyard from the first interview all the way to a green roof on their new garden shed.</p>
+    <p class="muted">7 project phases, about 25 to 30 minutes. Correct calls earn profit. Mistakes cost you callbacks and client stars. Every answer shows the reason and the textbook page.</p>
+    <label for="first">First name</label><input id="first" autocomplete="off">
+    <label for="last">Last name</label><input id="last" autocomplete="off">
+    <label for="period">Class period</label>
+    <select id="period"><option value="">Choose...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+    <p id="best" class="muted"></p>
+    <p id="startMsg" class="bad"></p>
+    <div class="row"><button class="btn" id="startBtn">Open the firm</button></div>
+  </div>
+  <p style="text-align:center"><button class="link" id="teacherLink">Teacher check</button></p>
+</section>
+
+<!-- TEACHER CHECK -->
+<section id="teacher" class="hide">
+  <div class="card">
+    <div class="kicker">Teacher check</div>
+    <div id="pinBox">
+      <label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric">
+      <div class="row"><button class="btn" id="pinBtn">Unlock</button><button id="tBack1">Back</button></div>
+      <p id="pinMsg" class="bad"></p>
+    </div>
+    <div id="checkBox" class="hide">
+      <p class="muted">Type what is on the student's certificate.</p>
+      <label>Student name (first and last)</label><input id="cName">
+      <label>Period</label><input id="cPeriod">
+      <label>Percent (number only)</label><input id="cPct" inputmode="numeric">
+      <label>Date</label><input id="cDate" type="date">
+      <label>Minutes played</label><input id="cMin" inputmode="numeric">
+      <label>Completion code</label><input id="cCode" placeholder="XXX-XXX">
+      <div class="row"><button class="btn" id="checkBtn">Check code</button><button id="tBack2">Back</button></div>
+      <p id="checkMsg" class="big"></p>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="hide"></section>
+
+<!-- CERTIFICATE -->
+<section id="certificate" class="hide"></section>
+
+</div>
+
+<script>
+// ===== Settings =====
+const TEACHER_PIN = "0545";      // change this to set your own PIN
+const SALT = "NPFFA-U34-blueprint";
+const STORE = "npffa_u34_best";
+const ALPH = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const PAY = 300, CALLBACK = 150;
+
+// ===== Helpers =====
+const $ = id => document.getElementById(id);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = (a, n) => shuffle(a).slice(0, n);
+const rnd = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money = n => (n < 0 ? "-$" : "$") + Math.abs(n).toLocaleString();
+function norm(s){ return String(s || "").toLowerCase().trim().replace(/\s+/g, " "); }
+function fnv(str){ let h = 0x811c9dc5; for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
+function makeCode(name, period, pct, date, mins){
+  const s = SALT + "|" + norm(name) + "|" + norm(period) + "|" + Number(pct) + "|" + date + "|" + Number(mins);
+  let a = fnv(s), b = fnv(s + "#" + s.length), out = "";
+  for (let i = 0; i < 6; i++){ if (i === 3) a = b; out += ALPH[a % ALPH.length]; a = Math.floor(a / ALPH.length); }
+  return out.slice(0,3) + "-" + out.slice(3);
+}
+function today(d){ d = d || new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function getBest(){ try { return JSON.parse(localStorage.getItem(STORE) || "null"); } catch(e){ return null; } }
+function setBest(v){ try { localStorage.setItem(STORE, JSON.stringify(v)); } catch(e){} }
+
+// ===== Content banks (all from Introductory Horticulture Unit 34, pp. 406-430) =====
+const TERMS = [
+  ["architectural", 409, ["The building style of a neighborhood, noted during a site analysis", "Describes the style of buildings a designer notes so the landscape fits in"]],
+  ["canopy", 410, ["The outdoor ceiling formed by trees", "Tree branches overhead that act as the ceiling of an outdoor room"]],
+  ["subcanopy", 410, ["A small tree branching overhead that creates a low-ceiling effect", "A low outdoor ceiling made by a small tree, good for an intimate patio"]],
+  ["cold hardiness", 427, ["A green roof plant's ability to survive cold winter temperatures", "Being able to live through freezing weather on an exposed roof"]],
+  ["heat tolerance", 427, ["A green roof plant's ability to handle high summer heat", "Being able to survive a hot, sunny rooftop in summer"]],
+  ["wind exposure", 427, ["Strong wind that rooftop plantings must be able to resist", "The open, windy conditions plants face on a roof"]],
+  ["floral palette", 427, ["The range of flower colors used in a planting", "The mix of bloom colors a designer chooses"]],
+  ["hardscape paving", 410, ["Brick, concrete, flagstone, tile, and decking floors that cost a lot to install but little to maintain", "An outdoor floor that is expensive to install but inexpensive to maintain"]],
+  ["softscape paving", 411, ["Loose floors like crushed stone, wood chips, and pine needles", "An outdoor floor of loose materials that needs worn areas replaced"]],
+  ["heat islands", 425, ["Hot city areas that form when plants are replaced by roads and buildings", "Urban spots where pavement and buildings absorb the sun's heat"]],
+  ["microclimate", 425, ["The climate of a small, local area, which warms up when pavement absorbs heat", "Local temperature conditions in one small spot"]],
+  ["pollutants", 427, ["Harmful materials like oil, salt, and mercury carried by runoff", "Contaminants that runoff carries into sewers, streams, and rivers"]],
+  ["rain garden", 428, ["A planted low area that catches and filters surface water runoff", "A garden of native and wetland plants built where runoff collects"]],
+  ["residential", 409, ["Having to do with homes; this landscaping serves a family's needs and desires", "Describes landscaping done around a family's house"]],
+  ["stormwater", 410, ["Rainwater that runs off hard surfaces; pervious concrete helps capture it", "Runoff from rain that can be stored and reused for irrigation"]],
+  ["subcontractor", 408, ["A company hired to build part of a landscape, responsible to the landscape architect", "A worker brought in by the architect to install part of the job"]],
+  ["transpiration", 425, ["Plants releasing water vapor into the atmosphere", "Water given off by plant leaves into the air"]],
+  ["visualize", 409, ["To picture something in your mind, like seeing outdoor areas as rooms", "To form a mental picture of how the finished landscape will look"]],
+  ["xeriscaping", 416, ["Landscaping for water conservation; from the Greek word for dry", "A \"dryscape\" that uses planning, mulch, and waterwise plants to save water"]],
+  ["xeric", 416, ["Waterwise; describes plants that need very little water", "Describes drought-tolerant plants used in a dry landscape"]],
+];
+
+const INTERVIEW = [
+  "How many family members are there, and what are their ages?",
+  "How much does the family use the outdoor areas?",
+  "Do they entertain often? Large groups or small?",
+  "How much privacy from neighbors and passing cars do they want?",
+  "How much upkeep are they willing to do?",
+  "Are there plants they like, dislike, or are allergic to?",
+  "Do they need room for trash cans, pets, or a vegetable garden?",
+  "Will the family use the garden after dark?",
+  "How much do they want to spend? Spread over several years?",
+  "Will they wait for plants to mature, or want large plants now?",
+];
+const SITE = [
+  "Dimensions of the property",
+  "Topography: how flat or rolling the lot is",
+  "Quality of the topsoil and subsoil",
+  "Condition of the lawn areas",
+  "Types and condition of existing plants",
+  "Location of utility lines, meters, and easements",
+  "Good and bad views from the site",
+  "Where the glass areas of the house open onto the landscape",
+  "Architectural style of the neighborhood",
+  "Natural features like streams and rock outcroppings",
+];
+const GOALS = [
+  {q:"Which of these is NOT a goal of residential landscaping?", a:"Add as many high-maintenance features as possible", w:["Keep costs within the homeowner's budget","Determine the capabilities of the site","Develop outdoor living areas like indoor ones"], why:"The goals include keeping maintenance within what the homeowner is willing to do.", pg:409},
+  {q:"What is the best way to learn the homeowner's needs and desires?", a:"An interview with the client", w:["A soil test","A 3-D CAD drawing","A site analysis"], why:"A direct conversation builds trust and helps the designer recognize what the client actually wants.", pg:409},
+  {q:"A thorough site analysis usually involves:", a:"Several visits to the property", w:["One phone call with the client","A single soil sample","Mailing the client a survey"], why:"The book says the site analysis usually involves several visits by the designer.", pg:409},
+  {q:"Besides showing what the site can do, a good site analysis often:", a:"Suggests possibilities the homeowner had not thought of", w:["Replaces the client interview","Sets the final budget","Picks the plant list"], why:"A good site analysis often suggests additional possibilities that might interest the homeowner.", pg:409},
+];
+
+const PRINC = ["Simplicity","Symmetrical balance","Asymmetrical balance","Focalization of interest","Rhythm and line","Scale and proportion","Unity"];
+const DESIGN = [
+  {q:"The Ridleys' front bed has 14 different shrubs, one of each, with a wavy, scalloped edge. Which principle needs work?", a:"Simplicity", why:"Simplicity comes from repeating plants, massing types into groups, and using straight or gently curving bedlines.", pg:412},
+  {q:"Both sides of their formal front walk have matching pyramid evergreens and the same clipped hedge.", a:"Symmetrical balance", why:"Symmetrical balance is when one side is an exact duplicate of the other, common in formal designs (Figure 34-8).", pg:412},
+  {q:"The left side has a tall evergreen and two shrubs. The right side has a small tree and a shrub mass. Different plants, same visual weight.", a:"Asymmetrical balance", why:"Asymmetrical balance gives each side the same visual weight without duplicating it (Figure 34-9).", pg:412},
+  {q:"From the street, a bright red tree and a big fountain both pull attention away from the front door.", a:"Focalization of interest", why:"The eye wants only one most important feature, and from the street it should go quickly to the front door.", pg:412},
+  {q:"Shrub beds stop at the front corners, so the backyard feels like a different property.", a:"Rhythm and line", why:"Extending planting beds from the front around into the backyard ties the areas together and creates continuity.", pg:413},
+  {q:"Mr. Ridley wants oak trees right beside their one-story ranch house. At maturity they will tower over it.", a:"Scale and proportion", why:"Scale and proportion keeps elements in the right size relationship so plants do not overpower the building (Figure 34-11A).", pg:413},
+  {q:"For the kids' play area, you choose plants only about 3½ feet tall so the children can relate to them.", a:"Scale and proportion", why:"Plants around a children's play area should be small so kids can feel \"tall as a tree.\"", pg:413},
+  {q:"You repeat the same angle from the patio in the bedlines and the walkway.", a:"Rhythm and line", why:"Repeating shapes, angles, or lines between areas gives a design rhythm.", pg:413},
+  {q:"Instead of spacing yellow daylilies one at a time, you mass them in a single group.", a:"Simplicity", why:"Massing plant types or colors into groups, not spacing them so each is seen separately, keeps a design simple.", pg:412},
+  {q:"Every backyard bedline is shaped to lead the eye to one specimen Japanese maple.", a:"Focalization of interest", why:"Once a focal point is created, bedlines and plant arrangements should lead the viewer's eye to it (Figure 34-10).", pg:412},
+  {q:"Which is the master principle that creates the flow among all the others?", a:"Unity", why:"Unity is the master principle of landscape design (Figure 34-11C).", pg:413},
+  {q:"This kind of balance is common in formal designs but is used less often in modern home landscapes.", a:"Symmetrical balance", why:"Symmetrical balance is common in formal designs; asymmetrical balance is used more often in residential design.", pg:412},
+  {q:"This kind of balance is used most often in modern residential design.", a:"Asymmetrical balance", why:"The book says asymmetrical balance is used more frequently than symmetrical in modern residential design.", pg:412},
+  {q:"\"The fewer different objects there are for the eye to focus on, the ___ the design will seem.\" Which principle is this?", a:"Simplicity", why:"Fewer objects for the eye to focus on makes the design seem simpler.", pg:412},
+];
+
+const SURF = ["Hardscape paving","Softscape paving","Turfgrass","Ground covers"];
+const SURFQ = [
+  {q:"Mrs. Ridley wants the lowest installation cost and doesn't mind regular upkeep.", a:"Turfgrass", why:"Turf has a low installation cost but a high maintenance cost (Figure 34-6).", pg:411},
+  {q:"The patio needs the most durable floor with low upkeep. The Ridleys can pay more up front.", a:"Hardscape paving", why:"Hardscape paving is high to install but low to maintain, with high durability.", pg:411},
+  {q:"A steep bank behind the house where no one will ever walk.", a:"Ground covers", why:"Ground covers are good for surfacing areas where no one will walk, like slopes and under trees.", pg:411},
+  {q:"A loose path of pine needles: moderate to install and maintain, with worn spots replaced now and then.", a:"Softscape paving", why:"Softscape paving has moderate cost for both installation and maintenance and needs periodic replacement.", pg:411},
+  {q:"Which surfacing has a maintenance cost that is \"high at first\" and low durability?", a:"Ground covers", why:"Figure 34-6 lists ground covers as moderate to install, high maintenance at first, and low durability.", pg:411},
+  {q:"Which is the most popular of all surfacings?", a:"Turfgrass", why:"Turfgrass is the most popular of all surfacings.", pg:411},
+  {q:"A pervious concrete driveway that drains stormwater into a reservoir for irrigation is a type of:", a:"Hardscape paving", why:"Pervious concrete is a hardscape paving material used for driveways, patios, and sidewalks.", pg:410},
+];
+const ROOM = {
+  "Walls": ["Shrubs","A wood fence","A brick or stone wall","The exterior wall of the house","A trellis"],
+  "Floors": ["Crushed stone","Poured concrete","Decking","Turfgrass","Sand"],
+  "Ceilings": ["Shade trees (canopy)","An awning","A small tree branching overhead (subcanopy)","A canopy structure"],
+};
+const MULCHQ = [
+  {q:"Mulch is sold by the:", a:"Cubic yard", w:["Square foot","Pound","Gallon"], why:"Mulch is sold by the cubic yard, and there are 27 cubic feet per cubic yard.", pg:414},
+  {q:"How many cubic feet are in one cubic yard?", a:"27", w:["9","12","36"], why:"There are 27 cubic feet per cubic yard (3 × 3 × 3).", pg:414},
+  {q:"The most common type of mulch is:", a:"Wood chips", w:["Marble chips","Rubber mulch","Washed river gravel"], why:"Wood chips are the most common mulch; the two major types are hardwood bark and pine bark.", pg:414},
+  {q:"Bulk mulch is usually sold by the:", a:"Loader scoop", w:["Bag","Wheelbarrow","Square yard"], why:"Bulk mulch is loose and usually sold by loader scoop, so check the bucket volume.", pg:414},
+  {q:"On average, mulch is applied at a depth of:", a:"3 inches (.25 ft)", w:["1 inch (.08 ft)","6 inches (.5 ft)","12 inches (1 ft)"], why:"Most mulch is applied 3 inches deep, which is ¼ or .25 of a foot.", pg:414},
+];
+
+const TOOLS = ["Zero-turn mower","Walk-behind mower","Line and blade trimmer","Lawn edger","Power bed edger","Hand trowel","Nursery spade","Hand pruners","Pruning saw","Pole pruner"];
+const TOOLQ = [
+  {q:"Mow the big open lawn as fast as possible.", a:"Zero-turn mower", why:"Professional mowing equipment that increases mowing time efficiency.", pg:414},
+  {q:"Trim grass around the mailbox post where the mower can't reach.", a:"Line and blade trimmer", why:"Trims grass and plants in areas that can't be mown with the walk-behind mower.", pg:414},
+  {q:"Trim the grass along the sidewalk, driveway, and curb.", a:"Lawn edger", why:"The lawn edger trims grass along sidewalks, driveways, and curbs.", pg:415},
+  {q:"Cut a crisp edge that separates the lawn from the new shrub bed.", a:"Power bed edger", why:"The power bed edger accents a bed edge that separates the grassy area from the planting bed.", pg:415},
+  {q:"Transplant a flat of seedling annuals into the bed.", a:"Hand trowel", why:"The hand trowel is used to transplant seedling plants.", pg:415},
+  {q:"Dig a balled shrub from the nursery and edge the planting bed.", a:"Nursery spade", why:"The nursery spade is used for edging beds and digging nursery stock.", pg:415},
+  {q:"Snip small twigs (under about ¾ inch) off a boxwood.", a:"Hand pruners", why:"Hook and blade hand pruners handle small branches under about ¾ inch.", pg:415},
+  {q:"Remove a 2-inch branch you can reach from the ground.", a:"Pruning saw", why:"The pruning saw cuts branches 1½ inches or greater.", pg:415},
+  {q:"Remove a 2-inch dead limb about 11 feet above your reach.", a:"Pole pruner", why:"The pole pruner cuts branches 1½ inches or greater, 10 to 12 feet above the worker's reach.", pg:415},
+];
+
+const WATER = [
+  {q:"The word xeriscape comes from the Greek word xero, meaning:", a:"Dry", w:["Green","Stone","Garden"], pg:416, why:"Xero means \"dry\" and scape gives \"dryscape.\""},
+  {q:"Xeriscaping has been used extensively in which part of the U.S.?", a:"The Southwest", w:["The Northeast","The Pacific Northwest","The Great Lakes"], pg:416, why:"The book says xeriscaping has been used extensively in the southwestern United States."},
+  {q:"Good xeriscape design groups plants by their:", a:"Water needs", w:["Flower color","Price","Botanical family"], pg:416, why:"Grouping plants by water needs lets you grow high-water plants and still conserve water."},
+  {q:"Mulching reduces water loss by about:", a:"90 percent", w:["10 percent","25 percent","50 percent"], pg:416, why:"Mulching will reduce water loss from evaporation and runoff by 90 percent."},
+  {q:"The most direct way to pinpoint where water is needed:", a:"Drip irrigation", w:["Flood irrigation","Rotary pop-up heads","A hose-end sprinkler"], pg:416, why:"The use of drip irrigation is a more direct way of pinpointing where the water is needed."},
+  {q:"In a xeriscape, turf areas should be:", a:"Drought-tolerant grasses irrigated separately", w:["Watered with the shrub beds","Replaced with gravel everywhere","Fertilized heavily"], pg:416, why:"Turf should use high-drought-tolerant grasses, separated from other plantings and irrigated separately."},
+  {q:"Most flowering water plants need at least how many hours of full sun?", a:"6", w:["2","4","10"], pg:419, why:"Most flowering water plants need at least 6 hours of full sun to flower well."},
+  {q:"A small aboveground water tub on the patio needs:", a:"Some shade in the hottest part of the day", w:["Full sun all day","A rubber liner","A floating heater in July"], pg:419, why:"Small containers need shade in the hottest part of the day to keep water from overheating."},
+  {q:"Why not put the pond under the big maple?", a:"Leaves fall in and roots can tear the liner", w:["Maples need too much water","Shade kills fish","Maple sap clogs the pump"], pg:419, why:"Trees shed leaves into the pond, and roots can damage in-ground ponds by tearing the liner."},
+  {q:"The pond pump should plug into a:", a:"GFI (ground fault interrupter) receptacle", w:["Regular extension cord","Light socket adapter","Solar battery only"], pg:420, why:"For safe operation use a ground fault interrupter (GFI) receptacle."},
+  {q:"A rubber pond liner lasts at least:", a:"20 years", w:["5 years","10 years","50 years"], pg:420, why:"Rubber liners last at least 20 years compared with 10 years for PVC."},
+  {q:"Water lilies and lotuses need water how deep?", a:"6 to 18 inches", w:["1 to 3 inches","24 to 36 inches","Over 4 feet"], pg:420, why:"Water lilies and lotuses require deep water, 6 to 18 inches."},
+  {q:"For a small tub water garden, the best lily choice is:", a:"Dwarf water lilies", w:["Wide-spread lotus","Tropical giant lilies","Cattails"], pg:420, why:"In a small tub container garden, dwarf water lilies are appropriate."},
+  {q:"Why is a bog area NOT connected directly to the pond?", a:"Silt and soil would wash into the pond", w:["Bog plants poison fish","It voids the liner warranty","It makes the pond too cold"], pg:421, why:"If connected, silt and soil would wash into the pond from the bog area."},
+  {q:"The Ridleys have toddlers but want moving water. Best choice:", a:"A pondless waterfall", w:["A large in-ground pond","A lotus pond","A swimming pool"], pg:421, why:"A pondless waterfall allows a water garden while keeping safety and security for small children."},
+  {q:"When winterizing, stop fertilizing aquatic plants in:", a:"September", w:["June","November","January"], pg:422, why:"Step one of winterizing: stop fertilizing aquatic plants in September."},
+  {q:"In 2010, the largest category of U.S. freshwater use was:", a:"Thermoelectric power (45%)", w:["Irrigation (38%)","Public supply (14%)","Livestock (1%)"], pg:422, why:"USGS 2010: thermoelectric power 45%, irrigation 38%, public supply 14%."},
+  {q:"The \"brains\" of an automatic irrigation system is the:", a:"Computerized timer", w:["Rain sensor","Valve box","Funny Pipe"], pg:423, why:"Computerized timers are the brains; they control the time of day and amount of water."},
+  {q:"Rotary pop-up spray heads cover a radius of:", a:"20 to 50 feet", w:["1 to 5 feet","5 to 10 feet","75 to 100 feet"], pg:423, why:"Pop-up heads spray a full or part circle with a 20- to 50-foot radius."},
+  {q:"When blowing out the system for winter, do not exceed:", a:"50 psi", w:["10 psi","100 psi","150 psi"], pg:424, why:"Blow compressed air through the system, but do not use over 50 psi."},
+  {q:"Why not run the sprinklers at night?", a:"It causes disease problems", w:["Neighbors complain","Water costs more","Pumps overheat"], pg:425, why:"Do not water at night because of disease problems; water early in the morning instead."},
+  {q:"Which soil holds more water?", a:"Clay soil", w:["Sandy soil","They hold the same","Gravel"], pg:424, why:"Finer-textured clay soil holds more water than porous sandy soil."},
+  {q:"Which plant does the book give as a heavy water user?", a:"Holly", w:["Sedum","Prickly pear","Lambs ear"], pg:424, why:"Holly (Ilex) is a heavy water user; sedum, a succulent, uses little."},
+  {q:"The automatic controller and zone valves run on:", a:"12 volts", w:["120 volts","240 volts","6 volts"], pg:425, why:"Wiring zone valves back to the controller is a 12-volt system."},
+  {q:"Hand-dug irrigation main line trenches should be:", a:"8 to 12 inches deep", w:["1 to 2 inches deep","24 to 30 inches deep","Exactly 3 feet deep"], pg:425, why:"If trenching by hand, dig 8 to 12 inches deep (below the frost line in freezing climates)."},
+];
+
+const LAYERS = ["Roof construction","Waterproof membrane","Water retention layer","Drainage layer","Plant media layer","Green roof plants"];
+const ROOFQ = [
+  {q:"Before building, who must certify the shed roof can carry the load?", a:"An architect or structural engineer", w:["The plant nursery","The homeowner","The irrigation contractor"], pg:427, why:"Construction requires official certification of the architect or structural engineer for load capacity."},
+  {q:"Green roof plants grow in media that is:", a:"6 inches or less", w:["12 to 18 inches","2 to 3 feet","At least 4 feet"], pg:427, why:"Green roof plants have shallow roots growing in media of 6 inches or less."},
+  {q:"Sedums save water because their stomata open:", a:"At night (CAM)", w:["Only at noon","Only in winter","Never"], pg:427, why:"Stomata open at night, a process called crassulacean acid metabolism (CAM)."},
+  {q:"Green roof soil pH should be:", a:"6.5 to 8.0", w:["4.0 to 5.0","5.0 to 6.0","8.5 to 10.0"], pg:428, why:"Check the soil pH, which should be 6.5 to 8.0."},
+  {q:"Green roof fertilizer rate from the book:", a:"14-14-14 at 20 lb per 1,000 sq ft", w:["10-10-10 at 5 lb per acre","34-0-0 at 50 lb per 1,000 sq ft","0-0-60 at 2 lb per 1,000 sq ft"], pg:428, why:"Use slow-release 14-14-14 at 20 pounds per 1,000 square feet."},
+  {q:"How often should green roof weeds be controlled?", a:"Every 2 weeks", w:["Once a year","Every 2 months","Never"], pg:428, why:"Perform weed control every 2 weeks and deadhead flower seedpods."},
+  {q:"Green roofs can extend the life of the roof by:", a:"Two to three times", w:["10 percent","Half","They shorten it"], pg:425, why:"Green roofs enhance overall roof life longevity by two to three times."},
+  {q:"Heat islands form in cities when:", a:"Plants are replaced by roads and buildings", w:["Too many trees are planted","Lakes freeze","Green roofs are installed"], pg:425, why:"Roads and buildings absorb the sun's heat, raising surface and microclimate temperatures."},
+  {q:"The main goal of a rain garden is to:", a:"Manage surface water drainage", w:["Grow vegetables","Replace the lawn with gravel","Raise the water table"], pg:428, why:"Rain gardens help solve problems with surface water drainage."},
+  {q:"Rain garden plant lists should include:", a:"Native and wetland plants", w:["Cacti and succulents only","Turfgrass only","Tropical lilies"], pg:428, why:"Plant selection should include native and wetland plants that filter runoff."},
+  {q:"Which Figure 34-25 green roof plant is hardy to zone 2?", a:"Nodding onion", w:["'Angelina' sedum","'Gold Nugget' ice plant","'Ruby Heart' hen and chicks"], pg:426, why:"Allium cernuum, nodding onion, is the only plant listed for zone 2."},
+  {q:"Which Figure 34-25 plant needs full sun only?", a:"'Gold Nugget' ice plant", w:["Nodding onion","Floific sedum","Myrtle euphorbia"], pg:426, why:"Delosperma 'Gold Nugget' is the only one listed for full sun alone."},
+  {q:"Runoff from roofs and pavement carries pollutants such as:", a:"Oil, salt, and mercury", w:["Oxygen and nitrogen","Pollen and dust only","Sand and clay only"], pg:427, why:"The book lists oil, salt, and mercury as runoff pollutants that green roofs help reduce."},
+];
+
+// ===== Build a fresh project =====
+function mc(q, a, wrongs, why, pg, n = 4){ return {type:"mc", q, a, opts: shuffle([a, ...pick(wrongs.filter(w => w !== a), n - 1)]), why, pg}; }
+function buildPhases(){
+  const P = [];
+  // 1 Terms
+  P.push({name:"Plan Set Legend", tag:"Key terms", client:"Before you meet the Ridleys, learn the words on your plan set. Match each meaning to its term.",
+    items: pick(TERMS, 8).map(t => {
+      const def = t[2][rnd(0,1)];
+      return mc("Which term means: \"" + def + "\"?", t[0], TERMS.map(x => x[0]), "\"" + t[0] + "\": " + t[2][0] + ".", t[1]);
+    })});
+  // 2 Interview & site
+  const cards = shuffle([...pick(INTERVIEW,4).map(c => ({c, b:"Interview question"})), ...pick(SITE,4).map(c => ({c, b:"Site analysis note"}))]);
+  P.push({name:"Interview & Site Visit", tag:"Residential goals", client:"Meeting day. Mrs. Ridley has coffee ready and you have your clipboard. Sort each note: is it a question for the family, or something you check on the property?",
+    items: [{type:"sort", buckets:["Interview question","Site analysis note"], cards, pg:409, why:"Interview questions ask the family about their needs and desires. Site analysis notes come from studying the property itself."},
+      ...pick(GOALS,2).map(g => mc(g.q, g.a, g.w, g.why, g.pg))]});
+  // 3 Design review
+  P.push({name:"Design Review", tag:"Design principles", client:"Your junior designer drafted the plan. Review each note and name the principle it is about.",
+    items: pick(DESIGN, 6).map(d => mc(d.q, d.a, PRINC, d.why, d.pg))});
+  // 4 Materials bid
+  const L1 = rnd(8, 24), W1 = rnd(10, 40), L2 = rnd(6, 20), W2 = rnd(12, 36);
+  const rc = shuffle(Object.keys(ROOM).flatMap(b => pick(ROOM[b], 2).map(c => ({c, b}))));
+  P.push({name:"Materials Bid", tag:"Outdoor rooms & mulch", client:"Time to price the job. Pick surfacings, sort materials into the outdoor room, and order the mulch.",
+    items: [...pick(SURFQ,3).map(s => mc(s.q, s.a, SURF, s.why, s.pg)),
+      {type:"sort", buckets:["Walls","Floors","Ceilings"], cards: rc, pg:410, why:"Outdoor walls can be shrubs, fences, brick or stone, building walls, or trellises. Floors can be earth, sand, crushed stone, concrete, brick, decking, or turfgrass. Ceilings come from trees, awnings, canopies, or overhead structures."},
+      {type:"num", q:"Shrub border: " + L1 + " ft long × " + W1 + " ft wide, mulched 3 inches deep. How many CUBIC FEET of mulch?", ans: L1*W1*0.25, tol:0.5, unit:"cu ft", pg:414,
+        why: L1 + " × " + W1 + " = " + (L1*W1) + " sq ft × .25 ft = " + (L1*W1*0.25) + " cubic feet."},
+      {type:"num", q:"Island bed: " + L2 + " ft × " + W2 + " ft at 3 inches deep. How many CUBIC YARDS? (round to 2 decimals)", ans: Math.round(L2*W2*0.25/27*100)/100, tol:0.06, unit:"cu yd", pg:414,
+        why: L2 + " × " + W2 + " = " + (L2*W2) + " sq ft × .25 = " + (L2*W2*0.25) + " cu ft ÷ 27 = " + (L2*W2*0.25/27).toFixed(2) + " cubic yards."},
+      ...pick(MULCHQ,1).map(m => mc(m.q, m.a, m.w, m.why, m.pg))]});
+  // 5 Crew dispatch
+  P.push({name:"Crew Dispatch", tag:"Maintenance tools", client:"The install is done and you won the maintenance contract. Send the crew out with the right tool for each job.",
+    items: pick(TOOLQ, 5).map(t => mc(t.q, t.a, TOOLS, t.why, t.pg))});
+  // 6 Water-wise
+  P.push({name:"Water-Wise Install", tag:"Xeriscape, water garden, irrigation", client:"The Ridleys want to cut their water bill and add the sound of water. Make the calls on xeriscaping, the water feature, and the irrigation system.",
+    items: pick(WATER, 8).map(w => mc(w.q, w.a, w.w, w.why, w.pg))});
+  // 7 Green roof
+  P.push({name:"Green Roof Shed", tag:"Green roofs & rain gardens", client:"Last job: a green roof on the new garden shed and a rain garden where the downspout floods the yard.",
+    items: [{type:"order", q:"Build the green roof from the roof deck UP. Tap the layers in order, bottom first.", list: LAYERS, pg:427, why:"Figure 34-26, bottom to top: roof construction, waterproof membrane, water retention layer, drainage layer, plant media layer, green roof plants."},
+      ...pick(ROOFQ, 4).map(r => mc(r.q, r.a, r.w, r.why, r.pg))]});
+  return P;
+}
+
+// ===== State =====
+let S = null;
+function points(it){ return it.type === "sort" ? it.cards.length : it.type === "order" ? it.list.length : 1; }
+
+function start(){
+  const first = $("first").value.trim(), last = $("last").value.trim(), period = $("period").value;
+  if (!first || !last || !period){ $("startMsg").textContent = "Enter your first name, last name, and class period."; return; }
+  S = { name: first + " " + last, period, phases: buildPhases(), p:0, i:0, profit:0, right:0, total:0, byPhase:[], t0: Date.now() };
+  S.phases.forEach(ph => { ph.right = 0; ph.total = ph.items.reduce((a,it) => a + points(it), 0); });
+  S.total = S.phases.reduce((a,ph) => a + ph.total, 0);
+  $("startScreen").classList.add("hide"); $("topbar").classList.remove("hide"); $("game").classList.remove("hide");
+  phaseIntro();
+}
+function starCount(){ const done = S.phases.slice(0, S.p + 1).reduce((a,ph)=>a+ph.right,0); const seen = S.seen || 0; const pct = seen ? done/seen : 1; return Math.max(1, Math.min(5, Math.round(pct*5))); }
+function hud(){
+  $("profit").textContent = money(S.profit);
+  $("stars").innerHTML = '<span class="stars">' + "★".repeat(starCount()) + "☆".repeat(5 - starCount()) + "</span>";
+  $("phaseName").textContent = " • Phase " + (S.p + 1) + " of 7: " + S.phases[S.p].name;
+  $("phaseBar").innerHTML = S.phases.map((ph,k) => '<span class="' + (k < S.p ? "done" : k === S.p ? "now" : "") + '"></span>').join("");
+}
+function score(n, of){ S.right += n; S.phases[S.p].right += n; S.seen = (S.seen||0) + of; S.profit += n*PAY - (of-n)*CALLBACK; hud(); }
+
+function phaseIntro(){
+  const ph = S.phases[S.p]; hud();
+  $("game").innerHTML = '<div class="card"><div class="kicker">Phase ' + (S.p+1) + ' • ' + esc(ph.tag) + '</div><h2>' + esc(ph.name) + '</h2><div class="client">' + esc(ph.client) + '</div><p class="muted">' + ph.total + ' points in this phase.</p><button class="btn" id="go">Start phase</button></div>';
+  $("go").onclick = () => { S.i = 0; showItem(); };
+  window.scrollTo(0,0);
+}
+function next(){
+  S.i++;
+  if (S.i < S.phases[S.p].items.length) return showItem();
+  S.p++;
+  if (S.p < S.phases.length) return phaseIntro();
+  finish();
+}
+function header(){ const ph = S.phases[S.p]; return '<div class="kicker">' + esc(ph.name) + ' • ' + (S.i+1) + ' of ' + ph.items.length + '</div>'; }
+function fbHtml(ok, msg, why, pg){ return '<div class="fb' + (ok ? "" : " no") + '"><b>' + msg + '</b> ' + esc(why) + ' <span class="pg">(p. ' + pg + ')</span></div><div class="row"><button class="btn" id="nx">Next</button></div>'; }
+
+function showItem(){
+  const it = S.phases[S.p].items[S.i];
+  const g = $("game");
+  if (it.type === "mc"){
+    g.innerHTML = '<div class="card">' + header() + '<h3>' + esc(it.q) + '</h3><div class="opts">' + it.opts.map((o,k) => '<button class="opt" data-k="' + k + '">' + esc(o) + '</button>').join("") + '</div><div id="fb"></div></div>';
+    g.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      const choice = it.opts[+b.dataset.k], ok = choice === it.a;
+      g.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (it.opts[+x.dataset.k] === it.a) x.classList.add("right"); });
+      if (!ok) b.classList.add("wrong");
+      score(ok?1:0, 1);
+      $("fb").innerHTML = fbHtml(ok, ok ? "Good call! +" + money(PAY) : "Callback. -" + money(CALLBACK) + " Correct: " + esc(it.a) + ".", it.why, it.pg);
+      $("nx").onclick = next; $("nx").focus();
+    });
+  } else if (it.type === "sort"){
+    const sel = {};
+    g.innerHTML = '<div class="card">' + header() + '<h3>Sort each card.</h3><p class="muted">Tap a bucket for every card, then submit.</p><div id="cards">' +
+      it.cards.map((c,k) => '<div class="sortcard" id="sc' + k + '"><div>' + esc(c.c) + '</div><div class="bk">' + it.buckets.map(b => '<button data-k="' + k + '" data-b="' + esc(b) + '">' + esc(b) + '</button>').join("") + '</div><div class="res"></div></div>').join("") +
+      '</div><div class="row"><button class="btn" id="sub" disabled>Submit</button></div><div id="fb"></div></div>';
+    g.querySelectorAll(".bk button").forEach(b => b.onclick = () => {
+      const k = +b.dataset.k; sel[k] = b.dataset.b;
+      $("sc"+k).querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+      $("sub").disabled = Object.keys(sel).length < it.cards.length;
+    });
+    $("sub").onclick = () => {
+      let n = 0;
+      it.cards.forEach((c,k) => { const ok = sel[k] === c.b; if (ok) n++; const el = $("sc"+k); el.classList.add(ok ? "right" : "wrong");
+        el.querySelectorAll("button").forEach(x => x.disabled = true);
+        el.querySelector(".res").innerHTML = ok ? '<span class="ok">Correct</span>' : '<span class="bad">Belongs in: ' + esc(c.b) + '</span>'; });
+      $("sub").disabled = true; score(n, it.cards.length);
+      $("fb").innerHTML = fbHtml(n === it.cards.length, n + " of " + it.cards.length + " sorted correctly.", it.why, it.pg);
+      $("nx").onclick = next;
+    };
+  } else if (it.type === "num"){
+    g.innerHTML = '<div class="card">' + header() + '<h3>' + esc(it.q) + '</h3><p class="muted">Formula: length × width × depth (ft) = cubic feet. Divide by 27 for cubic yards. 3 in = .25 ft.</p><div class="numrow"><input id="num" inputmode="decimal" autocomplete="off"> <span>' + it.unit + '</span> <button class="btn" id="sub">Submit</button></div><div id="fb"></div></div>';
+    const go = () => { const v = parseFloat(String($("num").value).replace(/,/g,"")); if (isNaN(v)) return;
+      const ok = Math.abs(v - it.ans) <= it.tol; $("num").disabled = true; $("sub").disabled = true; score(ok?1:0, 1);
+      $("fb").innerHTML = fbHtml(ok, ok ? "Order placed! +" + money(PAY) : "Wrong order. -" + money(CALLBACK) + " Answer: " + it.ans + " " + it.unit + ".", it.why, it.pg); $("nx").onclick = next; };
+    $("sub").onclick = go; $("num").onkeydown = e => { if (e.key === "Enter") go(); }; $("num").focus();
+  } else if (it.type === "order"){
+    const pool = shuffle(it.list), chosen = [];
+    const draw = () => {
+      $("slots").innerHTML = it.list.map((_,k) => '<div class="slot' + (chosen[k] ? " filled" : "") + '" id="sl' + k + '"><span class="n">' + (k+1) + '</span><span>' + (chosen[k] ? esc(chosen[k]) : '<span class="muted">' + (k === 0 ? "bottom (on the roof deck)" : k === it.list.length-1 ? "top" : "") + '</span>') + '</span></div>').join("");
+      $("pool").innerHTML = pool.filter(x => !chosen.includes(x)).map(x => '<button data-x="' + esc(x) + '">' + esc(x) + '</button>').join("");
+      $("pool").querySelectorAll("button").forEach(b => b.onclick = () => { chosen.push(b.dataset.x); draw(); });
+      $("sub").disabled = chosen.length < it.list.length;
+    };
+    g.innerHTML = '<div class="card">' + header() + '<h3>' + esc(it.q) + '</h3><div class="orderlist" id="pool"></div><div class="orderlist" id="slots"></div><div class="row"><button id="undo">Undo</button><button class="btn" id="sub" disabled>Submit</button></div><div id="fb"></div></div>';
+    $("undo").onclick = () => { chosen.pop(); draw(); };
+    $("sub").onclick = () => {
+      let n = 0; it.list.forEach((x,k) => { const ok = chosen[k] === x; if (ok) n++; $("sl"+k).classList.add(ok ? "right" : "wrong"); if (!ok) $("sl"+k).innerHTML += ' <span class="bad">→ ' + esc(x) + '</span>'; });
+      $("sub").disabled = true; $("undo").disabled = true; score(n, it.list.length);
+      $("fb").innerHTML = fbHtml(n === it.list.length, n + " of " + it.list.length + " layers in the right spot.", it.why, it.pg); $("nx").onclick = next;
+    };
+    draw();
+  }
+  window.scrollTo(0,0);
+}
+
+function rank(p){ return p >= 90 ? "Lead Landscape Architect" : p >= 75 ? "Project Manager" : p >= 60 ? "Crew Leader" : "Apprentice Designer"; }
+function finish(){
+  const end = new Date(), mins = Math.max(1, Math.round((end - S.t0) / 60000)), pct = Math.round(100 * S.right / S.total);
+  const date = today(end), code = makeCode(S.name, S.period, pct, date, mins);
+  const stars = Math.max(1, Math.min(5, Math.round(pct / 20)));
+  const best = getBest(); if (!best || pct > best.pct) setBest({pct, name:S.name, date});
+  $("topbar").classList.add("hide"); $("game").classList.add("hide");
+  const rows = S.phases.map(ph => { const p = Math.round(100*ph.right/ph.total); return '<tr><td>' + esc(ph.name) + ' <span class="muted">(' + esc(ph.tag) + ')</span></td><td>' + ph.right + '/' + ph.total + '</td><td class="' + (p >= 70 ? "ok" : "bad") + '">' + (p >= 70 ? "Solid" : "Review") + '</td></tr>'; }).join("");
+  const review = S.phases.filter(ph => ph.right/ph.total < 0.7).map(ph => ph.tag);
+  const c = $("certificate"); c.classList.remove("hide");
+  c.innerHTML = '<div class="cert"><div class="kicker">North Paulding FFA • Unit 34 • Principles of Landscaping</div><h2>Certificate of Completion</h2><p class="muted">Backyard Blueprint: Design-Build Challenge</p>' +
+    '<div class="who">' + esc(S.name) + '</div><div>Period ' + esc(S.period) + '</div>' +
+    '<div class="grid"><div>Score<b>' + pct + '%</b></div><div>Correct<b>' + S.right + ' / ' + S.total + '</b></div><div>Project profit<b>' + money(S.profit) + '</b></div><div>Client rating<b class="stars">' + "★".repeat(stars) + "☆".repeat(5-stars) + '</b></div></div>' +
+    '<div>Firm title: <b>' + rank(pct) + '</b></div>' +
+    '<p>Minutes played: <b>' + mins + '</b> &nbsp; Finished: <b>' + date + '</b> at ' + end.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + '</p>' +
+    '<div class="muted">Completion code</div><div class="code">' + code + '</div>' +
+    '<table style="margin-top:14px"><tr><th>Phase</th><th>Points</th><th></th></tr>' + rows + '</table>' +
+    '<p>' + (review.length ? "Topics to review: <b>" + review.map(esc).join(", ") + "</b>" : "No weak spots. Great work!") + '</p></div>' +
+    '<div class="row noprint"><button class="btn" onclick="window.print()">Print / Save as PDF</button><button class="btn red" onclick="location.reload()">Play again</button></div>';
+  window.scrollTo(0,0);
+}
+
+// ===== Teacher check =====
+function showTeacher(on){ $("startScreen").classList.toggle("hide", on); $("teacher").classList.toggle("hide", !on); }
+$("teacherLink").onclick = () => showTeacher(true);
+$("tBack1").onclick = $("tBack2").onclick = () => showTeacher(false);
+$("pinBtn").onclick = () => { if ($("pin").value === TEACHER_PIN){ $("pinBox").classList.add("hide"); $("checkBox").classList.remove("hide"); } else $("pinMsg").textContent = "Wrong PIN."; };
+$("checkBtn").onclick = () => {
+  const want = makeCode($("cName").value, $("cPeriod").value, parseInt($("cPct").value,10), $("cDate").value, parseInt($("cMin").value,10)).replace(/[^A-Z0-9]/g,"");
+  const got = $("cCode").value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+  $("checkMsg").innerHTML = got && got === want ? '<span class="ok">✔ Code matches.</span>' : '<span class="bad">✘ Code does not match.</span> <span class="muted">Check spelling of the name and every number.</span>';
+};
+
+// ===== Start screen =====
+$("startBtn").onclick = start;
+(function(){ const b = getBest(); if (b) $("best").textContent = "Best score on this device: " + b.pct + "% (" + b.name + ", " + b.date + ")"; })();
+</script>
+</body>
+</html>
