@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small Animal Farm Tycoon</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Mono:wght@500;600&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a farm ledger. Stat strip on top, one working card below, shop rows laid out like ledger lines. */
+html{color-scheme:light}
+:root{
+  --bg:#EEF1E7; --paper:#FBFCF7; --line:#D3DAC6; --ink:#1B2A22; --muted:#5B6B60;
+  --green:#2B6A4B; --green-ink:#FFFFFF; --yolk:#E2B13C; --yolk-ink:#2A2108;
+  --bad:#A8402F; --bad-bg:#F6E3DE; --ok-bg:#DDEEDF; --head:#1E3B2E; --head-ink:#F3F6EC;
+  --display:'Alfa Slab One', Georgia, serif; --body:'Work Sans', system-ui, sans-serif; --mono:'IBM Plex Mono', ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111A15; --paper:#18241D; --line:#2B3B31; --ink:#E8EEE4; --muted:#9AAB9F;
+  --green:#5DB387; --green-ink:#0C1912; --yolk:#E8BB4A; --yolk-ink:#2A2108;
+  --bad:#E0806F; --bad-bg:#3A211C; --ok-bg:#1C3326; --head:#0B120E; --head-ink:#E8EEE4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111A15; --paper:#18241D; --line:#2B3B31; --ink:#E8EEE4; --muted:#9AAB9F;
+  --green:#5DB387; --green-ink:#0C1912; --yolk:#E8BB4A; --yolk-ink:#2A2108;
+  --bad:#E0806F; --bad-bg:#3A211C; --ok-bg:#1C3326; --head:#0B120E; --head-ink:#E8EEE4; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.2px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--yolk);outline-offset:2px}
+
+.hud{background:var(--head);color:var(--head-ink);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.hud div{min-width:0}
+.hud small{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.hud b{font-family:var(--mono);font-size:20px;font-weight:600}
+.pips{grid-column:1/-1;display:flex;gap:4px}
+.pips i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.18)}
+.pips i.on{background:var(--yolk)}
+.pips i.now{background:var(--head-ink)}
+@media(max-width:520px){.hud{grid-template-columns:1fr 1fr}}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px}
+.stage{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px}
+.stage b{color:var(--green)}
+.hero{background:var(--head);color:var(--head-ink);border-radius:10px;padding:28px 22px}
+.hero h1{font-size:clamp(30px,6vw,48px);line-height:1.05}
+.hero p{max-width:56ch;opacity:.9;margin:12px 0 0}
+.eyebrow{font-family:var(--mono);font-size:13px;color:var(--yolk);margin-bottom:8px}
+
+.btn{border:0;border-radius:8px;padding:12px 18px;font-weight:700;background:var(--green);color:var(--green-ink)}
+.btn.alt{background:var(--yolk);color:var(--yolk-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+input[type=text]{font:inherit;padding:11px 12px;border-radius:8px;border:2px solid var(--line);background:var(--paper);color:var(--ink);width:100%;max-width:340px}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.steps div{border-top:3px solid var(--yolk);padding-top:8px;font-size:15px}
+.steps b{display:block;font-family:var(--display);font-weight:400;font-size:17px}
+@media(max-width:620px){.steps{grid-template-columns:1fr}}
+
+.ent{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.ent:first-of-type{border-top:0}
+.tag{width:52px;height:52px;border-radius:8px;background:var(--yolk);color:var(--yolk-ink);display:grid;place-items:center;font-family:var(--display);font-size:19px;transform:rotate(-3deg);box-shadow:0 0 0 2px var(--yolk-ink) inset}
+.ent.own .tag{background:var(--green);color:var(--green-ink);box-shadow:none}
+.ent h3{font-size:18px}
+.ent p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.lv{display:inline-flex;gap:3px;margin-left:8px;vertical-align:middle}
+.lv i{width:10px;height:10px;border-radius:2px;border:2px solid var(--green)}
+.lv i.on{background:var(--green)}
+.ent .btn{min-width:150px;font-size:15px;padding:10px 12px}
+@media(max-width:560px){.ent{grid-template-columns:44px 1fr}.ent .tag{width:44px;height:44px;font-size:16px}.ent .btn{grid-column:1/-1;width:100%}}
+
+.q{font-size:19px;font-weight:600;line-height:1.4;margin:4px 0 14px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;background:var(--paper);color:var(--ink);border:2px solid var(--line);border-radius:8px;padding:12px 14px;font-weight:500}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:var(--ok-bg);border-color:var(--green)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{margin-top:14px;padding:14px;border-radius:8px;background:var(--ok-bg);border-left:6px solid var(--green)}
+.fb.bad{background:var(--bad-bg);border-left-color:var(--bad)}
+.fb strong{display:block;margin-bottom:4px}
+.pg{font-family:var(--mono);font-size:13px;color:var(--muted)}
+
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;font-size:15px}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+td.r,th.r{text-align:right}
+.good{color:var(--green)} .neg{color:var(--bad)}
+.tot td{font-weight:700;border-bottom:0;font-size:17px}
+.scroll{overflow-x:auto}
+
+.rank{font-family:var(--display);font-size:clamp(28px,6vw,42px);line-height:1.1;margin:6px 0}
+.big{font-family:var(--mono);font-size:34px;font-weight:600}
+.miss{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.miss div{border-left:4px solid var(--yolk);padding:2px 0 2px 12px}
+.miss b{display:block}
+.note{font-size:14px;color:var(--muted)}
+@media(prefers-reduced-motion:no-preference){.opt,.btn{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+// ---------- Question bank. [tag, question, correct, [3 wrong], page, explanation] ----------
+const BANK=[
+// Poultry
+['P','Your first batch of chicks is ready to order. Where should they come from?','A reputable hatchery or breeder',['The cheapest seller you can find','A neighbor with birds of unknown health','Whoever can deliver fastest'],'p. 620','Buy young poultry or eggs only from reputable hatcheries or breeders. A hatchery hatches young poultry from eggs.'],
+['P','Which chicks give you the healthiest start?','Immunized, disease-free chicks',['Any chicks, since you can treat sick ones later','Chicks of mixed ages','Chicks from a flock with a few sick birds'],'p. 620','Purchase immunized, disease-free chicks, pullets, or poults.'],
+['P','Your broilers are ready for market. About how old should they be?','7 to 8 weeks',['3 to 4 weeks','12 to 14 weeks','20 to 22 weeks'],'p. 620','Broilers and ducks go to market at 7 to 8 weeks. Turkeys and geese take 12 to 14 weeks.'],
+['P','You are raising turkeys for the holiday market. About how long until they are ready?','12 to 14 weeks',['7 to 8 weeks','20 to 22 weeks','30 to 32 weeks'],'p. 620','Turkeys and geese are marketed at 12 to 14 weeks.'],
+['P','You want layers producing eggs by a target date. When do you buy the chicks?','20 to 22 weeks before eggs are expected',['The day you need eggs','2 weeks before','8 to 10 weeks before'],'p. 620','Layer chicks are purchased 20 to 22 weeks before expected egg production.'],
+['P','Which breed is the foundation of most laying chickens?','White Leghorn',['Cornish','Pekin','Bourbon Red'],'p. 618','The foundation breed of most laying-type chickens is the White Leghorn.'],
+['P','The last flock just left the house. What comes before the new chicks arrive?','Clean and disinfect the facilities',['Bring the chicks in right away to save time','Sweep the floor and nothing else','Open the windows for a day'],'p. 621','Clean and disinfect facilities before a new flock arrives.'],
+['P','A neighbor asks why commercial poultry farms are so large. What is the best answer?','Fixed costs like buildings are spread over more birds',['Chickens need huge pastures','State law requires 10,000 birds','Small flocks cannot survive'],'p. 618','Fixed costs such as buildings are divided among more animals, so large farms cost less per bird.'],
+['P','Most broiler chickens trace back to which meat breeds?','Cornish and White Rock',['Leghorn and Khaki Campbell','Pekin and Muscovy','Bronze and White Holland'],'p. 618','Most broilers trace to Cornish or White Rock chickens.'],
+['P','A Pekin duck reaches about how many pounds in 8 weeks?','7 pounds',['2 pounds','4 pounds','12 pounds'],'p. 619','The Pekin reaches about 7 lbs in 8 weeks. A broiler reaches about 4 lbs in the same time.'],
+['P','Which duck is the champion egg layer?','Khaki Campbell',['Pekin','Muscovy','Aylesbury'],'p. 619','The Khaki Campbell often lays more than 350 eggs a year. Chickens average about 250.'],
+['P','Which two turkey varieties produce nearly all turkey meat in the US?','White Holland and Bronze',['Royal Palm and Slate','Bourbon Red and Narragansett','Black and Beltsville Small White'],'p. 619','Only the White Holland (including Broad-Breasted White) and the Bronze are used extensively for commercial meat.'],
+['P','Which items belong in a poultry housing plan?','Size, ventilation, ease of cleaning, lighting, heating and cooling, feed storage',['Only the price of the building','The color of the paint','Nothing, poultry need no housing'],'p. 621','Plan housing for size, ventilation, ease of cleaning, lighting, heating and cooling, feed storage, and maintenance.'],
+['P','How can a small backyard flock help on a farm?','It controls insects like grasshoppers and finds some of its own food',['It replaces all fertilizer','It needs no protection from predators','It never needs feed'],'p. 618','Poultry control insects and find some of their own food, but they still need protection from dogs and skunks.'],
+['P','Broiler house tip: what must a feeding program use?','A balanced ration designed for that type of poultry',['Scratch grain only','Table scraps','The same feed for every animal on the farm'],'p. 621','Feed a balanced ration designed for the type of poultry. Control external parasites and follow a flock health program.'],
+// Rabbits
+['R','You are building hutches for small and medium rabbits. What size does the book recommend?','30 in wide x 36 in long x 18 in high',['12 x 12 x 6','18 x 18 x 12','60 x 60 x 36'],'p. 626','Small and medium breeds need 30 x 36 x 18 inches. Large breeds need 30 x 48 x 18.'],
+['R','Your does are ready to breed. At what age?','5 to 8 months, depending on breed',['4 weeks','12 to 14 months','2 years'],'p. 626','Breed does at 5 to 8 months and bucks at 6 to 7 months. Large breeds mature more slowly.'],
+['R','How should you handle breeding?','Take the doe to the buck\'s cage and return her right away',['Leave the buck in the doe\'s cage for a week','Keep both in one hutch all year','Put several does in with the buck'],'p. 626','Take the doe to the buck\'s cage and return her immediately.'],
+['R','About how many does can one mature buck serve?','10 to 25',['1 to 2','40 to 50','100'],'p. 626','Maintain 1 mature buck for every 10 to 25 does.'],
+['R','You bred a doe today. When does the nesting box go in her cage?','25 days after mating',['The same day','7 days after mating','45 days after mating'],'p. 626','Place a nesting box in the doe\'s cage 25 days after mating.'],
+['R','How do you pick up a rabbit?','Hold the skin on the back of the neck and support its weight with your other hand',['By the ears','By the hind legs','By the front legs only'],'p. 626','Handle rabbits as little as possible. Hold the neck skin and support the weight with the other hand.'],
+['R','What do you feed a doe with a litter?','Commercial pellets, free choice',['Hay only','Table scraps','One feeding a week'],'p. 626','Feed commercial pelleted feed free choice to does and litters. Single bucks and does get 3 to 6 oz once a day, preferably in the evening.'],
+['R','How do you identify breeding rabbits for your records?','Tattoo the ear',['Clip a toenail','Shave a patch','Paint the fur'],'p. 627','Tattoo breeding rabbits for identification and keep accurate breeding, production, and health records.'],
+['R','A rabbit in the herd dies. What does the book say to do?','Dispose of sick and dead rabbits promptly and keep a herd health program',['Leave it until the end of the week','Move it to another hutch','Feed it to the other animals'],'p. 627','Plan a strict herd health program and dispose of sick and dead rabbits promptly.'],
+['R','Which is the most popular meat rabbit in the US?','New Zealand White',['Netherland Dwarf','Rex','Flemish Giant'],'p. 623','The New Zealand White is the most popular meat breed. A 4 lb rabbit at 8 weeks uses about 4 lbs of feed per pound produced.'],
+['R','A customer asks about rabbit meat. What is true?','Low in fat (4 percent) and high in protein (25 percent)',['High in fat and cholesterol','Low in protein','High in sodium'],'p. 622','Rabbit meat is low in fat, sodium, and cholesterol, and high in protein.'],
+['R','You want to sell wool, not meat. Which rabbit do you raise?','Angora',['Satin','Californian','Dutch'],'p. 623','Angora rabbits are used strictly for wool, sheared or pulled about every 10 to 12 weeks.'],
+['R','A lab asks to buy rabbits. Which breeds does the book list for laboratory use?','New Zealand White, Dutch, Florida White',['Rex, Satin, Havana','Flemish Giant only','Angora and Champagne D\'Argent'],'p. 623','Laboratory breeds are New Zealand White, Dutch, and Florida White. Rex, Satin, and Havana are fur breeds.'],
+// Bees
+['B','Fall is coming. How much honey should each hive have stored for winter?','At least 75 lbs',['15 lbs','25 lbs','40 lbs'],'p. 630','Make sure each hive has at least 75 lbs of honey for winter. Hives without enough get a sugar-water mixture.'],
+['B','A hive is short on stored honey in winter. What do you feed?','A sugar-water mixture',['Cow milk','Vegetable oil','Nothing'],'p. 630','Hives lacking surplus honey should be fed a sugar-water mixture.'],
+['B','How often should you replace the queen?','Every 2 years',['Every month','Every 6 months','Never'],'p. 629','Replace queens every 2 years.'],
+['B','On a monthly inspection you find cells that look like peanuts. What do you do?','Destroy them, since they are drone or queen cells',['Leave them to make more honey','Harvest them','Cover them with wax'],'p. 630','Workers building drone or queen cells is a swarming warning. Destroy cells that look like peanuts.'],
+['B','You must move a hive. How far should it go so bees do not return to the old site?','At least 5 miles',['50 yards','1 mile','1 block'],'p. 630','Hives must be moved at least 5 miles. A deflector in the entrance helps bees notice they were moved.'],
+['B','When should you remove surplus honey?','In the evening or at night, after the bees cap it with wax',['At midday when most bees are out','Before the bees cap it','Only in winter'],'p. 630','Remove honey in the evening or at night when nearly all bees are in the hive, after it has been capped.'],
+['B','You are buying your first bees. What is usually more profitable?','A 3 lb package with a purebred queen',['Waiting for a wild swarm','A hive with no queen','A hive without inspection'],'p. 628','It is usually more profitable to buy a 3 lb package with a purebred queen than to rely on a swarm.'],
+['B','An orchard grower wants to rent your hives. Why do many beekeepers rent bees?','Many make more money from rental than from honey',['Honey cannot be sold','The law requires it','Bees only work orchards'],'p. 627','Pollination of citrus, peaches, and apples is so valuable that many beekeepers earn more from bee rental than from honey.'],
+['B','Honeybees do about what share of insect pollination?','80 percent',['20 percent','40 percent','60 percent'],'p. 627','Honeybees account for about 80 percent of insect pollination of plants.'],
+['B','You harvested comb but have not extracted the honey. What is the risk?','It may granulate in the comb and be impossible to extract',['It turns into wax','Bees will not notice it','It gets runny'],'p. 630','Extract honey as soon as possible after harvest, since honey stored long in the comb may granulate.'],
+['B','Your hive is crowded and workers raise a second queen. What happens if you do nothing?','The new queen leaves with workers and starts a new colony (a swarm)',['The drones take over','The hive makes more honey','The old queen leaves alone'],'p. 630','Overcrowding leads to a second queen and swarming. Give ample space and remove queen cells.'],
+['B','Where do you place hives?','Away from neighbors\' yards, facing away from prevailing winds, shaded from hot summer sun',['Next to the neighbor\'s garden','Facing into the wind','In full afternoon sun'],'p. 628','Locate bees out of direct contact with people, face hives away from prevailing winds, and protect them from hot summer sun.'],
+['B','A nearby farm sprays pesticides. What should you do?','Be aware of pesticide use, since it can kill bees or end up stored in honey',['Nothing, bees stay in the hive','Spray the hive too','Move the hive 50 feet'],'p. 630','Be aware of pesticides used in the area that could kill bees or be stored in honey.'],
+['B','Who inspects your hives for contagious disease each year?','A federal bee inspector',['A neighbor','The county librarian','Nobody'],'p. 629','Have your bees inspected for contagious diseases by a federal bee inspector each year.'],
+// Pets
+['T','A customer wants a puppy. What should you look for?','An alert, healthy animal',['The quietest one in the corner','The smallest one','The cheapest one'],'p. 631','Select animals that are alert and healthy.'],
+['T','Which vaccine does the book list for dogs and cats at age-determined intervals?','Rabies',['Measles','Tetanus only','Flu shot for humans'],'p. 631','Vaccinate for rabies at age-determined intervals and vaccinate routinely at proper times.'],
+['T','A customer does not plan to breed their dog. What do you recommend?','Neuter the animal',['Breed it once','Leave it outside','Nothing'],'p. 632','Neuter animals that are not intended for breeding.'],
+['T','Which chores should happen daily at your kennel?','Clean food and water dishes, pen, and exercise area',['Replace all bedding once a year','Bathe every animal','Move all animals to new pens'],'p. 631','Clean food and water dishes daily and clean the pen or box and exercise area daily.'],
+['T','A client is taking a cat to the vet. What do they need?','A proper carrier',['A cardboard box with no lid','A leash and nothing else','Nothing'],'p. 631','Use a proper carrier for transport and use proper restraint procedures.'],
+['T','Your female dog is about to give birth. What do you prepare?','A clean area for whelping',['A busy room','A cold garage','Nothing'],'p. 632','Prepare a clean area for whelping, which means giving birth.'],
+['T','What diet do you provide?','High-quality food for the breed and age',['Table scraps','The same food for every animal','Only treats'],'p. 631','Provide a diet of high-quality food for the breed and age, plus clean, fresh water.'],
+['T','Who helps you prevent and control internal and external parasites?','Your veterinarian',['A pet store clerk only','Nobody','A neighbor'],'p. 631','Consult with your veterinarian to prevent and control parasites.'],
+['T','You sell purebred puppies. What paperwork should you complete?','A registration application',['A tax return for each puppy','A hunting license','Nothing'],'p. 632','Complete a registration application if the animals are purebred.'],
+['T','Which is a smart breeding practice for pets?','Use a superior, proven male and take extra precautions when the female is in heat',['Use any available male','Ignore heat cycles','Skip record keeping'],'p. 632','Select a superior proven male, take extra care with females in heat, and keep accurate records.'],
+// General / vocabulary / economics
+['G','Which describes a domestic animal?','Tamed and cared for by humans for labor and food',['Wild and left alone','Raised only for show','Found only on farms'],'p. 616','Domestic animals are tamed and cared for by humans who use them for labor and food.'],
+['G','Chickens were domesticated from which wild bird?','The jungle fowl',['The wild turkey','The mallard','The pheasant'],'p. 616','Chickens were domesticated about 4000 BC in Southeast Asia from the jungle fowl.'],
+['G','Which is the only agriculturally important animal domesticated in the New World?','Turkey',['Chicken','Duck','Rabbit'],'p. 616','Turkeys originated in the New World. Modern turkeys cannot survive in the wild.'],
+['G','Ducks and geese are known as what?','Waterfowl',['Game birds','Layers','Broilers'],'p. 616','Ducks and geese are waterfowl.'],
+['G','Why do small animals need more energy per ounce than large animals?','They lose body heat faster',['They are always cold-blooded','They sleep less','They have no fur'],'p. 620','80 to 90 percent of energy goes to regulating body temperature, and small animals lose heat faster.'],
+['G','From 1970 to 2009, poultry consumption rose 61 lbs per person. Red meat consumption fell about how much?','40 lbs',['4 lbs','10 lbs','100 lbs'],'p. 616','Red meat fell 40 lbs per person, probably because of negative publicity about fat and cholesterol.'],
+['G','A baby goose is called a what?','Gosling',['Duckling','Poult','Squab'],'p. 619','Gander is the male, goose is the female, and gosling is the young.'],
+['G','A male duck is called a what?','Drake',['Gander','Tom','Cockerel'],'p. 619','A male duck is a drake. A young duck is a duckling.'],
+['G','A male turkey is called a what?','Tom',['Drake','Gander','Cock'],'p. 619','Tom is the male turkey, hen is the female, and poult is the young.'],
+['G','A female rabbit is called a what?','Doe',['Buck','Hen','Queen'],'p. 623','A buck is a male rabbit and a doe is a female.'],
+['G','A young pigeon that has not left the nest is called a what?','Squab',['Poult','Pullet','Gosling'],'p. 619','Squab meat is processed before the bird learns to fly and is served as a delicacy.'],
+['G','Which bee is the only one that lays eggs in a hive?','The queen',['The drone','The worker','The king'],'p. 629','The queen is the only fertile, egg-laying female. Drones are males and workers are undeveloped females.'],
+['G','What is apiculture?','Beekeeping',['Poultry production','Rabbit breeding','Fish farming'],'p. 627','Modern beekeeping is known as apiculture. An apiary is an area for keeping beehives.'],
+['G','Why are small animals a good way to start in animal agriculture?','They need limited capital and facilities',['They need no feed','They need no records','They need no care'],'p. 633','Small animals let people with limited capital and facilities get started, and most suit urban and suburban areas.'],
+['G','What is a super?','A box with movable wax foundation where bees store honey',['A queen cell','A kind of hive tool','A type of bee'],'p. 630','Supers hold the movable wax foundation used by bees to store honey.'],
+['G','What is a litter?','A group of young born at one time to the same parents',['A rabbit hutch','A bedding material','A type of feed'],'p. 626','A litter is a group of young born at one time to the same parents.'],
+['G','About how many eggs does the average American eat each year?','250',['25','100','600'],'p. 616','The book gives about 250 eggs per person per year.'],
+['G','A young female chicken is called a what?','Pullet',['Cockerel','Poult','Hen'],'p. 618','Cockerel is a young male, pullet a young female, rooster or cock an adult male, and hen an adult female.'],
+['G','What is a hutch?','A cage or house for a rabbit',['A beehive box','A nesting box for ducks','A pen for geese'],'p. 626','A hutch is a cage or house for a rabbit.'],
+['G','What is a swarm?','A group of bees with a queen that leaves an overcrowded hive',['A group of drones','A hive that lost its queen','Bees feeding on honey'],'p. 628','A swarm is a group of bees complete with a queen that leaves an overcrowded hive to find a new home.'],
+['G','Why do beekeepers like having honeybees near crops?','Honeybees pollinate crops, and some can even carry beneficial bacteria that fight fire blight',['They kill weeds','They fertilize soil','They scare birds away'],'p. 628','Honeybees pollinate billions of dollars in crops and can spread biocontrol agents such as bacteria that prevent fire blight.']
+];
+
+// ---------- Enterprises ----------
+const ENT={
+ broiler:{name:'Broiler House',tag:'BR',pool:'P',cost:600,base:150,up:500,inc:120,blurb:'Young meat chickens, sold at 7 to 8 weeks.'},
+ layer:{name:'Layer Barn',tag:'LY',pool:'P',cost:500,base:120,up:400,inc:100,blurb:'Hens bred to turn feed into eggs.'},
+ rabbit:{name:'Rabbitry',tag:'RB',pool:'R',cost:300,base:90,up:300,inc:80,blurb:'Low start-up cost. One pair can raise 50 to 60 rabbits a year.'},
+ bees:{name:'Apiary',tag:'BE',pool:'B',cost:450,base:110,up:400,inc:100,blurb:'Honey, plus pollination rental. Spring bloom pays 1.5x.'},
+ pet:{name:'Pet Care and Boarding',tag:'PT',pool:'T',cost:700,base:170,up:600,inc:150,blurb:'Boarding, grooming, and supplies for dogs and cats.'}
+};
+const MAXLV=3, START_CASH=1500, MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const RANKS=[[0,'Struggling Start-up','Your records and decisions need work. Review the missed questions below and try again.'],[8000,'Hobby Farmer','A solid start. A few more approved practices and this turns into real income.'],[13000,'Part-time Producer','You are running a steady small operation.'],[18000,'Profitable Producer','Strong decisions and a growing business.'],[21000,'Agribusiness Owner','Top marks. You know the approved practices and you know how to grow.']];
+
+// ---------- State ----------
+let S;
+const $app=document.getElementById('app');
+const money=n=>'$'+Math.round(n).toLocaleString('en-US');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function newGame(name){S={name:name||'Student',month:0,cash:START_CASH,rep:3,own:{},invested:0,failed:{},used:new Set(),log:[],q:null,step:'shop',missed:[],right:0,asked:0,qIndex:0,report:null};}
+function netWorth(){return S.cash+S.invested*0.5;}
+function repMult(){return 1+0.04*S.rep;}
+function entIncome(k){const e=ENT[k],l=S.own[k];if(!l)return 0;let v=e.base+e.inc*(l-1);if(k==='bees'&&S.month>=3&&S.month<=5)v*=1.5;return v;}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function pick(pool){
+  let idx=BANK.map((b,i)=>i).filter(i=>BANK[i][0]===pool&&!S.used.has(i));
+  if(!idx.length){BANK.forEach((b,i)=>{if(b[0]===pool)S.used.delete(i)});idx=BANK.map((b,i)=>i).filter(i=>BANK[i][0]===pool);}
+  const i=idx[Math.floor(Math.random()*idx.length)];S.used.add(i);return i;
+}
+function nextQuestion(){
+  const owned=Object.keys(S.own);
+  let kind,ek=null,pool;
+  if(S.qIndex===0){kind='decision';ek=owned[Math.floor(Math.random()*owned.length)];pool=ENT[ek].pool;}
+  else{kind='office';pool='G';}
+  const bi=pick(pool),b=BANK[bi];
+  const opts=shuffle([{t:b[2],ok:true},...b[3].map(t=>({t,ok:false}))]);
+  S.q={bi,kind,ek,opts,answered:null};
+}
+
+// ---------- Views ----------
+function hud(){
+  const pips=MONTHS.map((m,i)=>`<i class="${i<S.month?'on':i===S.month?'now':''}"></i>`).join('');
+  return `<div class="hud" role="status">
+   <div><small>Month</small><b>${MONTHS[Math.min(S.month,11)]} (${Math.min(S.month+1,12)}/12)</b></div>
+   <div><small>Cash</small><b>${money(S.cash)}</b></div>
+   <div><small>Net worth</small><b>${money(netWorth())}</b></div>
+   <div><small>Reputation</small><b>${S.rep}/10 · ${repMult().toFixed(2)}x</b></div>
+   <div class="pips" aria-hidden="true">${pips}</div></div>`;
+}
+function intro(){
+  $app.innerHTML=`
+  <section class="hero"><div class="eyebrow">Unit 29 · Small Animal Care and Management</div>
+   <h1>Small Animal Farm Tycoon</h1>
+   <p>You have ${money(START_CASH)} and twelve months to build the best small animal business you can. Chickens, rabbits, bees, and pets all pay, but only if you follow the approved practices from your textbook.</p></section>
+  <section class="card">
+   <div class="steps">
+    <div><b>1. Invest</b>Buy or upgrade an enterprise. Upgrade up to 3 levels each.</div>
+    <div><b>2. Decide</b>Answer one management question for a business you own, then one farm office question.</div>
+    <div><b>3. Collect</b>Right answers earn bonuses and reputation. Wrong ones cost money and a month of income from that business.</div>
+   </div>
+   <div class="row-actions"><label for="nm" class="note" style="width:100%">Your name</label>
+    <input type="text" id="nm" maxlength="40" autocomplete="off" placeholder="First and last name">
+    <button class="btn" id="go">Start the year</button></div>
+   <p class="note" style="margin-top:14px">Every answer shows the textbook page, so you can look it up. Reputation raises your income, so careful answers pay twice.</p>
+  </section>`;
+  document.getElementById('go').onclick=()=>{newGame(document.getElementById('nm').value.trim());shop();};
+  document.getElementById('nm').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('go').click();});
+}
+function shop(){
+  S.step='shop';
+  const rows=Object.keys(ENT).map(k=>{
+    const e=ENT[k],l=S.own[k]||0;
+    const pips=[1,2,3].map(n=>`<i class="${n<=l?'on':''}"></i>`).join('');
+    let btn;
+    if(l>=MAXLV)btn=`<button class="btn ghost" disabled>Maxed out</button>`;
+    else{const c=l?e.up:e.cost,g=l?e.inc:e.base;
+      btn=`<button class="btn ${l?'alt':''}" data-buy="${k}" ${S.cash<c?'disabled':''}>${l?'Upgrade':'Buy'} ${money(c)}<br><span class="num" style="font-weight:500;font-size:13px">+${money(g)}/mo</span></button>`;}
+    return `<div class="ent ${l?'own':''}"><div class="tag" aria-hidden="true">${e.tag}</div>
+      <div><h3>${e.name}<span class="lv" aria-label="level ${l} of 3">${pips}</span></h3>
+      <p>${e.blurb}${l?` Now earning <span class="num">${money(entIncome(k))}</span>/mo.`:''}</p></div>${btn}</div>`;}).join('');
+  const owned=Object.keys(S.own).length;
+  $app.innerHTML=hud()+`<section class="card"><div class="stage"><b>Step 1 of 3</b> · Invest</div>
+    <h2 style="font-size:24px">${MONTHS[S.month]}: spend your capital</h2>
+    <p class="note" style="margin:6px 0 4px">Unspent cash carries over. Half of what you invest counts toward your net worth.</p>${rows}
+    <div class="row-actions"><button class="btn" id="start" ${owned?'':'disabled'}>${owned?'Start the month':'Buy at least one enterprise to begin'}</button></div></section>`;
+  document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.buy,e=ENT[k],l=S.own[k]||0,c=l?e.up:e.cost;
+    if(S.cash<c)return;S.cash-=c;S.invested+=c;S.own[k]=l+1;shop();});
+  document.getElementById('start').onclick=()=>{S.failed={};S.log=[];S.qIndex=0;nextQuestion();question();};
+}
+function question(){
+  const q=S.q,b=BANK[q.bi];
+  const label=q.kind==='decision'?`Management decision · <b>${ENT[q.ek].name}</b>`:`Farm office`;
+  const opts=q.opts.map((o,i)=>{let cls='';
+    if(q.answered!==null){if(o.ok)cls='right';else if(i===q.answered)cls='wrong';}
+    return `<button class="opt ${cls}" data-i="${i}" ${q.answered!==null?'disabled':''}>${esc(o.t)}</button>`;}).join('');
+  let fb='';
+  if(q.answered!==null){
+    const ok=q.opts[q.answered].ok;
+    let eff;
+    if(q.kind==='decision')eff=ok?'+$100 management bonus. Reputation +1.':`-$100 loss. The ${ENT[q.ek].name} earns nothing this month. Reputation -2.`;
+    else eff=ok?'+$75 office savings. Reputation +1.':'-$75 business mistake. Reputation -2.';
+    fb=`<div class="fb ${ok?'':'bad'}" role="status"><strong>${ok?'Correct.':'Not quite.'} ${eff}</strong>${esc(b[5])} <span class="pg">(${b[4]})</span></div>
+     <div class="row-actions"><button class="btn" id="nx">${S.qIndex===0?'Next question':'See the month report'}</button></div>`;}
+  $app.innerHTML=hud()+`<section class="card"><div class="stage"><b>Step 2 of 3</b> · ${label} · Question ${S.qIndex+1} of 2</div>
+    <p class="q">${esc(b[1])}</p><div class="opts">${opts}</div>${fb}</section>`;
+  document.querySelectorAll('.opt').forEach(el=>el.onclick=()=>answer(+el.dataset.i));
+  const nx=document.getElementById('nx');
+  if(nx)nx.onclick=()=>{if(S.qIndex===0){S.qIndex=1;nextQuestion();question();}else report();};
+}
+function answer(i){
+  const q=S.q;if(q.answered!==null)return;q.answered=i;
+  const ok=q.opts[i].ok,b=BANK[q.bi];S.asked++;
+  if(ok){S.right++;S.rep=Math.min(10,S.rep+1);}
+  else{S.rep=Math.max(0,S.rep-2);S.missed.push({q:b[1],a:b[2],p:b[4],e:b[5]});}
+  const amt=q.kind==='decision'?100:75;
+  S.cash=Math.max(0,S.cash+(ok?amt:-amt));
+  S.log.push({kind:q.kind,ok,amt,ek:q.ek});
+  if(q.kind==='decision'&&!ok)S.failed[q.ek]=true;
+  question();
+}
+function report(){
+  S.step='report';
+  const lines=[];let total=0;
+  for(const k of Object.keys(S.own)){
+    const e=ENT[k];let v=0,note='';
+    if(S.failed[k]){note='Loss from last decision';}
+    else{v=entIncome(k)*repMult();if(k==='bees'&&S.month>=3&&S.month<=5)note='Spring bloom 1.5x';}
+    lines.push({name:e.name,v,note});total+=v;
+  }
+  S.cash+=total;
+  S.report={lines,total};
+  const rows=lines.map(l=>`<tr><td>${l.name}${l.note?`<br><span class="note">${l.note}</span>`:''}</td><td class="r num ${l.v?'good':'neg'}">${money(l.v)}</td></tr>`).join('');
+  const last=S.month===11;
+  $app.innerHTML=hud()+`<section class="card"><div class="stage"><b>Step 3 of 3</b> · ${MONTHS[S.month]} income report</div>
+   <div class="scroll"><table><thead><tr><th>Enterprise</th><th class="r">Income</th></tr></thead><tbody>${rows}
+   <tr class="tot"><td>Total collected (reputation ${repMult().toFixed(2)}x)</td><td class="r num good">${money(total)}</td></tr></tbody></table></div>
+   <div class="row-actions"><button class="btn" id="nm2">${last?'See final results':'On to '+MONTHS[S.month+1]}</button></div></section>`;
+  document.getElementById('nm2').onclick=()=>{S.month++;if(last){S.month=11;end();}else shop();};
+}
+function rankFor(n){let r=RANKS[0];for(const x of RANKS)if(n>=x[0])r=x;return r;}
+function end(){
+  S.step='end';const nw=Math.round(netWorth()),r=rankFor(nw),pct=S.asked?Math.round(100*S.right/S.asked):0;
+  const seen=new Set(),miss=S.missed.filter(m=>!seen.has(m.q)&&seen.add(m.q));
+  const missHtml=miss.length?`<h3 style="font-size:20px;margin-top:24px">Look these up in your textbook</h3><div class="miss">${miss.map(m=>`<div><b>${esc(m.q)}</b>${esc(m.a)}. ${esc(m.e)} <span class="pg">(${m.p})</span></div>`).join('')}</div>`:`<p style="margin-top:18px"><strong>No missed questions. Perfect year.</strong></p>`;
+  $app.innerHTML=`<section class="hero"><div class="eyebrow">${esc(S.name)} · Year-end results</div>
+   <div class="rank">${r[1]}</div><p>${r[2]}</p></section>
+   <section class="card"><div class="steps">
+    <div><small class="note">Final net worth</small><div class="big">${money(nw)}</div></div>
+    <div><small class="note">Questions right</small><div class="big">${S.right}/${S.asked} · ${pct}%</div></div>
+    <div><small class="note">Reputation</small><div class="big">${S.rep}/10</div></div></div>
+    <p class="note" style="margin-top:14px">Enterprises: ${Object.keys(S.own).map(k=>`${ENT[k].name} (level ${S.own[k]})`).join(', ')}</p>
+    <div class="row-actions"><button class="btn" id="again">Play again</button><button class="btn alt" id="copy">Copy my results</button><span class="note" id="cm"></span></div>
+    ${missHtml}</section>`;
+  document.getElementById('again').onclick=intro;
+  const txt=`Small Animal Farm Tycoon\nName: ${S.name}\nRank: ${r[1]}\nNet worth: ${money(nw)}\nQuestions right: ${S.right}/${S.asked} (${pct}%)`;
+  document.getElementById('copy').onclick=()=>{
+    const done=m=>{document.getElementById('cm').textContent=m};
+    try{navigator.clipboard.writeText(txt).then(()=>done('Copied. Paste it into Canvas.'),()=>done('Copy blocked. Screenshot this page instead.'));}catch(e){done('Copy blocked. Screenshot this page instead.');}
+  };
+}
+intro();
+</script>
+
+</body>
+</html>

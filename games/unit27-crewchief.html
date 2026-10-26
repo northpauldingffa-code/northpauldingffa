@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evergreen Crew Chief | Unit 27</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2E7D4F;--bad:#A23B2A}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.45;overflow-x:hidden}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;margin:0 0 .4em}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+header.bar{background:var(--green);color:#fff;padding:14px 16px;border-bottom:5px solid var(--red)}
+header.bar .wrap{padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header.bar .kick{font-size:12px;letter-spacing:.12em;color:var(--tan);font-weight:700}
+header.bar h1{font-size:26px;margin:0;color:#fff}
+.hud{display:flex;gap:10px;flex-wrap:wrap}
+.chip{background:rgba(255,255,255,.14);border-radius:999px;padding:4px 12px;font-size:14px;white-space:nowrap}
+.card{background:#fff;border:1px solid var(--tan);border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+.card.dark{background:var(--green);color:#fff;border-color:var(--green)}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input,select{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--tan);border-radius:10px;background:#fff;color:var(--ink)}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:12px 18px;font-weight:700}
+.btn{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.alt{background:var(--green)}
+.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.err{color:var(--bad);font-weight:700;min-height:1.4em}
+.jobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:10px}
+.job{background:var(--cream);border-radius:12px;padding:10px 12px;border:1px solid var(--tan)}
+.job b{color:var(--red);display:block}
+.ticket{border-left:6px solid var(--gold)}
+.tag{display:inline-block;background:var(--cream);color:var(--red);font-weight:700;font-size:13px;border-radius:6px;padding:2px 8px;margin-bottom:6px;letter-spacing:.04em}
+.q{font-size:19px;font-weight:700;margin:4px 0 12px}
+.opts{display:grid;gap:10px}
+.opt{display:block;width:100%;text-align:left;background:var(--cream);color:var(--ink);border:2px solid var(--tan);font-weight:600;padding:12px 14px}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:#E3F1E7;border-color:var(--ok)}
+.opt.wrong{background:#F7E1DC;border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:10px;display:none}
+.fb.show{display:block}
+.fb.good{background:#E3F1E7;border:1px solid var(--ok)}
+.fb.bad{background:#F7E1DC;border:1px solid var(--bad)}
+.fb .ref{color:var(--muted);font-style:italic;font-size:14px}
+.progress{height:8px;background:var(--tan);border-radius:99px;overflow:hidden;margin:6px 0 2px}
+.progress i{display:block;height:100%;background:var(--gold);width:0}
+.steps{display:grid;gap:8px}
+.step{display:flex;gap:10px;align-items:center;background:var(--cream);border:2px solid var(--tan);border-radius:10px;padding:10px 12px;font-weight:600;text-align:left;color:var(--ink);width:100%}
+.step .n{flex:0 0 30px;height:30px;border-radius:50%;background:#fff;border:2px solid var(--tan);display:flex;align-items:center;justify-content:center;color:var(--red)}
+.step.picked{opacity:.55}
+.step.picked .n{background:var(--red);color:#fff;border-color:var(--red)}
+.cert{background:#fff;border:6px double var(--red);border-radius:12px;padding:22px;text-align:center}
+.cert h2{color:var(--red);font-size:30px}
+.cert .big{font-family:Cambria,Georgia,serif;font-size:44px;font-weight:700;color:var(--green);margin:4px 0}
+.stars{font-size:30px;color:var(--gold);letter-spacing:4px}
+.code{font-family:Consolas,"Courier New",monospace;font-size:28px;font-weight:700;letter-spacing:.12em;background:var(--cream);display:inline-block;padding:6px 16px;border-radius:8px;border:1px dashed var(--red)}
+table.brk{width:100%;border-collapse:collapse;margin-top:12px;font-size:15px}
+table.brk th,table.brk td{border:1px solid var(--tan);padding:6px 8px;text-align:left}
+table.brk th{background:var(--green);color:#fff}
+.certgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0;text-align:left}
+.certgrid div{background:var(--cream);border-radius:8px;padding:8px 10px}
+.certgrid span{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.hidden{display:none!important}
+a.tlink{color:var(--muted);font-size:13px}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 16px 30px}
+@media (max-width:480px){body{font-size:16px}header.bar h1{font-size:22px}.q{font-size:17px}.cert .big{font-size:36px}.code{font-size:22px}}
+@media print{
+  body{background:#fff}
+  header.bar,footer,#game>*:not(#endScreen),#endScreen>*:not(#certificate),.noprint{display:none!important}
+  #certificate{border-width:4px;box-shadow:none;margin:0}
+}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <div><div class="kick">UNIT 27 &bull; NARROWLEAF EVERGREENS</div><h1>Evergreen Crew Chief</h1></div>
+  <div class="hud noprint" id="hud" aria-live="polite"></div>
+</div></header>
+
+<main class="wrap" id="game">
+
+<!-- START -->
+<section id="startScreen">
+  <div class="card">
+    <h2>Run the install crew for a day</h2>
+    <p>You are the new crew chief at a landscape company. Get through four jobs: check in the nursery delivery, answer client calls from the plant charts, run install day, and handle feeding and care. Every right call earns <b>100 reputation points</b>. Your <b>crew rating</b> depends on how many calls you get right.</p>
+    <div class="jobs">
+      <div class="job"><b>Job 1: Yard Check-In</b>Sort trees by their leaves. Figs. 27-12 to 27-18</div>
+      <div class="job"><b>Job 2: Client Calls</b>Pick the best plant from the charts. Figs. 27-6 to 27-8</div>
+      <div class="job"><b>Job 3: Install Day</b>Store, plant, and stake. p. 329, 330</div>
+      <div class="job"><b>Job 4: Feed and Care</b>Fertilizer math, water, prune. p. 328, 330</div>
+    </div>
+  </div>
+  <div class="card">
+    <label for="fname">First name</label><input id="fname" autocomplete="given-name" maxlength="30">
+    <label for="lname">Last name</label><input id="lname" autocomplete="family-name" maxlength="30">
+    <label for="period">Class period</label>
+    <select id="period"><option value="">Choose your period</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+    <p class="err" id="startErr"></p>
+    <div class="row"><button class="btn" id="startBtn">Clock in</button><span class="muted small" id="bestLine"></span></div>
+  </div>
+  <p><a href="#" class="tlink" id="teacherLink">Teacher check</a></p>
+</section>
+
+<!-- PLAY -->
+<section id="playScreen" class="hidden">
+  <div class="card ticket">
+    <div class="row" style="justify-content:space-between"><span class="tag" id="roundTag"></span><span class="muted small" id="qCount"></span></div>
+    <div class="progress"><i id="bar"></i></div>
+    <div id="qArea"></div>
+    <div class="fb" id="fb" aria-live="polite"></div>
+    <div class="row" style="margin-top:14px"><button class="btn alt hidden" id="nextBtn">Next</button></div>
+  </div>
+</section>
+
+<!-- ROUND BREAK -->
+<section id="breakScreen" class="hidden">
+  <div class="card dark"><h2 id="breakTitle"></h2><p id="breakText"></p><button class="btn" id="breakBtn">Start the next job</button></div>
+</section>
+
+<!-- END -->
+<section id="endScreen" class="hidden">
+  <div class="cert card" id="certificate">
+    <div class="muted small">NORTH PAULDING AGRICULTURE &bull; UNIT 27 NARROWLEAF EVERGREENS</div>
+    <h2>Certificate of Completion</h2>
+    <div>This certifies that</div>
+    <div class="big" id="cName"></div>
+    <div>Period <span id="cPeriod"></span> &bull; completed <b>Evergreen Crew Chief</b></div>
+    <div class="stars" id="cStars"></div>
+    <div><b id="cRank"></b></div>
+    <div class="certgrid">
+      <div><span>Score</span><b id="cPct"></b></div>
+      <div><span>Calls correct</span><b id="cRight"></b></div>
+      <div><span>Reputation points</span><b id="cPts"></b></div>
+      <div><span>Minutes played</span><b id="cMin"></b></div>
+      <div><span>Date and time</span><b id="cDate"></b></div>
+    </div>
+    <div class="muted small">Completion code</div>
+    <div class="code" id="cCode"></div>
+    <table class="brk"><thead><tr><th>Job</th><th>Correct</th><th>Review</th></tr></thead><tbody id="cBreak"></tbody></table>
+  </div>
+  <div class="row noprint" style="justify-content:center">
+    <button class="btn" id="printBtn">Print / Save as PDF</button>
+    <button class="btn ghost" id="againBtn">Play again</button>
+  </div>
+  <p class="muted small noprint" style="text-align:center">Turn in a screenshot or PDF of this certificate on Canvas. You can replay to raise your score.</p>
+</section>
+
+<!-- TEACHER -->
+<section id="teacherScreen" class="hidden">
+  <div class="card">
+    <h2>Teacher check</h2>
+    <div id="pinBox"><label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="8"><p class="err" id="pinErr"></p><button class="btn alt" id="pinBtn">Unlock</button></div>
+    <div id="checkBox" class="hidden">
+      <p class="small muted">Type what the certificate shows. The code is rebuilt from these values.</p>
+      <label for="tName">Student name (first and last)</label><input id="tName">
+      <label for="tPeriod">Period</label><input id="tPeriod">
+      <label for="tPct">Score percent (number only)</label><input id="tPct" inputmode="numeric">
+      <label for="tDate">Date (YYYY-MM-DD)</label><input id="tDate" placeholder="2026-10-23">
+      <label for="tMin">Minutes played</label><input id="tMin" inputmode="numeric">
+      <label for="tCode">Completion code</label><input id="tCode" placeholder="ABC-123">
+      <div class="row" style="margin-top:12px"><button class="btn alt" id="checkBtn">Check code</button></div>
+      <p id="checkOut" class="q"></p>
+    </div>
+    <button class="btn ghost" id="teacherBack" style="margin-top:10px">Back</button>
+  </div>
+</section>
+</main>
+<footer>North Paulding FFA GA0545 &bull; Introductory Horticulture, Unit 27, pages 326 to 337</footer>
+
+<script>
+(function(){
+"use strict";
+/* ===== Teacher settings ===== */
+var TEACHER_PIN = "0545";
+var SALT = "NPHS-U27-evergreen";
+/* ============================ */
+
+function $(id){return document.getElementById(id);}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a,n){return shuffle(a).slice(0,n);}
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+function fmt(x){var r=Math.round(x*100)/100;return String(r);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+/* ---------- DATA (from textbook pages 326 to 337) ---------- */
+var GROUPS = {single:"Single needles",two:"2 needles per cluster",three:"3 needles per cluster",five:"5 needles per cluster",more:"More than 5 needles per cluster",decid:"Deciduous (drops needles in winter)",scale:"Scalelike foliage"};
+var GFIG = {single:"Fig. 27-12, p. 333",two:"Fig. 27-13, p. 334",three:"Fig. 27-14, p. 334",five:"Fig. 27-15, p. 334",more:"Fig. 27-16, p. 334",decid:"Fig. 27-17, p. 335",scale:"Fig. 27-18, p. 335"};
+var TREES = [
+ ["White fir","Abies concolor","single"],["Balsam fir","Abies balsamea","single"],["Blue spruce","Picea pungens","single"],["Norway spruce","Picea abies","single"],["Nordmann fir","Abies nordmanniana","single"],["Douglas fir","Pseudotsuga menziesii","single"],["Hemlock","Tsuga canadensis","single"],
+ ["Austrian pine","Pinus nigra","two"],["Red pine","Pinus resinosa","two"],["Virginia pine","Pinus virginiana","two"],["Scotch pine","Pinus sylvestris","two"],
+ ["Pitch pine","Pinus rigida","three"],["Loblolly pine","Pinus taeda","three"],
+ ["Himalayan pine","Pinus griffithi","five"],["White pine","Pinus strobus","five"],
+ ["Deodar cedar","Cedrus deodara","more"],
+ ["European larch","Larix decidua","decid"],["Dawn redwood","Metasequoia glyptostroboides","decid"],["Bald cypress","Taxodium distichum","decid"],
+ ["Cryptomeria","Cryptomeria japonica","scale"],["Plume false-cypress","Chamaecyparis pisifera 'Plumosa'","scale"],["Moss false-cypress","Chamaecyparis pisifera 'Squarrosa'","scale"],["Hinoki false-cypress","Chamaecyparis obtusa","scale"],["Eastern arborvitae","Thuja occidentalis","scale"],["Oriental arborvitae","Thuja orientalis","scale"],["Red cedar","Juniperus virginiana","scale"]
+];
+var LEAF_FACTS = [
+ {q:["Pine needles are held to the branch in bundles. What are the bundles called?","What is the textbook name for the sheaths that hold pine needles together?"],a:"Fascicles",d:["Berms","Lath houses","Heel-ins"],why:"Pines have needlelike leaves in bundles known as sheaths or fascicles.",ref:"p. 327"},
+ {q:["How many needles are in each bundle on a white pine?","A white pine fascicle holds how many needles?"],a:"Five",d:["Two","Three","One"],why:"The white pine has five needles per bundle or sheath.",ref:"p. 327, Fig. 27-15"},
+ {q:["Which best describes spruce needles?","A spruce branch has needles that are..."],a:"Single, square, stiff, and sharp",d:["In bundles of five, soft and long","Overlapping scales in a flat spray","Dropped every winter"],why:"Spruces have single needles attached to the branch that are square, stiff, and sharp.",ref:"p. 327"},
+ {q:["On a scalelike evergreen, how are the leaves arranged?","What do scalelike leaves form?"],a:"Each scale overlaps another to form a flat spray",d:["Needles in bundles of three","Single square needles","Broad flat leaves that drop in fall"],why:"Each scale overlaps another to form a flat spray. The juniper is an example.",ref:"p. 327"},
+ {q:["What are the two types of narrowleaf evergreen leaves?","Narrowleaf evergreens have which two kinds of leaves?"],a:"Needlelike and scalelike",d:["Broadleaf and needlelike","Compound and simple","Scalelike and broadleaf"],why:"Narrowleaf evergreens may have needlelike or scalelike leaves.",ref:"p. 327"},
+ {q:["When do pines drop their old needles and grow new ones?"],a:"Drop old needles in fall; grow new ones in spring",d:["Drop all needles every winter","Drop in spring; grow new ones in fall","They never drop needles"],why:"Pines carry needles all year, dropping old needles in the fall and producing new needles in the spring.",ref:"p. 327"}
+];
+
+var CHART = [
+ {n:"Sargent juniper",fig:"Fig. 27-6",h:"3 ft or less",facts:"ground cover; excellent along the seashore; does well on steep banks to prevent erosion"},
+ {n:"Spring heath",fig:"Fig. 27-6",h:"3 ft or less",facts:"ground cover; small rosy red spikes in April; attractive spring colors"},
+ {n:"Blue rug juniper",fig:"Fig. 27-6",h:"3 ft or less",facts:"ground cover; hardiness 2; steel blue; excellent rock garden"},
+ {n:"Spreading English yew",fig:"Fig. 27-6",h:"3 ft or less",facts:"foundation planting; dark green; excellent plant, low maintenance, good color all year"},
+ {n:"Dwarf Japanese yew",fig:"Fig. 27-6",h:"3 ft or less",facts:"foundation planting; light green; compact plant that produces red berries"},
+ {n:"Dwarf Hinoki false cypress",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"accent and specimen plant; deep dark green; compact form, pyramidal shape"},
+ {n:"Meyer's juniper",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"foundation planting; blue; needs good management and care in dry areas"},
+ {n:"Juniperus virginiana 'Tripartita'",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"foundation planting; dark green; hardiness 2; good in dry areas"},
+ {n:"Mugho pine",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"foundation planting; global shape; slow growing"},
+ {n:"Dwarf Alberta spruce",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"foundation, specimen, rock garden; light green; fine-textured plant"},
+ {n:"Pfitzer juniper",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"foundation and screen; plant in full sun; control of bagworms necessary"},
+ {n:"Juniperus chinensis 'Hetzii'",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"screen and foundation; full sun; does well in dry areas"},
+ {n:"Hicks yew",fig:"Fig. 27-7",h:"3 to 9 ft",facts:"foundation and screen; fall fruit; excellent in formal gardens; columnar shape"},
+ {n:"Leyland cypress",fig:"Fig. 27-8",h:"over 10 ft",facts:"screen or hedge; fast grower, excellent windbreak; columnar shape"},
+ {n:"English yew",fig:"Fig. 27-8",h:"over 10 ft",facts:"screen, hedge, large buildings; hardiness 6; will stand shade; good background shrub; female has berries"},
+ {n:"Japanese yew",fig:"Fig. 27-8",h:"over 10 ft",facts:"screen, hedge, large buildings; pyramidal form; tolerates shade; rapid grower"}
+];
+function chartByName(n){for(var i=0;i<CHART.length;i++)if(CHART[i].n===n)return CHART[i];return null;}
+var CALLS = [
+ {q:["\"Our beach house sits on a steep, sandy bank that keeps washing out. We want something low.\"","\"We need a low evergreen for a bank by the ocean that is eroding.\""],a:"Sargent juniper",x:["Blue rug juniper"]},
+ {q:["\"I want a low ground cover that gives me color early in spring.\"","\"Is there a ground cover with flowers in April?\""],a:"Spring heath",x:[]},
+ {q:["\"We need a ground cover for a rock garden, and our winters get very cold (zone 2).\""],a:"Blue rug juniper",x:["Sargent juniper"]},
+ {q:["\"A low foundation plant, 3 feet or less, dark green, low maintenance, good color all year.\""],a:"Spreading English yew",x:["Dwarf Japanese yew"]},
+ {q:["\"A small, compact foundation plant, light green, that makes red berries.\""],a:"Dwarf Japanese yew",x:["Spreading English yew","Japanese yew"]},
+ {q:["\"One accent plant, 3 to 9 feet, deep dark green, pyramidal shape.\""],a:"Dwarf Hinoki false cypress",x:["Japanese yew"]},
+ {q:["\"A blue foundation juniper, 3 to 9 feet. We know it will need extra care in our dry spot.\""],a:"Meyer's juniper",x:["Juniperus virginiana 'Tripartita'","Juniperus chinensis 'Hetzii'"]},
+ {q:["\"A dark green foundation plant, 3 to 9 feet, that is good in dry areas.\""],a:"Juniperus virginiana 'Tripartita'",x:["Juniperus chinensis 'Hetzii'","Meyer's juniper"]},
+ {q:["\"Something round (a global shape) for the foundation that grows slowly.\""],a:"Mugho pine",x:[]},
+ {q:["\"A fine-textured, light green plant for my rock garden, 3 to 9 feet.\""],a:"Dwarf Alberta spruce",x:["Blue rug juniper"]},
+ {q:["\"The plant you sold me needs full sun, and now I need to control bagworms on it. Which one is it?\""],a:"Pfitzer juniper",x:[]},
+ {q:["\"A 3 to 9 foot screen for a hot, dry side yard in full sun.\""],a:"Juniperus chinensis 'Hetzii'",x:["Pfitzer juniper","Juniperus virginiana 'Tripartita'"]},
+ {q:["\"Formal garden. We want green columns 3 to 9 feet tall with fall fruit.\""],a:"Hicks yew",x:[]},
+ {q:["\"A tall windbreak along the pasture fence, and it needs to grow fast.\"","\"We need a fast-growing, columnar screen over 10 feet.\""],a:"Leyland cypress",x:["Japanese yew"]},
+ {q:["\"A tall background shrub for the shady north side of a big building.\""],a:"English yew",x:["Japanese yew"]},
+ {q:["\"A tall evergreen with a pyramidal form that grows rapidly and tolerates shade.\""],a:"Japanese yew",x:["English yew","Dwarf Hinoki false cypress"]}
+];
+
+var INSTALL = [
+ {q:["How big should the hole be for a balled and burlapped tree?","A B&B root ball is 2 feet wide. The hole should be..."],a:["1 1/2 to 2 times as large as the ball","3 to 4 feet wide"],d:[["Exactly the size of the ball","3 times as deep as the ball","Half the size of the ball"],["Exactly 2 feet wide","1 foot wide","6 feet wide"]],why:"The hole should be 1 1/2 to 2 times as large as the ball, with room to mix peat moss into the soil.",ref:"p. 329"},
+ {q:["How high do you set a B&B ball in the hole?","Why is the B&B ball set a little high in the hole?"],a:["1 inch above the original soil line","Because the tree will settle"],d:[["Level with the soil line","3 inches below the soil line","6 inches above the soil line"],["So the roots get more sun","So the burlap can dry out","So you can see the twine"]],why:"The ball is set 1 inch above the original soil line because the tree will settle in the hole.",ref:"p. 329"},
+ {q:["What do you remove from a natural burlap root ball?"],a:["Burlap, twine, and wire from the top third"],d:["Nothing; leave it all on","All burlap, even from under the ball","Only the twine"],why:"Remove the burlap, twine, and wires from the top third of the root ball. You do not need to pull burlap out from under the ball unless it is plastic.",ref:"p. 329"},
+ {q:["The \"burlap\" on a root ball is plastic. What should you do?"],a:["Remove it; plastic will not rot and restricts roots"],d:["Leave it; it rots in a year","Poke a few holes in it","Water it extra"],why:"Plastic will not rot and will restrict root development, so it must come off.",ref:"p. 329"},
+ {q:["When do you fill the hole with water during planting?"],a:["When the hole is two-thirds filled with soil"],d:["Before setting the tree","Only after the hole is full","Never on the first day"],why:"When the hole is two-thirds filled, fill it to the top with water and let it soak in. Then finish filling with soil.",ref:"p. 329"},
+ {q:["What is a berm used for?","After planting, you shape leftover soil into a saucer. What is it called?"],a:["Holding water and managing runoff around the roots","A berm"],d:[["Keeping deer away","Holding the stakes up","Marking the drip line"],["A fascicle","A lath house","A heel-in"]],why:"A berm is a saucer-like ring of soil that holds water, conserves water, and manages runoff around the roots.",ref:"p. 329"},
+ {q:["What does pot-bound mean?","A container tree's roots are tight and circling. What should you do?"],a:["The root ball is excessively tight","Cut or loosen the roots"],d:[["The plant is stuck to the pot with glue","The pot is cracked","The plant has too few roots"],["Plant it as is","Remove all the soil","Water it less"]],why:"Pot-bound means the root ball is excessively tight. Cut or loosen the roots to stop circular growth. In severe cases a tree can be killed if this continues.",ref:"p. 329, 330"},
+ {q:["What stakes does the book call for on a tree 10 feet or less?"],a:["5 to 6 feet long and 1 3/4 inches square"],d:["2 feet long and 1/2 inch round","10 feet long and 4 inches square","3 feet long metal rods"],why:"For trees 10 feet or less, stakes should be 5 to 6 feet long and 1 3/4 inches square, made of wood that lasts at least 2 years.",ref:"p. 330"},
+ {q:["Where do the two stakes go?"],a:["One on the prevailing wind side, one directly opposite"],d:["Both on the downwind side","Both on the north side","One at the trunk, one at the drip line"],why:"Drive one stake on the prevailing wind side and the other directly opposite.",ref:"p. 330"},
+ {q:["What holds the tree to the stakes?"],a:["12- or 14-gauge soft steel wire through a piece of garden hose"],d:["Bare barbed wire","Duct tape","Nylon rope tied tight to the trunk"],why:"Use 12- or 14-gauge soft steel wire slipped through about 1 foot of garden hose or a commercial sleeve, about halfway up the trunk.",ref:"p. 330"},
+ {q:["How are bare root narrowleaf evergreens shipped?"],a:["As seedlings"],d:["As full-grown trees","In plastic pots","With a burlap ball"],why:"Bare root narrowleaf evergreens are shipped while the plants are seedlings.",ref:"p. 329"},
+ {q:["How should bare root seedlings be stored until planting?"],a:["High humidity at 33 to 40 °F, roots kept damp"],d:["Dry and warm at 70 °F","In full sun on the truck","Frozen solid"],why:"Store seedlings in a building with high humidity at 33 to 40 °F, with roots covered by straw, shingle tow, burlap, or sphagnum moss.",ref:"p. 329"},
+ {q:["What does it mean to heel-in seedlings?"],a:["Bury the roots in well-rotted sawdust or soil outside"],d:["Stomp them into the hole","Cut off the tops","Hang them upside down"],why:"Heel-in means storing the seedlings in well-rotted sawdust or soil outside so the roots do not dry out.",ref:"p. 329"},
+ {q:["What is the main purpose of a lath house?","Why does a lath house cut water loss?"],a:["To protect plants from the sun by reducing light","Less light lowers the transpiration rate"],d:[["To keep plants warm in winter","To store fertilizer","To grow seedlings in water"],["It traps rain inside","It adds humidity with misters","It blocks wind completely"]],why:"A lath house gives protection from the sun by reducing light. This also reduces the transpiration rate (water loss).",ref:"p. 329"},
+ {q:["When should you NOT move a balled and burlapped evergreen?"],a:["When it has new shoots or the ground is frozen"],d:["In the fall","When it is dormant","Any time after rain"],why:"B&B plants can be moved almost any time except when the plant has shoots of new growth or the ground is frozen.",ref:"p. 329"},
+ {q:["What do the letters B&B, BR, and C stand for?"],a:["Balled and burlapped, bare root, container stock"],d:["Bark and branch, broad root, conifer","Bagged and boxed, bundled roots, cut","Bare branch, balled root, clipped"],why:"Narrowleaf evergreens are shipped bare root (BR), balled and burlapped (B&B), or as container stock (C).",ref:"p. 329"}
+];
+var ORDER_STEPS = [
+ "Dig a hole 1 1/2 to 2 times the ball and mix in peat moss",
+ "Set the ball 1 inch above the original soil line",
+ "Remove burlap, twine, and wire from the top third",
+ "Add soil until the hole is two-thirds full",
+ "Fill with water, let it soak in, then finish filling",
+ "Form a berm with the leftover soil"
+];
+
+var CARE = [
+ {q:["Where do you spread fertilizer around a narrowleaf evergreen?"],a:"In a circle under the drip line",d:["Piled against the trunk","Only in the planting hole","On the needles"],why:"Place it in a circle under the drip line at the outer end of the branches.",ref:"p. 330"},
+ {q:["When should narrowleaf evergreens be fertilized?"],a:"Before new growth starts in spring",d:["In late fall after frost","Only in the heat of summer","Every week"],why:"Fertilize before new growth starts in the spring, then water it in.",ref:"p. 330"},
+ {q:["In 5-10-10 fertilizer, what does the first number (5) stand for?","What do the three numbers in 5-10-10 mean?"],a:["5 percent nitrogen","5% nitrogen, 10% phosphate, 10% potash"],d:[["5 pounds per bag","5 percent potash","5 percent water"],["5 lb, 10 lb, 10 lb per bag","5% potash, 10% nitrogen, 10% phosphate","Weeks between feedings"]],why:"5-10-10 means 5 percent nitrogen, 10 percent phosphate, and 10 percent potash.",ref:"p. 330"},
+ {q:["What is the advantage of cottonseed meal or soybean oil meal?","What is the drawback of organic fertilizers?"],a:["No danger of burning the plant","They are usually more expensive"],d:[["They are always cheaper","They work in one day","They kill weeds"],["They burn plants easily","They have no nutrients","They must be injected"]],why:"Organic fertilizers have no danger of burning the plant, but they are usually more expensive.",ref:"p. 330"},
+ {q:["How often should a new narrowleaf evergreen be watered the first year?","At planting, how deep should you soak the soil?"],a:["Every 10 to 14 days","6 inches or deeper"],d:[["Twice a day","Once a month","Only when it rains"],["1 inch","Just wet the surface","3 feet"]],why:"Water every 10 to 14 days during the first year, and thoroughly soak the soil to 6 inches or deeper at planting.",ref:"p. 330"},
+ {q:["Which plant does the book say can be sheared?","A client wants a crisp, formal look. Which plant fits shearing?"],a:["Hicks yew","Globe arborvitae"],d:[["Blue rug juniper","Spring heath","Bald cypress"],["Spreading juniper","Loblolly pine","Dawn redwood"]],why:"Hicks yew, columnar juniper, and globe arborvitae may be sheared for a formal look.",ref:"p. 330"},
+ {q:["How should spreading junipers be pruned?","What look does shearing give?"],a:["Remove the ends of long twigs for an informal look","A formal look with straight-line edges"],d:[["Shear them flat like a hedge","Cut them to the ground","Never prune them"],["A natural, informal look","A weeping look","No change in look"]],why:"Spreading junipers and Taxus are pruned by removing the ends of long twigs (informal). Shearing clips all small branch ends in straight lines (formal).",ref:"p. 330"},
+ {q:["In winter, how much warmer can it be on the protected side of an evergreen windbreak?"],a:"5 to 10 degrees",d:["1 degree","20 to 30 degrees","50 degrees"],why:"A windbreak can make the protected side 5 to 10 degrees warmer than the unprotected side.",ref:"p. 328"}
+];
+
+var ROUNDS = [
+ {name:"Job 1: Yard Check-In",short:"Leaf ID",review:"Leaf types and needle counts, Figs. 27-12 to 27-18, p. 327, 333 to 335",intro:"The nursery truck just pulled in. Sort each tree into the right bin by its leaves before the crew unloads."},
+ {name:"Job 2: Client Calls",short:"Plant charts",review:"Reading Figs. 27-6, 27-7, 27-8, p. 331, 332",intro:"The phone is ringing. Pick the one best plant from the charts for each client."},
+ {name:"Job 3: Install Day",short:"Storage and planting",review:"Shipping, storage, planting, and staking, p. 329, 330",intro:"Time to get trees in the ground. Store them right, plant them right, and stake them."},
+ {name:"Job 4: Feed and Care",short:"Fertilizer and care",review:"Fertilizer math, watering, pruning, windbreaks, p. 328, 330",intro:"Follow-up visits. Run the fertilizer numbers, set the watering plan, and pick the right pruning."}
+];
+
+/* ---------- Question builders ---------- */
+function mc(round,q,correct,distractors,why,ref){
+  var opts=shuffle([correct].concat(distractors.slice(0,3)));
+  return {round:round,type:"mc",q:q,opts:opts,ans:correct,why:why,ref:ref};
+}
+function variant(item){ // items with arrays of q/a/d
+  var i=Math.floor(Math.random()*item.q.length);
+  var a=Array.isArray(item.a)?item.a[i]:item.a;
+  var d=Array.isArray(item.d[0])?item.d[i]:item.d;
+  return {q:item.q[i],a:a,d:d};
+}
+function buildR1(){
+  var qs=[];
+  var trees=pick(TREES,4);
+  trees.forEach(function(t,k){
+    if(k%2===0){
+      var others=shuffle(Object.keys(GROUPS).filter(function(g){return g!==t[2];})).slice(0,3).map(function(g){return GROUPS[g];});
+      qs.push(mc(0,rnd(["The tag reads "+t[0]+" ("+t[1]+"). Which bin does it go in?","Sort this one: "+t[0]+", "+t[1]+". Which leaf group?"]),GROUPS[t[2]],others,t[0]+" ("+t[1]+") is in the group: "+GROUPS[t[2]]+".",GFIG[t[2]]));
+    } else {
+      var wrong=shuffle(TREES.filter(function(o){return o[2]!==t[2];})).slice(0,3).map(function(o){return o[0];});
+      qs.push(mc(0,rnd(["The \""+GROUPS[t[2]]+"\" bin needs one more tree. Which one belongs there?","Which of these trees belongs in this leaf group: "+GROUPS[t[2]]+"?"]),t[0],wrong,t[0]+" ("+t[1]+") belongs in "+GROUPS[t[2]].toLowerCase()+".",GFIG[t[2]]));
+    }
+  });
+  pick(LEAF_FACTS,2).forEach(function(f){var v=variant(f);qs.push(mc(0,v.q,v.a,shuffle(v.d),f.why,f.ref));});
+  return shuffle(qs);
+}
+function buildR2(){
+  return pick(CALLS,6).map(function(c){
+    var right=chartByName(c.a);
+    var pool=CHART.filter(function(p){return p.n!==c.a&&c.x.indexOf(p.n)<0;}).map(function(p){return p.n;});
+    var qq=mc(1,"Client call: "+rnd(c.q),c.a,shuffle(pool),right.n+" ("+right.fig+", "+right.h+"): "+right.facts+".",right.fig+", p. "+(right.fig==="Fig. 27-8"?"332":"331"));
+    return qq;
+  });
+}
+function buildR3(){
+  var qs=pick(INSTALL,4).map(function(it){var v=variant(it);return mc(2,v.q,v.a,shuffle(v.d),it.why,it.ref);});
+  qs.splice(Math.floor(Math.random()*3)+1,0,{round:2,type:"order",q:"Put the B&B planting steps in order. Tap them from first to last.",steps:ORDER_STEPS.slice(),why:"Dig 1 1/2 to 2 times the ball, set 1 inch high, strip the top third, fill two-thirds, water and soak then finish filling, and build the berm.",ref:"p. 329"});
+  return qs;
+}
+function fertQ(){
+  var area=rnd([100,150,200,250,300,400]),rate=rnd([3,4,5,6]);
+  var lb=area/100*rate, kind=rnd(["total","N","P","K"]);
+  var base="A bed under the drip line is "+area+" sq ft. You apply "+rate+" lb of 5-10-10 per 100 sq ft. ";
+  var ans,q,dis,why;
+  if(kind==="total"){q=base+"How many pounds of 5-10-10 do you spread?";ans=lb;dis=[rate,area*rate/10,lb*2];why=(area/100)+" × "+rate+" = "+fmt(lb)+" lb of 5-10-10.";}
+  else if(kind==="N"){q=base+"How many pounds of nitrogen (N) is that?";ans=lb*0.05;dis=[lb*0.1,lb*0.5,lb*5];why=fmt(lb)+" lb × 5% = "+fmt(ans)+" lb N.";}
+  else {var nm=kind==="P"?"phosphate (P₂O₅)":"potash (K₂O)";q=base+"How many pounds of "+nm+" is that?";ans=lb*0.1;dis=[lb*0.05,lb,lb*0.01];why=fmt(lb)+" lb × 10% = "+fmt(ans)+" lb "+(kind==="P"?"P₂O₅":"K₂O")+".";}
+  var A=fmt(ans)+" lb";
+  var D=[];dis.forEach(function(x){var s=fmt(x)+" lb";if(s!==A&&D.indexOf(s)<0)D.push(s);});
+  var extra=[ans+0.5,ans*3,ans+1];while(D.length<3){var s2=fmt(extra.shift())+" lb";if(s2!==A&&D.indexOf(s2)<0)D.push(s2);}
+  return mc(3,q,A,D,why+" Rate is 3 to 6 lb per 100 sq ft.","p. 330");
+}
+function windQ(){
+  var h=rnd([5,6,8,9,11,12,14,15]);
+  if(Math.random()<0.5){
+    var A=(h*7)+" ft";return mc(3,"A row of "+h+"-foot evergreens is planted as a windbreak. How many feet of protection does it give behind the row?",A,shuffle([(h*10)+" ft",(h*3)+" ft",(h+7)+" ft",(h*5)+" ft"]).filter(function(x){return x!==A;}),"For each foot of height you get 7 feet of protection: "+h+" × 7 = "+(h*7)+" ft.","p. 328 Green Tip");
+  }
+  var dist=h*7,B=h+" ft";
+  var bd=[];[(h+7)+" ft",(h*2)+" ft",Math.round(dist/10)+" ft",(h-2)+" ft",(h+3)+" ft"].forEach(function(x){if(x!==B&&bd.indexOf(x)<0)bd.push(x);});
+  return mc(3,"A barn sits "+dist+" feet behind a planned windbreak. How tall must the evergreens grow to protect it?",B,shuffle(bd),dist+" ÷ 7 = "+h+" ft. Each foot of height protects 7 feet.","p. 328 Green Tip");
+}
+var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+function waterQ(){
+  var m=rnd([2,3,9,10]),day=rnd([1,3,5,8,12,15]);
+  var start=new Date(2027,m,day);
+  function f(dt){return MONTHS[dt.getMonth()]+" "+dt.getDate();}
+  function add(n){var x=new Date(start.getTime());x.setDate(x.getDate()+n);return x;}
+  var A=f(add(10))+" to "+f(add(14));
+  var D=[f(add(1))+" to "+f(add(3)),f(add(28))+" to "+f(add(31)),f(add(5))+" to "+f(add(7))];
+  return mc(3,"You plant an evergreen on "+f(start)+". The first year you water every 10 to 14 days. When is the next watering due?",A,D,"Every 10 to 14 days: "+f(start)+" plus 10 to 14 days is "+A+".","p. 330");
+}
+function buildR4(){
+  var qs=[fertQ(),fertQ(),windQ(),waterQ()];
+  pick(CARE,2).forEach(function(it){var v=variant(it);qs.push(mc(3,v.q,v.a,shuffle(v.d),it.why,it.ref));});
+  return shuffle(qs);
+}
+
+/* ---------- Code ---------- */
+var ALPH="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function fnv(s){var h=0x811c9dc5;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h>>>0;}
+function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,"");}
+function makeCode(name,period,pct,date,mins){
+  var h=fnv(SALT+"|"+norm(name)+"|"+norm(period)+"|"+String(pct)+"|"+date+"|"+String(mins));
+  var out="";for(var i=0;i<6;i++){out+=ALPH[h%ALPH.length];h=Math.floor(h/ALPH.length);if(i===2)h=(h^0x5bd1e995)>>>0;}
+  return out.slice(0,3)+"-"+out.slice(3);
+}
+function ymd(d){function p(n){return (n<10?"0":"")+n;}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+
+/* ---------- Storage ---------- */
+var KEY="nphs-u27-crewchief-best";
+function getBest(){try{var v=window.localStorage.getItem(KEY);return v?JSON.parse(v):null;}catch(e){return null;}}
+function setBest(o){try{window.localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+
+/* ---------- State ---------- */
+var S={};
+function show(id){["startScreen","playScreen","breakScreen","endScreen","teacherScreen"].forEach(function(s){$(s).classList.toggle("hidden",s!==id);});window.scrollTo(0,0);}
+function hud(){
+  if(!S.queue){$("hud").innerHTML="";return;}
+  $("hud").innerHTML='<span class="chip">'+esc(S.name)+'</span><span class="chip">Rep: '+(S.right*100)+'</span><span class="chip">Correct: '+S.right+' / '+S.done+'</span>';
+}
+function refreshBest(){var b=getBest();$("bestLine").textContent=b?("Best on this device: "+b.pct+"% ("+b.name+")"):"";}
+
+function start(){
+  var f=$("fname").value.trim(),l=$("lname").value.trim(),p=$("period").value;
+  if(!f||!l){$("startErr").textContent="Enter your first and last name.";return;}
+  if(!p){$("startErr").textContent="Choose your class period.";return;}
+  $("startErr").textContent="";
+  S={name:f+" "+l,period:p,t0:Date.now(),right:0,done:0,r:0,idx:0,per:[0,0,0,0],tot:[0,0,0,0]};
+  S.rounds=[buildR1(),buildR2(),buildR3(),buildR4()];
+  S.rounds.forEach(function(r,i){S.tot[i]=r.length;});
+  S.total=S.tot.reduce(function(a,b){return a+b;},0);
+  roundBreak();
+}
+function roundBreak(){
+  var R=ROUNDS[S.r];
+  $("breakTitle").textContent=R.name;
+  $("breakText").textContent=R.intro+" ("+S.rounds[S.r].length+" calls)";
+  $("breakBtn").textContent=S.r===0?"Start the first job":"Start the next job";
+  show("breakScreen");hud();
+}
+function render(){
+  S.queue=S.rounds[S.r];show("playScreen");
+  var item=S.queue[S.idx];S.cur=item;S.answered=false;S.picked=[];
+  $("roundTag").textContent=ROUNDS[S.r].name;
+  $("qCount").textContent="Call "+(S.idx+1)+" of "+S.queue.length;
+  $("bar").style.width=Math.round(100*S.done/S.total)+"%";
+  $("fb").className="fb";$("fb").innerHTML="";$("nextBtn").classList.add("hidden");
+  var h='<p class="q">'+esc(item.q)+'</p>';
+  if(item.type==="mc"){
+    h+='<div class="opts">';item.opts.forEach(function(o,i){h+='<button class="opt" data-i="'+i+'">'+esc(o)+'</button>';});h+='</div>';
+    $("qArea").innerHTML=h;
+    Array.prototype.forEach.call($("qArea").querySelectorAll(".opt"),function(b){b.addEventListener("click",function(){answerMC(+b.getAttribute("data-i"));});});
+  } else {
+    item.shown=shuffle(item.steps);
+    h+='<div class="steps" id="steps">';item.shown.forEach(function(s,i){h+='<button class="step" data-i="'+i+'"><span class="n"></span><span>'+esc(s)+'</span></button>';});
+    h+='</div><div class="row" style="margin-top:10px"><button class="btn ghost" id="resetOrder">Reset</button><button class="btn" id="checkOrder" disabled>Check order</button></div>';
+    $("qArea").innerHTML=h;
+    Array.prototype.forEach.call($("qArea").querySelectorAll(".step"),function(b){b.addEventListener("click",function(){
+      if(S.answered)return;var i=+b.getAttribute("data-i");if(S.picked.indexOf(i)>=0)return;
+      S.picked.push(i);b.classList.add("picked");b.querySelector(".n").textContent=S.picked.length;
+      $("checkOrder").disabled=S.picked.length!==item.steps.length;
+    });});
+    $("resetOrder").addEventListener("click",function(){if(S.answered)return;S.picked=[];Array.prototype.forEach.call($("qArea").querySelectorAll(".step"),function(b){b.classList.remove("picked");b.querySelector(".n").textContent="";});$("checkOrder").disabled=true;});
+    $("checkOrder").addEventListener("click",answerOrder);
+  }
+  hud();
+}
+function feedback(ok,item,extra){
+  S.answered=true;S.done++;if(ok){S.right++;S.per[S.r]++;}
+  var fb=$("fb");fb.className="fb show "+(ok?"good":"bad");
+  fb.innerHTML="<b>"+(ok?"Good call! +100 reputation.":"Not quite.")+"</b> "+(extra||"")+esc(item.why)+' <div class="ref">See '+esc(item.ref)+'</div>';
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").textContent=(S.idx===S.queue.length-1)?(S.r===3?"See my certificate":"Finish this job"):"Next call";
+  $("nextBtn").focus();hud();
+}
+function answerMC(i){
+  if(S.answered)return;var item=S.cur;var chosen=item.opts[i];var ok=chosen===item.ans;
+  Array.prototype.forEach.call($("qArea").querySelectorAll(".opt"),function(b){var o=item.opts[+b.getAttribute("data-i")];b.disabled=true;if(o===item.ans)b.classList.add("right");else if(+b.getAttribute("data-i")===i)b.classList.add("wrong");});
+  feedback(ok,item,ok?"":"The best answer is <b>"+esc(item.ans)+"</b>. ");
+}
+function answerOrder(){
+  if(S.answered)return;var item=S.cur;
+  var ok=S.picked.every(function(si,pos){return item.shown[si]===item.steps[pos];});
+  $("checkOrder").disabled=true;$("resetOrder").disabled=true;
+  var list="<ol>"+item.steps.map(function(s){return "<li>"+esc(s)+"</li>";}).join("")+"</ol>";
+  feedback(ok,item,ok?"":"The correct order is:"+list);
+}
+function next(){
+  S.idx++;
+  if(S.idx>=S.queue.length){S.idx=0;S.r++;if(S.r>=4){finish();return;}roundBreak();return;}
+  render();
+}
+function rating(p){
+  if(p>=90)return [5,"Crew Chief"];if(p>=80)return [4,"Lead Hand"];if(p>=70)return [3,"Crew Member"];if(p>=60)return [2,"Trainee"];return [1,"Apprentice"];
+}
+function finish(){
+  var now=new Date();var mins=Math.max(1,Math.round((Date.now()-S.t0)/60000));
+  var pct=Math.round(100*S.right/S.total);var date=ymd(now);
+  var code=makeCode(S.name,S.period,pct,date,mins);var rt=rating(pct);
+  $("cName").textContent=S.name;$("cPeriod").textContent=S.period;
+  $("cStars").textContent=new Array(rt[0]+1).join("★")+new Array(6-rt[0]).join("☆");
+  $("cRank").textContent="Crew rating: "+rt[1];
+  $("cPct").textContent=pct+"%";$("cRight").textContent=S.right+" of "+S.total;$("cPts").textContent=(S.right*100);
+  $("cMin").textContent=mins;
+  $("cDate").textContent=date+" "+now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+  $("cCode").textContent=code;
+  var rows="";ROUNDS.forEach(function(R,i){var full=S.per[i]===S.tot[i];rows+="<tr><td>"+esc(R.name)+"</td><td>"+S.per[i]+" / "+S.tot[i]+"</td><td>"+(full?"Nice work":esc(R.review))+"</td></tr>";});
+  $("cBreak").innerHTML=rows;
+  var b=getBest();if(!b||pct>b.pct)setBest({pct:pct,name:S.name});
+  S.queue=null;hud();$("bar").style.width="100%";
+  show("endScreen");
+}
+function teacherCheck(){
+  var code=makeCode($("tName").value,$("tPeriod").value,String(parseInt($("tPct").value,10)),$("tDate").value.trim(),String(parseInt($("tMin").value,10)));
+  var typed=$("tCode").value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+  var ok=typed===code.replace("-","");
+  $("checkOut").innerHTML=ok?'<span style="color:var(--ok)">Match. This code fits these values.</span>':'<span style="color:var(--bad)">No match. Expected '+code+' for these values.</span>';
+}
+
+/* ---------- Wire up ---------- */
+$("startBtn").addEventListener("click",start);
+$("breakBtn").addEventListener("click",render);
+$("nextBtn").addEventListener("click",next);
+$("printBtn").addEventListener("click",function(){window.print();});
+$("againBtn").addEventListener("click",function(){S={};hud();refreshBest();show("startScreen");});
+$("teacherLink").addEventListener("click",function(e){e.preventDefault();show("teacherScreen");});
+$("teacherBack").addEventListener("click",function(){$("pin").value="";$("pinErr").textContent="";$("checkOut").textContent="";$("pinBox").classList.remove("hidden");$("checkBox").classList.add("hidden");show("startScreen");});
+$("pinBtn").addEventListener("click",function(){if($("pin").value===TEACHER_PIN){$("pinBox").classList.add("hidden");$("checkBox").classList.remove("hidden");}else{$("pinErr").textContent="Wrong PIN.";}});
+$("checkBtn").addEventListener("click",teacherCheck);
+refreshBest();
+window.__crew={makeCode:makeCode,state:function(){return S;},data:{TREES:TREES,CHART:CHART,CALLS:CALLS,INSTALL:INSTALL,CARE:CARE,LEAF_FACTS:LEAF_FACTS,ORDER_STEPS:ORDER_STEPS}};
+})();
+</script>
+</body>
+</html>

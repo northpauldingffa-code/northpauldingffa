@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 3: Gene Lab Technician</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2f6b3a;--bad:#9b2c1f}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.4}
+body{overflow-x:hidden}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;margin:0 0 .4em}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.band{background:var(--green);color:#fff;padding:14px 16px;border-bottom:5px solid var(--red)}
+.band .kick{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.band h1{font-size:1.6rem;margin:.1em 0 0}
+.card{background:#fff;border:2px solid var(--tan);border-radius:10px;padding:16px;margin:14px 0}
+label{display:block;font-weight:bold;margin:.6em 0 .2em}
+input,select{width:100%;font-size:1rem;padding:10px;border:2px solid var(--tan);border-radius:8px;background:#fff;color:var(--ink)}
+button{font:inherit;cursor:pointer;border:none;border-radius:8px;padding:12px 16px;background:var(--red);color:#fff;font-weight:bold}
+button.alt{background:var(--green)}
+button.ghost{background:transparent;color:var(--muted);text-decoration:underline;padding:6px;font-weight:normal}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 140px}
+.hud{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:.9rem;color:var(--muted);margin-bottom:6px}
+.hud b{color:var(--ink)}
+.bar{height:8px;background:var(--tan);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.bar i{display:block;height:100%;background:var(--gold);width:0}
+.hall{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--green);font-weight:bold}
+.visitor{background:var(--cream);border-left:5px solid var(--gold);padding:10px 12px;border-radius:6px;margin:8px 0 12px;font-style:italic;color:var(--muted)}
+.q{font-size:1.1rem;font-weight:bold;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:#fff;color:var(--ink);border:2px solid var(--tan);font-weight:normal}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:#e3efe4;border-color:var(--ok)}
+.opt.wrong{background:#f6e1dc;border-color:var(--bad)}
+.fb{margin-top:12px;padding:10px 12px;border-radius:8px;display:none}
+.fb.show{display:block}
+.fb.good{background:#e3efe4;border:1px solid var(--ok)}
+.fb.bad{background:#f6e1dc;border:1px solid var(--bad)}
+.fb .pg{color:var(--muted);font-style:italic;font-size:.9rem}
+.order-list{display:grid;gap:8px}
+.ev{display:flex;align-items:center;gap:10px;text-align:left;background:#fff;color:var(--ink);border:2px solid var(--tan);font-weight:normal}
+.ev .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--tan);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:bold}
+.ev.picked .num{background:var(--green);color:#fff}
+.ev .yr{margin-left:auto;font-weight:bold;color:var(--green);display:none}
+.reveal .ev .yr{display:inline}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.center{text-align:center}
+.cert{border:6px double var(--red);background:#fff;padding:20px;border-radius:6px;text-align:center}
+.cert .big{font-family:Cambria,Georgia,serif;font-size:1.9rem;color:var(--red);margin:.2em 0}
+.cert .code{font-family:Consolas,"Courier New",monospace;font-size:1.6rem;letter-spacing:.15em;background:var(--cream);display:inline-block;padding:6px 14px;border-radius:6px;margin:6px 0}
+.stars{color:var(--gold);font-size:1.6rem;letter-spacing:.1em}
+table.bd{width:100%;border-collapse:collapse;margin-top:10px;font-size:.9rem;text-align:left}
+table.bd td,table.bd th{border:1px solid var(--tan);padding:6px}
+table.bd th{background:var(--cream)}
+.hide{display:none!important}
+.err{color:var(--bad);font-weight:bold;margin-top:6px}
+@media print{
+ body{background:#fff}
+ .noprint,.band{display:none!important}
+ .wrap{max-width:none;padding:0}
+ #certCard{border:none;padding:0}
+}
+</style>
+<style>
+.mono{font-family:Consolas,"Courier New",monospace;letter-spacing:.2em;font-size:1.15rem}
+.strand{font-family:Consolas,"Courier New",monospace;font-size:1.4rem;letter-spacing:.35em;background:var(--cream);padding:8px 12px;border-radius:6px;display:inline-block;margin:4px 0 10px;word-break:break-all}
+.punnett{border-collapse:collapse;margin:6px 0 12px}
+.punnett td{border:2px solid var(--tan);width:54px;height:44px;text-align:center;font-weight:bold;font-size:1.1rem}
+.punnett td.h{background:var(--cream);color:var(--green)}
+</style>
+</head>
+<body>
+<div class="band noprint"><div class="wrap" style="padding:0">
+ <div class="kick">Unit 3 &bull; Biotechnology</div>
+ <h1>Gene Lab Technician</h1>
+</div></div>
+
+<div class="wrap">
+
+<section id="start">
+ <div class="card">
+  <h2>Welcome to the lab</h2>
+  <p>You've been hired as a technician at an agricultural biotechnology lab. Work five stations. Each correct job earns grant money for the lab, and your final total sets your lab certification level.</p>
+  <ol class="small">
+   <li><b>Vocabulary Vault:</b> key terms</li>
+   <li><b>Breeding Barn:</b> selection, Mendel, and the history of biotechnology</li>
+   <li><b>DNA Bench:</b> base pairs and Punnett squares</li>
+   <li><b>Gene Splicing Line:</b> putting process steps in order, and what biotech has produced</li>
+   <li><b>Safety and Ethics Desk:</b> regulation, cloning, food safety, and fact vs. opinion</li>
+  </ol>
+  <label for="fname">First name</label><input id="fname" autocomplete="off">
+  <label for="lname">Last name</label><input id="lname" autocomplete="off">
+  <label for="period">Class period</label>
+  <select id="period"><option value="">Choose...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+  <div id="startErr" class="err"></div>
+  <p id="best" class="muted small"></p>
+  <button id="startBtn" style="width:100%;margin-top:8px">Clock in</button>
+ </div>
+ <p class="center"><button class="ghost" id="teacherLink">Teacher check</button></p>
+</section>
+
+<section id="teacher" class="hide">
+ <div class="card">
+  <h2>Teacher check</h2>
+  <div id="pinBox">
+   <label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric">
+   <button id="pinBtn" style="margin-top:8px">Unlock</button>
+   <div id="pinErr" class="err"></div>
+  </div>
+  <div id="verBox" class="hide">
+   <p class="small muted">Type exactly what is on the student's certificate.</p>
+   <label>Student name</label><input id="vName">
+   <div class="row">
+    <div><label>Period</label><input id="vPer"></div>
+    <div><label>Percent</label><input id="vPct" inputmode="numeric"></div>
+    <div><label>Minutes</label><input id="vMin" inputmode="numeric"></div>
+   </div>
+   <label>Date (YYYY-MM-DD)</label><input id="vDate" placeholder="2026-10-27">
+   <label>Completion code</label><input id="vCode" placeholder="ABC-DEF">
+   <button id="verBtn" style="margin-top:8px">Check code</button>
+   <div id="verOut" style="margin-top:10px;font-weight:bold"></div>
+  </div>
+  <p><button class="ghost" id="teacherBack">Back</button></p>
+ </div>
+</section>
+
+<section id="play" class="hide">
+ <div class="hud"><span id="hudHall"></span><span>Grant money: <b id="hudVis">$0</b></span><span>Job <b id="hudN">1</b> of <b id="hudT">0</b></span></div>
+ <div class="bar"><i id="hudBar"></i></div>
+ <div class="card" id="qCard"></div>
+</section>
+
+<section id="brk" class="hide"><div class="card center" id="brkCard"></div></section>
+
+<section id="end" class="hide">
+ <div class="card" id="certCard"></div>
+ <div class="row noprint">
+  <button id="printBtn" class="alt">Print / Save as PDF</button>
+  <button id="againBtn">Play again</button>
+ </div>
+</section>
+</div>
+
+<script>
+/* ===== Teacher settings ===== */
+var TEACHER_PIN = "0545";
+var SALT = "NPFFA-U3-GENELAB";
+var STORE_KEY = "npffa_unit3_genelab_best";
+
+/* ===== Helpers ===== */
+function $(id){return document.getElementById(id);}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function rint(lo,hi){return lo+Math.floor(Math.random()*(hi-lo+1));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,"");}
+function fnv(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h>>>0;}
+var ALPHA="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function makeCode(name,per,pct,date,mins){
+ var h=fnv(SALT+"|"+norm(name)+"|"+norm(per)+"|"+String(parseInt(pct,10))+"|"+date+"|"+String(parseInt(mins,10)));
+ var s="";for(var i=0;i<6;i++){s+=ALPHA[h&31];h=h>>>5;if(i===2){h=fnv(s+String(h)+SALT);}}
+ return s.slice(0,3)+"-"+s.slice(3);
+}
+function getBest(){try{var v=localStorage.getItem(STORE_KEY);return v?JSON.parse(v):null;}catch(e){return null;}}
+function setBest(o){try{localStorage.setItem(STORE_KEY,JSON.stringify(o));}catch(e){}}
+function money(n){return "$"+n.toLocaleString("en-US");}
+
+var CALLERS=["The lab director asks","A dairy farmer calls in","A visiting FFA chapter asks","A food company client asks","Your lab partner asks","A county Extension agent asks","A reporter from the local paper asks","A pharmacy student asks","A potato grower emails","A state inspector asks"];
+
+/* ===== STATION 1: Terms ===== */
+var TERMS=[
+ {t:"bio",d:["Means life or living","The word part that makes biotechnology the application of living processes to technology"],p:"p. 49"},
+ {t:"biotechnology",d:["Use of microorganisms, animal cells, plant cells, or cell parts to produce products or carry out processes","Application of living processes to technology"],p:"p. 49"},
+ {t:"improvement by selection",d:["Picking the best plants or animals for producing the next generation","Earliest method of livestock improvement, after domestication"],p:"p. 49-50"},
+ {t:"selective breeding",d:["Selection of parents to get desirable characteristics in the offspring","Mating animals with traits humans prefer so offspring show those traits"],p:"p. 50"},
+ {t:"genetics",d:["The science of heredity","Field Gregor Mendel founded by studying garden peas"],p:"p. 50"},
+ {t:"heredity",d:["Transmission of characteristics from an organism to its offspring through genes in reproductive cells","Passing traits from parents to offspring"],p:"p. 51"},
+ {t:"gene",d:["Component of cells that determines the individual characteristics of living things","Small section of DNA responsible for a specific trait"],p:"p. 51-52"},
+ {t:"generation",d:["The offspring, or progeny, of common parents","One step in the line from parents to offspring"],p:"p. 51"},
+ {t:"progeny",d:["Another word for offspring","The young produced by common parents"],p:"p. 51"},
+ {t:"deoxyribonucleic acid (DNA)",d:["Coded material in a cell that determines what the cell will become","The genetic code of life, made of paired strands joined by bases"],p:"p. 52"},
+ {t:"nucleic acid",d:["Slightly acidic substance Friedrich Meischer found in the nuclei of all cells in 1867","Original name later expanded to deoxyribonucleic acid"],p:"p. 52"},
+ {t:"base",d:["Chemical that connects the two strands of DNA, like the rungs of a ladder","A, G, C, or T in the genetic alphabet"],p:"p. 52"},
+ {t:"adenine (A)",d:["Base that pairs with thymine","The 'A' in the genetic alphabet"],p:"p. 52-53"},
+ {t:"guanine (G)",d:["Base that pairs with cytosine","The 'G' in the genetic alphabet"],p:"p. 52-53"},
+ {t:"cytosine (C)",d:["Base that pairs with guanine","The 'C' in the genetic alphabet"],p:"p. 52-53"},
+ {t:"thymine (T)",d:["Base that pairs with adenine","The 'T' in the genetic alphabet"],p:"p. 52-53"},
+ {t:"gene splicing",d:["Removing particular DNA segments and inserting new genes into a DNA sequence","Another name for recombinant DNA technology"],p:"p. 53"},
+ {t:"gene mapping",d:["The process of finding and recording the location of genes","Identifying where a specific gene sits on a chromosome"],p:"p. 53"},
+ {t:"clone",d:["An exact duplicate of something","An exact genetic copy of another living organism, like Dolly the sheep"],p:"p. 53, 57"},
+ {t:"genetic engineering",d:["Movement of genetic information in the form of genes from one cell to another","Major breakthrough developed in the early 1980s"],p:"p. 53"},
+ {t:"bovine somatotropin (BST)",d:["Hormone that stimulates increased milk production in cows","Cow hormone made affordable by altered bacteria"],p:"p. 54"},
+ {t:"porcine somatotropin (PST)",d:["Animal hormone that increases meat production in swine","Swine hormone produced by genetically altered bacteria"],p:"p. 54"},
+ {t:"chromosome",d:["Rod-like structure made of DNA and other substances that holds genes","Structure containing the genetic information of a cell"],p:"p. 52-53"},
+ {t:"transgenic animal",d:["Animal modified to express genes not naturally found in it","A 'living drug factory' that makes human proteins in milk or blood"],p:"p. 55"}
+];
+
+/* ===== STATION 2: Breeding barn / history ===== */
+var BARN=[
+ {q:"Which of these is an example of a fermented food?",a:"Cheese",x:["Applesauce","Bologna","Coffee"],w:"Bacteria are used to produce dozens of types of cheeses and other dairy products.",p:"p. 49, Self-Eval #2"},
+ {q:"What makes bread rise?",a:"Yeast",x:["Bacteria in silos","Nucleic acid","Thymine"],w:"Yeast making bread rise is a historic application of biotechnology.",p:"p. 49"},
+ {q:"Bacteria are used to ferment which food named in the text?",a:"Sauerkraut",x:["Bread","Applesauce","Tofu"],w:"Bacteria ferment sauerkraut and produce cheeses and other dairy products.",p:"p. 49"},
+ {q:"What do microorganisms transform fruit and grains into?",a:"Alcoholic beverages",x:["Silage","Insulin","Methane fuel"],w:"Microorganisms transform fruit and grains into alcoholic beverages.",p:"p. 49, Fig. 3-1"},
+ {q:"What is silage?",a:"Grains or green plant material preserved by bacteria in an airtight space",x:["Grain dried in the sun","Feed made from tallow","Green grass fed fresh in the pasture"],w:"Bacteria convert sugars and starches into acids that add taste and protect feed from spoilage.",p:"p. 49-50, Fig. 3-2"},
+ {q:"In a silo, what do bacteria convert sugars and starches into?",a:"Acids",x:["Bases","Proteins","Methane"],w:"The acids give a desirable taste and protect the feed from spoilage by other microorganisms.",p:"p. 49"},
+ {q:"What was probably the earliest method of livestock improvement?",a:"Selection",x:["Gene splicing","Crossbreeding","Biotechnology"],w:"Domestication came first, and improvement by selection soon followed.",p:"p. 49, Self-Eval #3"},
+ {q:"Which animals does the text say were domesticated thousands of years ago?",a:"Dog, horse, sheep, goat, and ox",x:["Chickens, turkeys, and ducks only","Only cattle and swine","Mules and Idaho Gem"],w:"History documents domestication of these animals, followed by improvement by selection.",p:"p. 49"},
+ {q:"Chariot armies, Chinese emperors, and armored knights all show early success at breeding which animal for specific purposes?",a:"Horses",x:["Oxen","Dogs","Camels"],w:"These are testimony to early successes at breeding horses for speed, strength, and other traits.",p:"p. 50"},
+ {q:"Who is credited with discovering the effect of genetics on plant characteristics?",a:"Gregor Johann Mendel",x:["George Washington Carver","Friedrich Meischer","Joseph Glidden"],w:"Mendel, an Austrian monk, provided the foundation for the scientific study of heredity.",p:"p. 50-51"},
+ {q:"What plant did Mendel experiment with?",a:"Garden peas",x:["Soybeans","Corn","Potatoes"],w:"He saw a pattern in how traits like tall and short passed from one generation to the next.",p:"p. 51"},
+ {q:"In what year did Mendel publish his article?",a:"1866",x:["1900","1867","1988"],w:"Mendel published in 1866. Other scientists reviewed his writings in 1900.",p:"p. 51"},
+ {q:"Why were Mendel's discoveries not lost after his death?",a:"He recorded them in writing",x:["He taught them to his students","They were patented","They were printed on seed packets"],w:"The text calls his work an excellent example of the power of the written word.",p:"p. 51"},
+ {q:"If tall is dominant, how can two tall pea plants have a short offspring?",a:"The short trait can hide in tall plants as a recessive gene",x:["Short plants are always dominant","The soil was poor","Short plants appear at random with no genes involved"],w:"A recessive gene only shows when both genes in the plant are recessive for shortness.",p:"p. 51"},
+ {q:"Short pea plants crossed with short pea plants always produce...",a:"Short plants",x:["Tall plants","Half tall, half short","Mostly tall plants"],w:"There is no tall gene in either parent to dominate.",p:"p. 51"},
+ {q:"In 1867, who found that the nuclei of all cells contain a slightly acidic substance?",a:"Friedrich Meischer",x:["Gregor Mendel","Rachel Carson","Calgene"],w:"He named it nucleic acid, later expanded to deoxyribonucleic acid, or DNA.",p:"p. 52"},
+ {q:"About how many kinds of plants are estimated to exist in the world?",a:"300,000",x:["1 million","30,000","3 million"],w:"There are about 300,000 kinds of plants and more than 1 million kinds of animals.",p:"p. 51"},
+ {q:"In the early 1800s it was observed that all living organisms are composed of...",a:"cells",x:["bases only","nucleic acid only","proteins only"],w:"Cells of microscopic organisms and larger plants and animals are basically the same.",p:"p. 52"},
+ {q:"The fertilized cell that contains coded information for what it will become is called the...",a:"embryo",x:["progeny","plasmid","clone"],w:"The embryo and its successive cells carry coded material called DNA.",p:"p. 52"},
+ {q:"Why does the text say governments and scientists have moved cautiously with biotechnology?",a:"This power over life could cause unmanageable consequences in careless, uninformed, or criminal hands",x:["It has never worked in agriculture","It is too cheap to regulate","It is banned in the United States"],w:"Biotech promises big advances, but there are real dangers if it is misused.",p:"p. 49"}
+];
+
+/* ===== STATION 3: DNA bench ===== */
+var PAIR={A:"T",T:"A",G:"C",C:"G"};
+var DNAQ=[
+ {q:"In DNA, adenine (A) always pairs with...",a:"thymine (T)",x:["guanine (G)","cytosine (C)","adenine (A)"],w:"A pairs with T, and G pairs with C.",p:"p. 53, Fig. 3-7"},
+ {q:"In DNA, guanine (G) always pairs with...",a:"cytosine (C)",x:["thymine (T)","adenine (A)","guanine (G)"],w:"G pairs with C, and A pairs with T.",p:"p. 53, Fig. 3-7"},
+ {q:"In the ladder model of DNA (Figure 3-5), what are the rungs?",a:"The bases",x:["The genes","The chromosomes","The nuclei"],w:"The two DNA strands are the sides of the ladder, and the bases are the rungs.",p:"p. 52, Fig. 3-5"},
+ {q:"If one end of the DNA ladder is held and the other end twisted, what shape results?",a:"Double helix",x:["Single strand","Pyramid","Plasmid"],w:"The double helix is the shape of DNA strands in a cell.",p:"p. 52"},
+ {q:"What happens to DNA strands as a cell divides?",a:"They separate, and new bases attach to make duplicate strands",x:["They are destroyed and rebuilt from protein","Only one new cell gets DNA","They turn into chromosomes"],w:"Genetic codes are duplicated and passed to new cells as growth occurs.",p:"p. 53, Fig. 3-8"},
+ {q:"In the Trait Predictability box, what does 'homozygous' mean?",a:"Same alleles for a given trait",x:["Different alleles for a given trait","Has no alleles","A clone of the parent"],w:"TT and tt are homozygous. Tt is heterozygous.",p:"p. 52"},
+ {q:"A pea plant that is Tt is described as...",a:"heterozygous and tall (a hybrid)",x:["homozygous and short","homozygous and tall","heterozygous and short"],w:"T is dominant, so Tt is tall. Different alleles make it heterozygous, also called a hybrid.",p:"p. 52"},
+ {q:"Which genotype gives a short pea plant?",a:"tt",x:["TT","Tt","tT"],w:"Only two recessive genes give a short plant.",p:"p. 52"},
+ {q:"What is an allele?",a:"One of the forms in which a gene can occur",x:["A type of plasmid","A chromosome pair","A cloned cell"],w:"In the pea example, T and t are alleles.",p:"p. 52"},
+ {q:"In Mendel's reproduction model, how much of the genes does each parent contribute?",a:"One half",x:["All of them","One fourth","None, they come from the soil"],w:"Each parent contributes one half of the genes.",p:"p. 52"},
+ {q:"Which is given in the text as an example of an individual trait?",a:"Height of plants at maturity",x:["Soil type","Rainfall","Grain price"],w:"Other examples include hair color, tendency for baldness, and multiple births.",p:"p. 53"},
+ {q:"Scientists can identify an individual gene and replace it. What example does the text give?",a:"Making plants resistant to insects that eat them",x:["Making cows purple","Turning sand into soil","Making wheat grow without water entirely"],w:"Plants susceptible to certain insects may be altered to resist them.",p:"p. 53"}
+];
+function strand(n){var b="ATGC",s="";for(var i=0;i<n;i++)s+=b[rint(0,3)];return s;}
+function comp(s){return s.split("").map(function(c){return PAIR[c];}).join("");}
+function wrongPair(s){var m={A:"C",C:"A",G:"T",T:"G"};return s.split("").map(function(c){return m[c];}).join("");}
+function oneOff(s){var c=comp(s).split("");var i=rint(0,c.length-1);var o=c[i];c[i]=pick("ATGC".replace(o,"").split(""));return c.join("");}
+function genComplement(){
+ var s=strand(rint(6,8));var a=comp(s);
+ var set=[a];var cands=[wrongPair(s),s,oneOff(s),a.split("").reverse().join(""),oneOff(s)];
+ cands.forEach(function(c){if(set.length<4&&set.indexOf(c)<0)set.push(c);});
+ while(set.length<4){var z=oneOff(s);if(set.indexOf(z)<0)set.push(z);}
+ return {type:"mc",mono:true,hall:2,q:"A DNA strand reads below. Which strand would pair with it?",show:"<div class='strand'>"+s+"</div>",a:a,opts:shuffle(set),w:"A pairs with T, and G pairs with C, so "+s+" pairs with "+a+".",p:"p. 53, Fig. 3-7"};
+}
+var GENOS=["TT","Tt","tt"];
+function cross(p1,p2){var out=[];for(var i=0;i<2;i++)for(var j=0;j<2;j++){var g=[p1[i],p2[j]].sort().join("");out.push(g);}return out;}
+function genPunnett(){
+ var p1=pick(GENOS),p2=pick(GENOS);var kids=cross(p1,p2);
+ var tall=kids.filter(function(g){return g.indexOf("T")>=0;}).length;
+ var tbl="<table class='punnett'><tr><td class='h'></td><td class='h'>"+p2[0]+"</td><td class='h'>"+p2[1]+"</td></tr><tr><td class='h'>"+p1[0]+"</td><td>?</td><td>?</td></tr><tr><td class='h'>"+p1[1]+"</td><td>?</td><td>?</td></tr></table>";
+ return {type:"mc",hall:2,q:"Fill in this Punnett square in your head. Crossing "+p1+" x "+p2+" (T = tall is dominant), how many of the 4 boxes are TALL plants?",show:tbl,a:String(tall)+" of 4",opts:["0 of 4","1 of 4","2 of 4","3 of 4","4 of 4"].filter(function(x,i,arr){return true;}).sort(function(){return 0;}),w:"The four boxes are "+kids.map(function(g){return g==="tT"?"Tt":g;}).join(", ")+". Any box with a capital T is tall, so "+tall+" of 4 are tall.",p:"p. 52"};
+}
+
+/* ===== STATION 4: Gene splicing line ===== */
+var PROCS=[
+ {name:"Human insulin production (Figure 3-10)",steps:["Cut a bacterial plasmid with restriction enzymes and insert the human insulin-producing gene","Reintroduce the plasmid into a bacterium","Engineered bacteria multiply in a fermentation tank and produce insulin","Separate and purify the human insulin","Inject the insulin into a patient"],p:"p. 56, Fig. 3-10"},
+ {name:"Plant genetic engineering (Figure 3-9)",steps:["Insert an antibiotic-resistance gene into an E. coli plasmid","Insert the engineered E. coli plasmid into a soil bacterium","Mix the soil bacterium with plant cells so it inserts the new gene into the plant chromosome","Grow the engineered plant cells on antibiotic medium","Regenerate whole plants from the single cells"],p:"p. 55, Fig. 3-9"},
+ {name:"Safety testing of a new organism",steps:["Test in laboratories, greenhouses, and other enclosures","Get approval for testing outdoors","Run small-scale outdoor tests in remote places under careful observation","Determine efficiency, safety, control, and environmental impact"],p:"p. 57"}
+];
+var LINE=[
+ {q:"In 1988, California scientists made the first outdoor tests of which product?",a:"Ice-minus",x:["BST","Roundup","Insulin"],w:"Ice-minus contains bacteria altered to slow frost on plant leaves.",p:"p. 54"},
+ {q:"What does ice-minus do?",a:"Retards frost formation on plant leaves",x:["Kills potato beetles","Increases milk production","Breaks down oil spills"],w:"It protects fruit crops when temperatures fall 4 to 6 degrees below what would harm fruiting.",p:"p. 54"},
+ {q:"BST was known for a long time, but why wasn't it available until recently?",a:"It was too costly until bacteria were altered to produce it",x:["It was illegal","Cows could not use it","It was only found in pigs"],w:"Altered bacteria made BST at a reasonable cost.",p:"p. 54"},
+ {q:"Which hormone increases meat production in swine?",a:"Porcine somatotropin (PST)",x:["Bovine somatotropin (BST)","Insulin","Human Protein C"],w:"PST is produced by genetically altered bacteria.",p:"p. 54"},
+ {q:"How were potatoes made resistant to the Colorado potato beetle?",a:"A gene was inserted that makes the leaves toxic to the beetle",x:["The potatoes were sprayed weekly","The beetles were cloned","The potatoes were grown underground only"],w:"The substance does not affect humans who eat the tuber.",p:"p. 54"},
+ {q:"Why are microbes well suited to genetic engineering?",a:"They reproduce quickly",x:["They are large and easy to see","They never mutate","They live only in labs"],w:"Microbes reproduce quickly and can be engineered to make products for plants, animals, and humans.",p:"p. 54"},
+ {q:"What was one of the first commercial products made by genetic engineering?",a:"Insulin",x:["Silage","Tofu","Penicillin"],w:"Insulin, used by people with diabetes to control blood sugar, was made by engineered E. coli.",p:"p. 54-55"},
+ {q:"Before genetic engineering, insulin came from...",a:"animal pancreas tissue",x:["soybeans","human blood donors","cow's milk"],w:"It was in short supply and very expensive.",p:"p. 55"},
+ {q:"Which bacterium was engineered to produce human insulin?",a:"Escherichia coli",x:["Salmonella","Listeria","Bacillus cereus"],w:"E. coli was engineered to produce insulin for human use.",p:"p. 55"},
+ {q:"Why are transgenic animals called 'living drug factories'?",a:"They produce human proteins in their milk or blood",x:["They are kept in pharmacies","They eat medicines","They are clones of doctors' pets"],w:"Products include Human Protein C, hemoglobin from pigs, and clotting Factors VIII and XI.",p:"p. 55"},
+ {q:"Human Protein C, made by transgenic animals, is...",a:"an anticlotting protein that dissolves blood clots",x:["a blood substitute from pigs","a milk hormone","a frost blocker"],w:"Factors VIII and XI do the opposite: they cause clotting for people with hemophilia.",p:"p. 55"},
+ {q:"Because a new gene is inserted into a transgenic animal's chromosomes, it...",a:"may be passed on to its offspring",x:["disappears after one year","only affects its milk","cannot be tested"],w:"The gene becomes part of the chromosomes, so offspring can inherit it.",p:"p. 55"},
+ {q:"What is an important contribution of biotechnology to waste management?",a:"Bacteria that consume oil",x:["Disease-resistant bacteria","Ice-minus bacteria","Human bacteria"],w:"Altered bacteria feed on oil slicks and spills, turning them into less harmful products.",p:"p. 56, Fig. 3-11"},
+ {q:"Which chemical pollutants in water can be decomposed or deactivated by bacteria?",a:"PCBs",x:["Chlorine","Fluorides","Iron"],w:"Bacteria can break down dioxin, PCBs, insecticides, and herbicides in rivers, lakes, and streams.",p:"p. 56, Self-Eval #10"},
+ {q:"Bacteria can convert solid waste from humans and livestock into...",a:"methane fuel",x:["drinking water","insulin","silage"],w:"Methane is used to generate electricity or heat buildings.",p:"p. 56"},
+ {q:"Current environmental laws mandate solid waste reductions of how much compared to 1990?",a:"40 percent or more",x:["10 percent","100 percent","5 percent"],w:"Landfills are filling, and waste management is an international problem.",p:"p. 55-56"},
+ {q:"What potential environmental benefits of biotechnology does the text list?",a:"Less use of chemical pesticides and more biological controls",x:["More pesticide use","Fewer farms in the U.S.","Bigger landfills"],w:"Genetic engineering holds great promise against diseases, insects, weeds, and other pests.",p:"p. 54"},
+ {q:"Genetic engineering can be done to change...",a:"animals, microorganisms, and plants",x:["plants only","animals only","microorganisms only"],w:"The text describes engineering all three.",p:"p. 54, Self-Eval #8"}
+];
+
+/* ===== STATION 5: Safety & ethics ===== */
+var DESK=[
+ {q:"Which federal agency developed many of the regulations on biotechnology?",a:"Environmental Protection Agency (EPA)",x:["Food and Drug Administration (FDA)","USDA Forest Service","National Park Service"],w:"Federal and state governments monitor biotech research closely, and many rules came from the EPA.",p:"p. 57"},
+ {q:"What happens if a new organism poses an unmanageable threat during testing?",a:"It can be destroyed",x:["It is released anyway","It is sold overseas","It is patented"],w:"Outdoor tests start small, in remote places, under careful observation.",p:"p. 57"},
+ {q:"What did some customers demand about milk from cows treated with BST?",a:"That it be labeled",x:["That it cost less","That it be sold only in schools","That it be made into cheese"],w:"Some believed it should not be marketed at all.",p:"p. 57"},
+ {q:"What did the FDA say about BST milk?",a:"No differences exist between BST milk and milk from untreated cows",x:["BST milk is unsafe","BST milk has more fat","BST milk must be banned"],w:"Despite FDA assurances, some customer resistance still persists.",p:"p. 57"},
+ {q:"Why did some milk processors refuse shipments from farms using BST?",a:"They feared consumer boycotts",x:["The milk spoiled faster","BST was illegal","The milk tasted different"],w:"They worried their products might be boycotted.",p:"p. 57"},
+ {q:"According to the text, customer resistance to biotech foods appears to be...",a:"diminishing",x:["growing quickly","unchanged since 1950","limited to Europe"],w:"Some nations that refused bioengineered products no longer do, though an active coalition still seeks controls.",p:"p. 58"},
+ {q:"Ethics is...",a:"a system of moral principles that defines what is right and wrong in a society",x:["a type of gene splicing","a law passed by the EPA","the science of heredity"],w:"The ability to manipulate genetics raises important ethical questions.",p:"p. 58"},
+ {q:"Dolly the sheep was cloned from...",a:"a single cell from the udder of another sheep",x:["a fertilized egg from two parents","a mule fetus","a bacterium"],w:"Dolly was genetically identical to the sheep the cell came from.",p:"p. 57"},
+ {q:"Idaho Gem was the first clone from which animal family?",a:"The horse family",x:["The cattle family","The sheep family","The pig family"],w:"Idaho Gem is a cloned mule, a hybrid that cannot reproduce.",p:"p. 57"},
+ {q:"Who carried Idaho Gem through pregnancy?",a:"A mare",x:["A jenny (female donkey)","A cow","A lab incubator"],w:"His DNA was fused with an egg cell from a mare, who carried and nursed him.",p:"p. 57"},
+ {q:"What does the text suggest you might need with a herd of cloned cows?",a:"A microchip or other ID for each animal",x:["Separate barns for each cow","Different feed for each cow","No identification at all"],w:"Even their spots would be the same.",p:"p. 57"},
+ {q:"Where did USDA microbiologists use DNA 'fingerprinting' to crack food poisoning cases?",a:"National Animal Disease Center in Ames, Iowa",x:["Beltsville, Maryland","Davis, California","Albany, California"],w:"DNA matching links the sick people, the food, where it was contaminated, and where the organisms came from.",p:"p. 58"},
+ {q:"Which bacterium is linked to food poisoning?",a:"Salmonella",x:["Yeast","E. coli used for insulin","Ice-minus bacteria"],w:"Salmonella, Listeria, and Staphylococcus aureus are among the most common bacteria to infect food.",p:"p. 58"},
+ {q:"According to the CDC, about how many people get sick each year from contaminated food?",a:"Up to 48 million",x:["About 3,000","About 128,000","About 1 million"],w:"About 128,000 are hospitalized and 3,000 die.",p:"p. 58"},
+ {q:"What common home mistake gives toxin-forming organisms a head start?",a:"Leaving food out overnight or not cooking it enough",x:["Freezing leftovers","Washing produce","Using a meat thermometer"],w:"Many cases come from food not properly refrigerated or prepared at home.",p:"p. 58"},
+ {q:"What does the text expect to come from ethics debates in biotechnology?",a:"New laws and courtroom decisions",x:["An end to all research","A ban on all GM food","Nothing at all"],w:"At the very least, new laws and court decisions will be based on biotech ethics.",p:"p. 58"}
+];
+var FACTOP=[
+ {s:"Insulin for people with diabetes is produced by genetically engineered E. coli bacteria.",a:"Fact",p:"p. 55"},
+ {s:"Idaho Gem was the first mule ever cloned.",a:"Fact",p:"p. 57"},
+ {s:"The EPA developed many of the regulations on biotechnology.",a:"Fact",p:"p. 57"},
+ {s:"Calgene's rot-resistant tomato tastes better than any tomato grown in a garden.",a:"Opinion",p:"p. 41 (Unit 2)"},
+ {s:"Mendel published the results of his pea experiments in 1866.",a:"Fact",p:"p. 51"},
+ {s:"Cloned animals are creepy and should never be allowed on farms.",a:"Opinion",p:"p. 57"},
+ {s:"Milk from cows treated with BST is gross.",a:"Opinion",p:"p. 57"},
+ {s:"Altered bacteria can feed on oil spills and turn them into less harmful products.",a:"Fact",p:"p. 56"},
+ {s:"Biotechnology is the most important invention in human history.",a:"Opinion",p:"p. 49"},
+ {s:"Potato varieties with an inserted gene are toxic to Colorado potato beetles that eat their leaves.",a:"Fact",p:"p. 54"},
+ {s:"Scientists who work in genetic engineering have the best jobs in agriculture.",a:"Opinion",p:"p. 51"},
+ {s:"Transgenic goats can produce monoclonal antibodies in their milk.",a:"Fact",p:"p. 41-42 (Unit 2)"},
+ {s:"Every farmer should switch to genetically engineered crops right away.",a:"Opinion",p:"p. 54"},
+ {s:"Adenine pairs with thymine in DNA.",a:"Fact",p:"p. 53"}
+];
+
+/* ===== Build ===== */
+var HALLS=[
+ {name:"Vocabulary Vault",icon:"1",blurb:"Label the specimen jars with the right key terms."},
+ {name:"Breeding Barn",icon:"2",blurb:"Selection, fermentation, Mendel, and the history of biotechnology."},
+ {name:"DNA Bench",icon:"3",blurb:"Match base pairs, read genotypes, and work Punnett squares."},
+ {name:"Gene Splicing Line",icon:"4",blurb:"Put lab processes in order and explain what biotech has produced."},
+ {name:"Safety and Ethics Desk",icon:"5",blurb:"Regulation, cloning, food safety, and telling facts from opinions."}
+];
+function mcFrom(o,h){return {type:"mc",hall:h,q:o.q,a:o.a,opts:shuffle([o.a].concat(o.x)),w:o.w,p:o.p};}
+function buildGame(){
+ var items=[];
+ shuffle(TERMS).slice(0,8).forEach(function(t){
+  var others=shuffle(TERMS.filter(function(z){return z.t!==t.t;})).slice(0,3);
+  if(Math.random()<0.6){items.push({type:"mc",hall:0,q:"Which term goes on the jar labeled: \""+pick(t.d)+"\"?",a:t.t,opts:shuffle([t.t].concat(others.map(function(z){return z.t;}))),w:"The term is "+t.t+".",p:t.p});}
+  else{var a=pick(t.d);items.push({type:"mc",hall:0,q:"Which description fits \""+t.t+"\"?",a:a,opts:shuffle([a].concat(others.map(function(z){return pick(z.d);}))),w:t.t+": "+t.d[0]+".",p:t.p});}
+ });
+ shuffle(BARN).slice(0,7).forEach(function(o){items.push(mcFrom(o,1));});
+ items.push(genComplement());items.push(genComplement());
+ items.push(genPunnett());items.push(genPunnett());
+ shuffle(DNAQ).slice(0,4).forEach(function(o){items.push(mcFrom(o,2));});
+ var pr=shuffle(PROCS)[0];
+ items.push({type:"order",hall:3,q:pr.name+": tap the steps in the order they happen.",ev:pr.steps.map(function(s,k){return {e:s,y:k,s:"Step "+(k+1)};}),shuf:true,w:"",p:pr.p});
+ shuffle(LINE).slice(0,6).forEach(function(o){items.push(mcFrom(o,3));});
+ shuffle(DESK).slice(0,5).forEach(function(o){items.push(mcFrom(o,4));});
+ shuffle(FACTOP).slice(0,4).forEach(function(f){
+  items.push({type:"mc",hall:4,q:"Fact or opinion? \""+f.s+"\"",a:f.a,opts:["Fact","Opinion"],w:f.a==="Fact"?"This can be checked against the textbook ("+f.p+"), so it is a fact.":"This is a judgment or feeling that people can disagree about. No measurement can prove it, so it is an opinion.",p:f.p});
+ });
+ items.forEach(function(it){if(it.type==="order")it.ev=shuffle(it.ev);});
+ return items;
+}
+
+/* ===== Engine ===== */
+var S=null;
+function show(id){["start","teacher","play","brk","end"].forEach(function(s){$(s).classList.toggle("hide",s!==id);});window.scrollTo(0,0);}
+function showBest(){var b=getBest();$("best").textContent=b?("Best score on this device: "+b.pct+"% ("+b.title+") by "+b.name):"";}
+$("startBtn").onclick=function(){
+ var f=$("fname").value.trim(),l=$("lname").value.trim(),p=$("period").value;
+ if(!f||!l){$("startErr").textContent="Please enter your first and last name.";return;}
+ if(!p){$("startErr").textContent="Please choose your class period.";return;}
+ $("startErr").textContent="";
+ S={name:f+" "+l,per:p,items:buildGame(),i:0,correct:0,cash:0,t0:Date.now(),hallStats:[0,0,0,0,0].map(function(){return {c:0,n:0,miss:[]};}),lastHall:-1};
+ $("hudT").textContent=S.items.length;next();
+};
+function next(){if(S.i>=S.items.length){finish();return;}var it=S.items[S.i];if(it.hall!==S.lastHall){S.lastHall=it.hall;hallIntro(it.hall);return;}render(it);}
+function hallIntro(h){var H=HALLS[h];var prev="";if(h>0){var st=S.hallStats[h-1];prev="<p class='muted'>"+HALLS[h-1].name+": "+st.c+" of "+st.n+" correct.</p>";}
+ $("brkCard").innerHTML=prev+"<div class='hall'>Station "+H.icon+"</div><h2>"+H.name+"</h2><p>"+H.blurb+"</p><button id='goHall'>Start this station</button>";
+ show("brk");$("goHall").onclick=function(){render(S.items[S.i]);};}
+function hud(it){$("hudHall").textContent="Station "+HALLS[it.hall].icon+": "+HALLS[it.hall].name;$("hudVis").textContent=money(S.cash);$("hudN").textContent=S.i+1;$("hudBar").style.width=(100*S.i/S.items.length)+"%";}
+function render(it){
+ show("play");hud(it);var c=$("qCard");
+ var vis="<div class='visitor'>"+esc(pick(CALLERS))+"...</div>";
+ if(it.type==="mc"){
+  c.innerHTML=vis+"<div class='q'>"+esc(it.q)+"</div>"+(it.show||"")+"<div class='opts' id='opts'></div><div class='fb' id='fb'></div>";
+  it.opts.forEach(function(o){var b=document.createElement("button");b.className="opt"+(it.mono?" mono":"");b.textContent=o;b.onclick=function(){answerMC(it,o,b);};$("opts").appendChild(b);});
+ }else{
+  c.innerHTML="<div class='visitor'>The lab director hands you a procedure card...</div><div class='q'>"+esc(it.q)+"</div><div class='order-list' id='ol'></div><div class='row' style='margin-top:10px'><button class='ghost' id='olReset' style='flex:0 0 auto'>Start over</button><button id='olBtn' disabled>Lock in order</button></div><div class='fb' id='fb'></div>";
+  it.sel=[];
+  it.ev.forEach(function(e,k){var b=document.createElement("button");b.className="ev";
+   b.innerHTML="<span class='num'></span><span>"+esc(e.e)+"</span><span class='yr'>"+esc(e.s)+"</span>";
+   b.onclick=function(){if(it.done||it.sel.indexOf(k)>=0)return;it.sel.push(k);b.classList.add("picked");b.querySelector(".num").textContent=it.sel.length;$("olBtn").disabled=it.sel.length!==it.ev.length;};
+   $("ol").appendChild(b);});
+  $("olReset").onclick=function(){if(it.done)return;it.sel=[];Array.prototype.forEach.call(document.querySelectorAll("#ol .ev"),function(b){b.classList.remove("picked");b.querySelector(".num").textContent="";});$("olBtn").disabled=true;};
+  $("olBtn").onclick=function(){answerOrder(it);};
+ }
+}
+function score(it,ok,miss){var st=S.hallStats[it.hall];st.n++;if(ok){st.c++;S.correct++;S.cash+=pick([2000,2500,3000]);}else st.miss.push(miss);$("hudVis").textContent=money(S.cash);}
+function feedback(ok,text,page){var fb=$("fb");fb.className="fb show "+(ok?"good":"bad");
+ fb.innerHTML="<b>"+(ok?pick(["Correct! Grant money approved.","Right. The director is impressed.","Exactly. Clean lab work.","Correct. Data checks out."]):pick(["Not quite.","That result won't replicate.","Close, but check the textbook."]))+"</b> "+esc(text)+(page?" <span class='pg'>("+esc(page)+")</span>":"")+"<div style='margin-top:10px'><button id='nextBtn'>"+(S.i+1>=S.items.length?"Clock out":"Next")+"</button></div>";
+ $("nextBtn").onclick=function(){S.i++;next();};$("nextBtn").focus();}
+function shortTopic(it){var q=it.q||"";return (q.length>70?q.slice(0,67)+"...":q)+(it.p?" ("+it.p+")":"");}
+function answerMC(it,o,btn){var ok=o===it.a;Array.prototype.forEach.call(document.querySelectorAll("#opts .opt"),function(b){b.disabled=true;if(b.textContent===it.a)b.classList.add("right");});if(!ok)btn.classList.add("wrong");score(it,ok,shortTopic(it));feedback(ok,(ok?"":"Answer: "+it.a+". ")+it.w,it.p);}
+function answerOrder(it){it.done=true;var ch=it.sel.map(function(k){return it.ev[k].y;});var ok=true;for(var i=1;i<ch.length;i++)if(ch[i]<ch[i-1])ok=false;
+ $("ol").parentNode.classList.add("reveal");$("olBtn").disabled=true;var sorted=it.ev.slice().sort(function(a,b){return a.y-b.y;});
+ score(it,ok,shortTopic(it));feedback(ok,"Correct order: "+sorted.map(function(e,i){return (i+1)+") "+e.e;}).join(" ")+".",it.p);}
+function pad(n){return (n<10?"0":"")+n;}
+function finish(){
+ var n=S.items.length,pct=Math.round(100*S.correct/n);var mins=Math.max(1,Math.round((Date.now()-S.t0)/60000));
+ var d=new Date();var date=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());var time=d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+ var lvl=pct>=95?5:pct>=85?4:pct>=75?3:pct>=60?2:1;var title=["Lab Assistant","Lab Technician","Research Associate","Senior Scientist","Lab Director"][lvl-1];
+ var code=makeCode(S.name,S.per,pct,date,mins);var b=getBest();if(!b||pct>b.pct)setBest({pct:pct,title:title,name:S.name});
+ var rows=S.hallStats.map(function(st,h){var rv=st.miss.length?st.miss.map(function(m){return "&bull; "+esc(m);}).join("<br>"):"<span class='muted'>Nothing to review</span>";return "<tr><td><b>"+HALLS[h].name+"</b><br>"+st.c+" of "+st.n+"</td><td class='small'>"+rv+"</td></tr>";}).join("");
+ $("certCard").innerHTML="<div class='cert'><div class='small muted'>North Paulding Agriculture &bull; Unit 3: Biotechnology</div><h2 style='margin-top:.4em'>Lab Certification</h2><div>This certifies that</div><div class='big'>"+esc(S.name)+"</div><div>Period "+esc(S.per)+" &bull; certified as <b>"+title+"</b></div><div class='stars'>"+"&#9733;".repeat(lvl)+"&#9734;".repeat(5-lvl)+"</div><div style='font-size:1.3rem'><b>"+pct+"%</b> ("+S.correct+" of "+n+" correct) &bull; "+money(S.cash)+" in grants</div><div class='small muted'>"+mins+" minute"+(mins===1?"":"s")+" played &bull; "+date+" at "+time+"</div><div style='margin-top:8px'>Completion code</div><div class='code'>"+code+"</div></div><h3 style='margin-top:14px'>Station-by-station review</h3><table class='bd'><tr><th style='width:34%'>Station</th><th>Review these</th></tr>"+rows+"</table>";
+ S.result={pct:pct,code:code,date:date,mins:mins};show("end");
+}
+$("printBtn").onclick=function(){window.print();};
+$("againBtn").onclick=function(){showBest();show("start");};
+$("teacherLink").onclick=function(){show("teacher");$("pinBox").classList.remove("hide");$("verBox").classList.add("hide");$("pin").value="";};
+$("teacherBack").onclick=function(){show("start");};
+$("pinBtn").onclick=function(){if($("pin").value===TEACHER_PIN){$("pinBox").classList.add("hide");$("verBox").classList.remove("hide");$("pinErr").textContent="";}else{$("pinErr").textContent="Wrong PIN.";}};
+$("verBtn").onclick=function(){var exp=makeCode($("vName").value,$("vPer").value,$("vPct").value,$("vDate").value.trim(),$("vMin").value);var got=$("vCode").value.toUpperCase().replace(/[^A-Z0-9]/g,"");$("verOut").innerHTML=got===exp.replace("-","")?"<span style='color:var(--ok)'>MATCH. This certificate is genuine.</span>":"<span style='color:var(--bad)'>NO MATCH. Check the typing, or the certificate was changed.</span>";};
+showBest();
+</script>
+</body>
+</html>

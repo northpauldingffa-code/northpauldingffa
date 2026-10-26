@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pruning Crew: Unit 33</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2F6B3A;--bad:#9B2C1F}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.4}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.bar{background:var(--green);color:#fff;padding:10px 16px}
+.bar .wrap{padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.bar b{font-family:Cambria,Georgia,serif;font-size:19px}
+.hud{display:flex;gap:12px;font-size:15px;flex-wrap:wrap}
+.hud span{background:rgba(255,255,255,.14);padding:3px 9px;border-radius:12px}
+.card{background:#fff;border:1px solid var(--tan);border-radius:10px;padding:18px;margin:14px 0;box-shadow:0 1px 0 var(--tan)}
+.kicker{color:var(--green);font-weight:bold;letter-spacing:.08em;font-size:13px;text-transform:uppercase}
+h1{font-size:32px;color:var(--ink)}
+h2{font-size:23px;color:var(--red);margin-bottom:6px}
+.rule{height:3px;background:var(--red);margin:10px 0 14px}
+label{display:block;font-weight:bold;margin:10px 0 4px}
+input,select{width:100%;padding:10px;font-size:17px;border:1px solid var(--tan);border-radius:6px;font-family:inherit;background:#fff}
+button{font-family:inherit;font-size:17px;border:0;border-radius:8px;padding:11px 18px;cursor:pointer}
+.go{background:var(--red);color:#fff;font-weight:bold}
+.go:disabled{opacity:.5;cursor:default}
+.ghost{background:transparent;color:var(--green);text-decoration:underline;padding:6px}
+.opts{display:grid;gap:9px;margin-top:12px}
+.opt{background:var(--cream);border:2px solid var(--tan);text-align:left;color:var(--ink);width:100%}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{border-color:var(--ok);background:#E3F0E2}
+.opt.wrong{border-color:var(--bad);background:#F6E1DC}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px;border-radius:8px;border-left:5px solid var(--ok);background:#EEF5EC;display:none}
+.fb.bad{border-left-color:var(--bad);background:#FAEDEA}
+.fb .pg{color:var(--muted);font-style:italic;font-size:14px}
+.job{background:var(--cream);border-left:5px solid var(--gold);padding:10px 12px;border-radius:6px;margin:8px 0}
+.job small{color:var(--muted);display:block;text-transform:uppercase;font-size:12px;letter-spacing:.06em;font-weight:bold}
+.cuts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.cutbtn{background:var(--cream);border:2px solid var(--tan);padding:6px 2px;display:flex;flex-direction:column;align-items:center;color:var(--ink);font-weight:bold}
+.cutbtn svg{width:100%;max-width:110px;height:auto}
+.cutbtn.right{border-color:var(--ok);background:#E3F0E2}.cutbtn.wrong{border-color:var(--bad);background:#F6E1DC}
+.prog{height:8px;background:var(--tan);border-radius:4px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--gold);width:0}
+.muted{color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 160px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{border:1px solid var(--tan);padding:6px 8px;text-align:left}
+th{background:var(--green);color:#fff}
+.cert{border:6px double var(--red);background:#fff;padding:22px;text-align:center;border-radius:6px}
+.cert h1{font-size:30px;margin:6px 0}
+.cert .big{font-family:Cambria,Georgia,serif;font-size:26px;color:var(--red)}
+.code{font-family:Consolas,"Courier New",monospace;font-size:26px;letter-spacing:.12em;background:var(--cream);display:inline-block;padding:6px 14px;border-radius:6px;border:1px dashed var(--red)}
+.stars{color:var(--gold);font-size:26px;letter-spacing:4px}
+.hide{display:none!important}
+.mathin{display:flex;gap:8px;margin-top:12px}.mathin input{flex:1}
+@media (max-width:480px){h1{font-size:26px}.cuts{grid-template-columns:repeat(2,1fr)}.card{padding:14px}}
+@media print{body{background:#fff}.bar,.noprint,#play,#start,#teacher{display:none!important}#end .card:not(.printme){display:none!important}.cert{border-color:#6B3226}}
+</style>
+</head>
+<body>
+<div class="bar"><div class="wrap"><b>Pruning Crew</b><div class="hud" id="hud"></div></div></div>
+<div class="wrap">
+
+<section id="start">
+  <div class="card">
+    <div class="kicker">Unit 33 • Pruning Techniques</div>
+    <h1>Pruning Crew: One Day on the Job</h1>
+    <div class="rule"></div>
+    <p>You just made crew lead for a landscape company. Get through six stops on today's route: learn the crew lingo, load the right tools, make clean cuts, book the pruning calendar, call the right method on the job site, and lay out a root pruning circle. Every correct call earns pay for the crew.</p>
+    <label for="nm">First and last name</label>
+    <input id="nm" autocomplete="off" placeholder="First Last">
+    <label for="per">Class period</label>
+    <select id="per"><option value="">Choose period</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+    <p class="muted" id="best"></p>
+    <div class="row noprint"><button class="go" id="startBtn" disabled>Clock in</button></div>
+    <p><button class="ghost" id="tLink">Teacher check</button></p>
+  </div>
+</section>
+
+<section id="teacher" class="hide">
+  <div class="card">
+    <h2>Teacher Check</h2>
+    <p class="muted">Type what the certificate shows. The code is rebuilt from these values.</p>
+    <label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric">
+    <div id="tForm" class="hide">
+      <label>Name</label><input id="tn">
+      <div class="row"><div><label>Period</label><input id="tp"></div><div><label>Percent</label><input id="tpc" inputmode="numeric"></div></div>
+      <div class="row"><div><label>Date (YYYY-MM-DD)</label><input id="td"></div><div><label>Minutes</label><input id="tm" inputmode="numeric"></div></div>
+      <label>Code</label><input id="tc" placeholder="XXX-XXX">
+      <p><button class="go" id="tGo">Check code</button></p>
+      <p id="tOut"></p>
+    </div>
+    <p><button class="ghost" id="tBack">Back</button></p>
+  </div>
+</section>
+
+<section id="play" class="hide">
+  <div class="card">
+    <div class="kicker" id="stopK"></div>
+    <h2 id="stopT"></h2>
+    <p class="muted" id="stopD"></p>
+    <div class="prog"><i id="progBar"></i></div>
+  </div>
+  <div class="card" id="qcard"></div>
+</section>
+
+<section id="end" class="hide"></section>
+</div>
+
+<script>
+/* ===== Teacher settings ===== */
+var TEACHER_PIN = "0545";
+var SALT = "NPFFA-U33-pruning";
+/* ============================ */
+
+function $(id){return document.getElementById(id)}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function pick(a,n){return shuffle(a).slice(0,n)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+/* ---------- DATA (Introductory Horticulture, Unit 33, pp. 395 to 405) ---------- */
+var TERMS = [
+ {t:"Anvil pruner", d:["A hand pruner with one blade that cuts against a piece of flat metal, usually brass.","Pruning shears where a single blade closes onto a flat brass plate."], p:"p. 398"},
+ {t:"Hook and blade pruner", d:["Hand pruning shears with two blades that give a scissor cut.","Scissor-action hand pruners, like the Felco #2 used on the yew in Figure 33-13."], p:"p. 398, Fig. 33-13"},
+ {t:"Lopper", d:["Long-handled shears that give more leverage for cutting larger branches.","The lopping shears used to remove the large rose canes in Figure 33-1C."], p:"p. 397, Fig. 33-1"},
+ {t:"Thinning", d:["Removing certain branches to open up a plant while keeping its natural shape.","The pruning method that lets more light reach inner branches; fruit trees are a common example."], p:"p. 398"},
+ {t:"Heading back", d:["The pruning technique shown in Figure 33-5.","The process used on yews in late spring to remove new growth."], p:"p. 400 Fig. 33-5, p. 404"},
+ {t:"Renewal pruning", d:["Removing branches by cutting them back to ground level for new branches and better flowering.","A method that is usually effective on flowering shrubs, shown before and after in Figure 33-6."], p:"p. 400, Fig. 33-6"},
+ {t:"Root pruning", d:["Cutting off the lateral roots with a sharp spade in a circle around the stem.","A step done one growing season before transplanting so many small fibrous roots form."], p:"p. 400"},
+ {t:"Espalier", d:["A pruning method of training plant material to grow flat against a trellis or wall.","A medieval art that uses a small garden area, like the pyracantha on the brick wall in Figure 33-10."], p:"pp. 396, 401"},
+ {t:"Topiary", d:["The art of trimming and training plants into ornamental shapes.","Shaping plants over a wire frame, like the spiral dwarf alberta spruce in Figure 33-11."], p:"pp. 396, 402"},
+ {t:"Horticulturist", d:["The plant professional who chooses thinning when they want to keep a plant's natural shape."], p:"p. 398"},
+ {t:"Candle", d:["New growth on the ends of branches of pine species.","The new shoot growth that is pruned by one-half on pines in June."], p:"pp. 402 to 403"}
+];
+
+var TOOLS = {
+ chain:"Power chain saw", pole:"Pole pruner", ppole:"Power pole pruner", hedge:"Power hedge trimmers",
+ lop:"Lopping shears (lopper)", hook:"Hook and blade pruners", anvil:"Anvil pruner", saw:"Folding pruning saw", spade:"Sharp spade"
+};
+var TOOLJOBS = [
+ {q:"A storm cracked a 4-inch-thick limb on an oak at a client's house. Take it off.", a:"chain", w:["lop","hook","anvil","hedge"], why:"A power chain saw is used for large branches 3 inches or more in diameter. Use caution; they can be dangerous.", p:"p. 398"},
+ {q:"A dead branch hangs about 11 feet overhead. The client wants it pulled down by hand with a saw and hook.", a:"pole", w:["anvil","hook","hedge","spade"], why:"The pole pruner has a saw and a hook to pull, cut, or break dead branches 10 to 12 feet overhead.", p:"p. 398"},
+ {q:"The HOA wants the lower branches of street trees raised so drivers can see. You want a motor, not muscle.", a:"ppole", w:["anvil","hook","lop","spade"], why:"A power pole pruner is a small chain saw on an extended handle. It can elevate lower branches to improve vision.", p:"p. 398"},
+ {q:"Keep the leafy privet hedge along the front walk neat and in shape.", a:"hedge", w:["chain","anvil","spade","pole"], why:"Power hedge trimmers maintain the growth of leafy plants. They run on battery, electric, or gasoline.", p:"p. 398"},
+ {q:"Remove the big, thick canes from an overgrown landscape rose (like Figure 33-1C).", a:"lop", w:["hedge","pole","spade","ppole"], why:"Lopping shears have long handles that give more leverage for larger branches. Figure 33-1C shows loppers removing rose canes.", p:"pp. 396 to 397"},
+ {q:"Hand prune the new growth on a yew to keep its natural shape (like Figure 33-13).", a:"hook", w:["chain","hedge","spade","ppole"], why:"Figure 33-13 shows hand pruning a yew with scissor cut shears (Felco #2), a hook and blade pruner.", p:"p. 404, Fig. 33-13"},
+ {q:"The client asks for the hand pruner with one blade that cuts against a flat brass plate.", a:"anvil", w:["hook","pole","hedge","chain"], why:"Pruning shears with a single blade that cuts against flat metal (usually brass) are anvil pruners.", p:"p. 398"},
+ {q:"Cut a 2-inch live limb by hand with a saw whose blade folds into the handle for safer storage.", a:"saw", w:["hedge","anvil","spade","hook"], why:"The folding pruning saw has coarse teeth that cut live or dead wood without pinching, and the blade closes into the handle.", p:"p. 397"},
+ {q:"A nursery tree will be moved next year. Cut its lateral roots in a circle around the stem.", a:"spade", w:["hedge","pole","ppole","hook"], why:"Root pruning cuts off the lateral roots with a sharp spade in a circle around the stem.", p:"p. 400"},
+ {q:"Shape a small ivy topiary by snipping tender shoots.", a:"hook", w:["chain","lop","spade","ppole"], why:"Topiary pruning can be done with hook and blade pruners or a simple pinch between thumb and index finger.", p:"p. 402"},
+ {q:"Remove short branches on a boxwood to keep it compact and full, without browning the leaf ends.", a:"hook", w:["hedge","chain","pole","spade"], why:"Prune boxwood with hand pruners. Do not use hedge shears, because the cut leaf ends turn brown.", p:"p. 403"}
+];
+
+var WHEN = {
+ after:"Right after it flowers",
+ before:"Just before growth begins in spring",
+ june:"June: prune about one-half of each candle",
+ aug:"August: prune one-half of the new candles",
+ dec:"December, so branches can be used for holiday decorating",
+ fall:"Fall or early winter, removing short branches with hand pruners",
+ lspring:"Late spring, after the new growth has hardened"
+};
+var CAL = [
+ {pl:"Forsythia", a:"after", why:"Spring-flowering plants are pruned after they flower because the buds formed on the previous season's growth.", p:"p. 401"},
+ {pl:"Lilac", a:"after", why:"Lilac is on the list of shrubs pruned after they flower.", p:"p. 401"},
+ {pl:"Weigela", a:"after", why:"Weigela flowers in spring, so prune it after it flowers.", p:"p. 401"},
+ {pl:"Spirea", a:"after", why:"Spirea is on the list of shrubs pruned after they flower.", p:"p. 401"},
+ {pl:"Mock orange", a:"after", why:"Mock orange is pruned after it flowers; its buds formed the season before.", p:"p. 401"},
+ {pl:"Magnolia", a:"after", why:"Magnolia is on the list of plants pruned after they flower.", p:"p. 401"},
+ {pl:"Bridal wreath", a:"after", why:"Bridal wreath is pruned after it flowers.", p:"p. 401"},
+ {pl:"Azalea", a:"after", why:"Prune azalea after flowering to promote new growth.", p:"p. 403"},
+ {pl:"Crape myrtle", a:"before", why:"Summer- and fall-flowering plants are pruned just before spring growth, since buds form on the current season's growth.", p:"p. 401"},
+ {pl:"Abelia", a:"before", why:"Abelia flowers in summer or fall, so prune just before growth begins in spring.", p:"p. 401"},
+ {pl:"Landscape roses", a:"before", why:"Roses are on the summer or fall list: prune just before spring growth.", p:"p. 401"},
+ {pl:"Viburnum", a:"before", why:"Viburnum is on the summer or fall list in the text.", p:"p. 401"},
+ {pl:"Blueberry", a:"before", why:"Blueberry is on the summer or fall list in the text.", p:"p. 401"},
+ {pl:"Bush honeysuckle", a:"before", why:"Bush honeysuckle is on the summer or fall list in the text.", p:"p. 401"},
+ {pl:"Arborvitae", a:"before", x:["lspring"], why:"Prune arborvitae before new growth starts in spring, and never beyond the green leaves.", p:"p. 403"},
+ {pl:"Hemlock", a:"before", x:["lspring"], why:"Prune hemlock in early spring before new growth develops for thicker growth.", p:"pp. 401 to 402"},
+ {pl:"Pine", a:"june", why:"Prune about one-half of each candle in June for thicker growth and new side shoots.", p:"p. 403, Fig. 33-12"},
+ {pl:"Spruce", a:"aug", why:"Prune spruce to one-half of the new growth candles in August for a fuller tree.", p:"p. 402"},
+ {pl:"Fir", a:"aug", why:"Prune fir's new growth in August to one-half the length of the candle.", p:"pp. 402 to 403"},
+ {pl:"Holly", a:"dec", x:["before"], why:"Prune holly in December so the branches can be used for holiday decorating.", p:"p. 403"},
+ {pl:"Boxwood", a:"fall", x:["before"], why:"Special needs: prune boxwood in fall or early winter, removing short branches with hand pruners.", p:"p. 403"},
+ {pl:"Yews", a:"lspring", why:"Yews are usually pruned in late spring, after the new growth has hardened.", p:"p. 404"}
+];
+
+var METHODS = {thin:"Thinning", head:"Heading back", renew:"Renewal pruning", root:"Root pruning", esp:"Espalier", top:"Topiary", dead:"Removing spent flowers and seed pods"};
+var JOBS = [
+ {q:"A dormant apple tree is crowded inside. The owner wants more light on the inner branches but wants it to keep its natural shape.", a:"thin", why:"Thinning removes certain branches to open the plant and keep its natural shape. Fruit trees are a common example.", p:"p. 398"},
+ {q:"A young fruit tree needs four to six evenly spaced lateral branches about 8 inches apart, worked in a spiral around the trunk.", a:"thin", why:"That spacing is the textbook's thinning guide for young fruit trees.", p:"p. 398"},
+ {q:"An overgrown flowering shrub has old stems that barely bloom. Cut some of the branches back to ground level.", a:"renew", why:"Renewal pruning cuts branches to ground level, giving new branches and better flowering.", p:"p. 400, Fig. 33-6"},
+ {q:"A client's nandina has tall old canes. Take the oldest canes to the ground to start new growth.", a:"renew", why:"Nandina's oldest canes are pruned to the ground: renewal at work.", p:"p. 402"},
+ {q:"A shade tree will be dug and moved next year. Prepare it now so it forms many small fibrous roots.", a:"root", why:"Root prune one growing season before transplanting; early fall is the best time.", p:"p. 400"},
+ {q:"The nursery owner mounts a pruner on the tractor to cut roots in the field before the trees are sold.", a:"root", why:"Commercial nurseries mount root pruners on tractors for efficiency.", p:"p. 400"},
+ {q:"Train a pyracantha into flat circles on a sunny brick wall.", a:"esp", why:"Espalier trains plants flat onto a wall, fence, or trellis. Figure 33-10 shows Pyracantha coccinea 'Laland.'", p:"p. 401"},
+ {q:"Grow a dwarf pear flat along a fence in a formal candelabra design.", a:"esp", why:"Espalier is used with dwarf apple and pear; formal styles include candelabra, circle, fan, and basket weave.", p:"p. 401"},
+ {q:"Root English ivy into a moss-filled wire frame shaped like a rabbit for the school entrance.", a:"top", why:"Topiary can use sphagnum moss and medium in a frame; English ivy roots at each node.", p:"p. 402"},
+ {q:"Shape a dwarf alberta spruce into a spiral for a formal garden.", a:"top", why:"Figure 33-11 shows a spiral topiary of Picea glauca 'Conica.'", p:"p. 402"},
+ {q:"After the rhododendron blooms, pinch off the flower truss so the plant does not set seed.", a:"dead", why:"Seed pods use the plant's energy. Removing spent flowers and pods pushes new growth and more flower buds.", p:"pp. 396, 402"},
+ {q:"The lilac has faded and is forming seed pods instead of new shoots.", a:"dead", why:"On lilacs, seed pods develop instead of new shoots, so the pods must be pruned off.", p:"p. 396"},
+ {q:"It is late spring. Remove the yews' new growth after it hardens.", a:"head", why:"The text calls pruning yews' new growth in late spring the process of heading back.", p:"p. 404, Fig. 33-5"}
+];
+
+var CUTS = [
+ {k:"good", q:"Which stem was cut correctly: square across and the right distance above the bud?", why:"Cut square (the text says a 90-degree angle) at the correct distance from the bud.", p:"p. 400, Figs. 33-8 and 33-9"},
+ {k:"far",  q:"Which cut leaves too much stub, so the tip dries out, dies, and can house insects?", why:"Cutting too far from the bud leaves a stub that dries out, can be a home for insects, and looks ugly.", p:"p. 400, Fig. 33-9"},
+ {k:"close",q:"Which cut was made so close it may injure the bud?", why:"Cutting too close to the bud may injure it.", p:"p. 400, Fig. 33-9"},
+ {k:"slant",q:"Which cut was made at too great an angle, leaving too large an exposed area to heal?", why:"A cut at too great an angle leaves too large an exposed area for the plant to heal properly.", p:"p. 400, Fig. 33-8"}
+];
+function cutSVG(k){
+ var bark='#7A5634', top;
+ // stem from y=40 to 150, bud at y=78 on left
+ var bud='<path d="M30 84 Q16 74 22 60 Q30 66 34 78 Z" fill="#5E8C4A" stroke="#3C6255" stroke-width="1.5"/>';
+ if(k==="good") top='<rect x="34" y="50" width="22" height="100" fill="'+bark+'"/><rect x="34" y="50" width="22" height="4" fill="#E8D3A8"/>';
+ if(k==="far") top='<rect x="34" y="18" width="22" height="132" fill="'+bark+'"/><rect x="34" y="18" width="22" height="4" fill="#E8D3A8"/>';
+ if(k==="close") { top='<rect x="34" y="76" width="22" height="74" fill="'+bark+'"/><rect x="34" y="76" width="22" height="4" fill="#E8D3A8"/>'; bud='<path d="M34 86 Q22 84 21 76 L34 76 Z" fill="#5E8C4A" stroke="#3C6255" stroke-width="1.5"/><line x1="18" y1="76" x2="36" y2="76" stroke="#9B2C1F" stroke-width="1.5" stroke-dasharray="2 2"/>'; }
+ if(k==="slant") top='<polygon points="34,98 56,40 56,150 34,150" fill="'+bark+'"/><polygon points="34,98 56,40 56,46 34,102" fill="#E8D3A8"/>';
+ return '<svg viewBox="0 0 90 160" aria-hidden="true">'+top+bud+'<line x1="0" y1="152" x2="90" y2="152" stroke="#D9C4A3" stroke-width="2"/></svg>';
+}
+
+/* ---------- GAME STATE ---------- */
+var S={};
+var STOPS=[
+ {id:"lingo", k:"Stop 1 of 6", t:"Crew Lingo", d:"The new hire needs the words. Pick the term that matches.", n:5, topic:"Key terms", pages:"pp. 395 to 404"},
+ {id:"tools", k:"Stop 2 of 6", t:"Load the Tool Trailer", d:"Each work order needs the right tool.", n:5, topic:"Pruning equipment", pages:"pp. 397 to 398"},
+ {id:"cuts",  k:"Stop 3 of 6", t:"Make the Cut", d:"Check the trainee's cuts. Tap the drawing that matches.", n:4, topic:"Cut angle and distance from the bud", pages:"p. 400"},
+ {id:"cal",   k:"Stop 4 of 6", t:"Book the Pruning Calendar", d:"Clients are calling. When should each plant be pruned?", n:6, topic:"When to prune and special pruning needs", pages:"pp. 401 to 404"},
+ {id:"jobs",  k:"Stop 5 of 6", t:"Call It on the Job Site", d:"Name the pruning method for each job.", n:5, topic:"Types of pruning, espalier, and topiary", pages:"pp. 396, 398 to 402"},
+ {id:"math",  k:"Stop 6 of 6", t:"Lay Out the Root Circle", d:"Rule: 1 inch of stem diameter equals 10 inches of circle diameter.", n:3, topic:"Root pruning math", pages:"p. 400"}
+];
+var PAY=40;
+
+function buildQuestions(){
+ var Q=[];
+ pick(TERMS,5).forEach(function(t){
+  var others=pick(TERMS.filter(function(x){return x!==t}),3).map(function(x){return x.t});
+  Q.push({stop:"lingo", job:"Term", prompt:t.d[Math.floor(Math.random()*t.d.length)], opts:shuffle([t.t].concat(others)), ans:t.t, why:t.t+": "+t.d[0], p:t.p});
+ });
+ pick(TOOLJOBS,5).forEach(function(j){
+  var w=pick(j.w,3).map(function(k){return TOOLS[k]});
+  Q.push({stop:"tools", job:"Work order", prompt:j.q, opts:shuffle([TOOLS[j.a]].concat(w)), ans:TOOLS[j.a], why:j.why, p:j.p});
+ });
+ shuffle(CUTS).forEach(function(c){
+  Q.push({stop:"cuts", type:"cut", prompt:c.q, opts:shuffle(["good","far","close","slant"]), ans:c.k, why:c.why, p:c.p});
+ });
+ pick(CAL,6).forEach(function(c){
+  var pool=Object.keys(WHEN).filter(function(k){return k!==c.a && (!c.x||c.x.indexOf(k)<0)});
+  // always offer the after/before pair when relevant so the main rule is tested
+  var w=[];
+  if(c.a==="after") w.push("before"); else if(c.a==="before") w.push("after");
+  pick(pool.filter(function(k){return w.indexOf(k)<0}),3-w.length).forEach(function(k){w.push(k)});
+  Q.push({stop:"cal", job:"Client call", prompt:"When should the crew prune the "+c.pl.toLowerCase()+"?", opts:shuffle([WHEN[c.a]].concat(w.map(function(k){return WHEN[k]}))), ans:WHEN[c.a], why:c.why, p:c.p});
+ });
+ // jobs: make sure heading back can appear but avoid more than 2 of one method
+ var js=[], counts={};
+ shuffle(JOBS).forEach(function(j){ if(js.length<5 && (counts[j.a]||0)<2){js.push(j);counts[j.a]=(counts[j.a]||0)+1} });
+ js.forEach(function(j){
+  var w=pick(Object.keys(METHODS).filter(function(k){return k!==j.a}),3).map(function(k){return METHODS[k]});
+  Q.push({stop:"jobs", job:"Job site", prompt:j.q, opts:shuffle([METHODS[j.a]].concat(w)), ans:METHODS[j.a], why:j.why, p:j.p});
+ });
+ var sizes=shuffle([1,1.5,2,2.5,3,3.5,4,4.5,5]).slice(0,3);
+ var kinds=shuffle(["dia","dia","rad"]);
+ sizes.forEach(function(s,i){
+  var dia=Math.round(s*10), rad=Math.round(s*5);
+  if(kinds[i]==="dia") Q.push({stop:"math", type:"num", job:"Field layout", prompt:"A tree's trunk is "+s+" inches in diameter. How many inches across (diameter) should the root pruning circle be?", ans:dia, why:s+" in. x 10 = "+dia+" inches across.", p:"p. 400, Fig. 33-7"});
+  else Q.push({stop:"math", type:"num", job:"Field layout", prompt:"A tree's trunk is "+s+" inches in diameter. You stand at the trunk with a tape. How many inches out from the center should you cut (the radius)?", ans:rad, why:s+" in. x 10 = "+dia+" inch circle. Half of that is "+rad+" inches from the center.", p:"p. 400, Fig. 33-7"});
+ });
+ return Q;
+}
+
+function hud(){
+ if(!S.Q){$("hud").innerHTML="";return}
+ $("hud").innerHTML='<span>Pay $'+S.pay+'</span><span>Streak '+S.streak+'</span><span>'+S.correct+' / '+S.Q.length+'</span>';
+}
+
+function show(id){["start","teacher","play","end"].forEach(function(x){$(x).classList.toggle("hide",x!==id)});window.scrollTo(0,0)}
+
+function render(){
+ var q=S.Q[S.i], st=STOPS.filter(function(s){return s.id===q.stop})[0];
+ $("stopK").textContent=st.k; $("stopT").textContent=st.t; $("stopD").textContent=st.d;
+ $("progBar").style.width=(S.i/S.Q.length*100)+"%";
+ var h='';
+ if(q.job) h+='<div class="job"><small>'+esc(q.job)+'</small>'+esc(q.prompt)+'</div>'; else h+='<p><b>'+esc(q.prompt)+'</b></p>';
+ if(q.type==="cut"){
+  h+='<div class="cuts">'+q.opts.map(function(k,i){return '<button class="cutbtn" data-v="'+k+'">'+cutSVG(k)+'<span>'+"ABCD"[i]+'</span></button>'}).join('')+'</div>';
+ } else if(q.type==="num"){
+  h+='<div class="mathin"><input id="numIn" inputmode="decimal" placeholder="inches"><button class="go" id="numGo">Mark it</button></div>';
+ } else {
+  h+='<div class="opts">'+q.opts.map(function(o){return '<button class="opt" data-v="'+esc(o)+'">'+esc(o)+'</button>'}).join('')+'</div>';
+ }
+ h+='<div class="fb" id="fb"></div><div class="row noprint" style="margin-top:12px"><button class="go hide" id="next">Next</button></div>';
+ $("qcard").innerHTML=h; hud();
+ var btns=$("qcard").querySelectorAll(".opt,.cutbtn");
+ for(var b=0;b<btns.length;b++) btns[b].addEventListener("click",function(){answer(this.getAttribute("data-v"),this)});
+ if(q.type==="num"){
+  var go=function(){var v=$("numIn").value.trim(); if(v==="")return; answer(v,null)};
+  $("numGo").addEventListener("click",go);
+  $("numIn").addEventListener("keydown",function(e){if(e.key==="Enter")go()});
+  $("numIn").focus();
+ }
+}
+
+function answer(v,el){
+ var q=S.Q[S.i]; if(q.done)return; q.done=true;
+ var ok = q.type==="num" ? Math.abs(parseFloat(v)-q.ans)<0.01 : v===q.ans;
+ q.ok=ok; q.given=v;
+ if(ok){S.correct++;S.streak++;S.pay+=PAY+(S.streak>=3?10:0)}else{S.streak=0}
+ var btns=$("qcard").querySelectorAll(".opt,.cutbtn");
+ for(var b=0;b<btns.length;b++){btns[b].disabled=true; var dv=btns[b].getAttribute("data-v"); if(dv===q.ans)btns[b].classList.add("right"); else if(btns[b]===el)btns[b].classList.add("wrong")}
+ if(q.type==="num"){$("numIn").disabled=true;$("numGo").disabled=true}
+ var fb=$("fb"); fb.style.display="block"; fb.classList.toggle("bad",!ok);
+ var ansTxt = q.type==="cut" ? "" : (q.type==="num" ? " Answer: "+q.ans+" inches." : (ok?"":" Answer: "+esc(q.ans)+"."));
+ fb.innerHTML='<b>'+(ok?(S.streak>=3?"Clean work! Streak bonus.":"Correct, crew lead."):"Not quite.")+'</b>'+ansTxt+'<br>'+esc(q.why)+' <span class="pg">('+esc(q.p)+')</span>';
+ var nx=$("next"); nx.classList.remove("hide"); nx.textContent = S.i===S.Q.length-1 ? "Clock out" : "Next"; nx.focus();
+ nx.addEventListener("click",function(){S.i++; if(S.i>=S.Q.length)finish(); else render()});
+ hud();
+}
+
+/* ---------- CODE ---------- */
+var ALPHA="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function norm(s){return String(s||"").toLowerCase().replace(/\s+/g," ").trim()}
+function fnv(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}return h>>>0}
+function makeCode(name,period,pct,date,mins){
+ var base=SALT+"|"+norm(name)+"|"+norm(period)+"|"+parseInt(pct,10)+"|"+String(date).trim()+"|"+parseInt(mins,10);
+ var h1=fnv(base), h2=fnv(base+"#2"), out="";
+ for(var i=0;i<6;i++){var h=i<3?h1:h2; out+=ALPHA[(h>>>(i%3*9))%ALPHA.length]}
+ return out.slice(0,3)+"-"+out.slice(3);
+}
+function ymd(d){function z(n){return(n<10?"0":"")+n}return d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())}
+
+function getBest(){try{var v=localStorage.getItem("u33prune_best");return v?JSON.parse(v):null}catch(e){return null}}
+function setBest(o){try{var b=getBest(); if(!b||o.pct>b.pct)localStorage.setItem("u33prune_best",JSON.stringify(o))}catch(e){}}
+
+function finish(){
+ var end=new Date(), mins=Math.max(1,Math.round((end-S.t0)/60000));
+ var pct=Math.round(S.correct/S.Q.length*100), date=ymd(end);
+ var code=makeCode(S.name,S.period,pct,date,mins);
+ var stars = pct>=90?5:pct>=80?4:pct>=70?3:pct>=60?2:1;
+ var title = ["Trainee","Ground Crew","Crew Member","Senior Crew","Certified Crew Lead"][stars-1];
+ setBest({pct:pct,name:S.name});
+ var rows=STOPS.map(function(st){
+  var qs=S.Q.filter(function(q){return q.stop===st.id}), c=qs.filter(function(q){return q.ok}).length;
+  return {st:st,c:c,n:qs.length};
+ });
+ var review=rows.filter(function(r){return r.c<r.n}).map(function(r){return r.st.topic+" ("+r.st.pages+")"});
+ var h='<div class="card printme"><div class="cert">'
+  +'<div class="kicker">North Paulding FFA • Unit 33 Pruning Techniques</div>'
+  +'<h1>Certificate of Completion</h1>'
+  +'<p>This certifies that</p><div class="big">'+esc(S.name)+'</div>'
+  +'<p>Period '+esc(S.period)+' completed a full day on the Pruning Crew route.</p>'
+  +'<div class="stars">'+"★★★★★".slice(0,stars)+'<span style="color:#D9C4A3">'+"★★★★★".slice(0,5-stars)+'</span></div>'
+  +'<p><b>Crew rating:</b> '+title+' &nbsp; • &nbsp; <b>Day\'s pay:</b> $'+S.pay+'</p>'
+  +'<p><b>'+pct+'%</b> ('+S.correct+' of '+S.Q.length+' correct) &nbsp; • &nbsp; '+mins+' min &nbsp; • &nbsp; '+date+' '+end.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+'</p>'
+  +'<p>Completion code</p><div class="code" id="ccode">'+code+'</div>'
+  +'<table style="margin-top:14px"><tr><th>Stop</th><th>Score</th></tr>'
+  +rows.map(function(r){return '<tr><td>'+esc(r.st.t)+'</td><td>'+r.c+' / '+r.n+'</td></tr>'}).join('')+'</table>'
+  +(review.length?'<p style="text-align:left;margin-top:10px"><b>Review:</b> '+esc(review.join("; "))+'</p>':'<p><b>Perfect route. Nothing to review.</b></p>')
+  +'</div></div>'
+  +'<div class="card noprint"><div class="row"><button class="go" id="prt">Print / Save as PDF</button><button class="go" style="background:var(--green)" id="again">Play again</button></div></div>';
+ $("end").innerHTML=h; show("end"); hud();
+ $("prt").addEventListener("click",function(){window.print()});
+ $("again").addEventListener("click",function(){begin()});
+}
+
+function begin(){
+ S={name:$("nm").value.replace(/\s+/g," ").trim(), period:$("per").value, Q:buildQuestions(), i:0, correct:0, pay:0, streak:0, t0:new Date()};
+ show("play"); render();
+}
+
+/* ---------- START SCREEN ---------- */
+function validName(){var n=$("nm").value.trim().split(/\s+/);return n.length>=2&&n[0].length>0&&n[1].length>0}
+function checkStart(){$("startBtn").disabled=!(validName()&&$("per").value)}
+$("nm").addEventListener("input",checkStart); $("per").addEventListener("change",checkStart);
+$("startBtn").addEventListener("click",begin);
+(function(){var b=getBest(); $("best").textContent=b?("Best score on this device: "+b.pct+"%"):"No score saved on this device yet."})();
+
+$("tLink").addEventListener("click",function(){show("teacher")});
+$("tBack").addEventListener("click",function(){show("start")});
+$("pin").addEventListener("input",function(){$("tForm").classList.toggle("hide",this.value!==TEACHER_PIN)});
+$("tGo").addEventListener("click",function(){
+ var c=makeCode($("tn").value,$("tp").value,$("tpc").value,$("td").value,$("tm").value);
+ var typed=$("tc").value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+ var ok=typed===c.replace("-","");
+ $("tOut").innerHTML=ok?'<b style="color:#2F6B3A">Match. This certificate is genuine.</b>':'<b style="color:#9B2C1F">No match.</b> Check spelling, period, percent, date, and minutes exactly as shown.';
+});
+</script>
+</body>
+</html>

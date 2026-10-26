@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evergreen ER: Unit 28</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--dark:#2C4A40;--ok:#2F7A4F;--bad:#A23B2A}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font:16px/1.45 Calibri,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;margin:0 0 .4em}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.top{background:var(--dark);color:#fff;padding:14px 16px}
+.top .wrap{padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.top h1{font-size:24px;margin:0}
+.kicker{font-size:12px;letter-spacing:.18em;font-weight:bold;color:var(--tan);text-transform:uppercase}
+.hud{display:flex;gap:8px;flex-wrap:wrap;font-size:14px}
+.pill{background:rgba(255,255,255,.12);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.card{background:#fff;border-radius:12px;padding:18px;margin:14px 0;box-shadow:0 1px 3px rgba(43,33,24,.12)}
+label{display:block;font-weight:bold;margin:10px 0 4px}
+input{width:100%;font:inherit;padding:10px;border:1px solid var(--tan);border-radius:8px;background:#fff}
+.btn{display:inline-block;font:inherit;font-weight:bold;border:0;border-radius:8px;padding:11px 18px;background:var(--green);color:#fff;cursor:pointer;margin-top:12px}
+.btn.alt{background:var(--red)}
+.btn.ghost{background:transparent;color:var(--green);border:2px solid var(--green)}
+.btn:disabled{opacity:.45;cursor:default}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opt{text-align:left;font:inherit;padding:11px 12px;border:2px solid var(--tan);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer;width:100%}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{border-color:var(--ok);background:#E5F2EA}
+.opt.wrong{border-color:var(--bad);background:#F7E3DF}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--cream);font-size:15px}
+.fb b{color:var(--red)}
+.round{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:bold}
+.chart{font-size:14px;color:var(--muted)}
+.patient{border-left:0;background:var(--cream);border-radius:8px;padding:12px;margin:8px 0;font-size:17px}
+.steps .opt{display:flex;gap:10px;align-items:center}
+.num{display:inline-flex;min-width:28px;height:28px;border-radius:50%;background:var(--tan);color:var(--ink);align-items:center;justify-content:center;font-weight:bold}
+.order{display:grid;gap:6px;margin-top:10px}
+.order div{background:var(--cream);border-radius:8px;padding:8px 10px}
+.small{font-size:13px;color:var(--muted)}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;font-size:13px;cursor:pointer;padding:0;margin-top:14px}
+.cert{border:6px double var(--green);border-radius:14px;padding:22px;background:#fff;text-align:center}
+.cert h2{color:var(--red);font-size:28px}
+.cert .big{font-size:44px;font-family:Cambria,Georgia,serif;color:var(--green);font-weight:bold;margin:6px 0}
+.code{font-family:"Courier New",monospace;font-size:26px;letter-spacing:.12em;background:var(--cream);display:inline-block;padding:6px 14px;border-radius:8px;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+td,th{border:1px solid var(--tan);padding:6px;text-align:left}
+th{background:var(--green);color:#fff}
+.hide{display:none}
+.res{margin-top:10px;font-weight:bold}
+@media print{body{background:#fff}.top,.noprint{display:none!important}.card{box-shadow:none;margin:0}#certCard{display:block!important}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div><div class="kicker">Unit 28 &bull; Broadleaf Evergreens</div><h1>Evergreen ER</h1></div>
+  <div class="hud" id="hud"></div>
+</div></div>
+<div class="wrap" id="app"></div>
+
+<script>
+// ===== Teacher settings =====
+var TEACHER_PIN = "0545";
+var SALT = "NPFFA-U28-ER";
+
+// ===== Data (Introductory Horticulture, Unit 28, pp. 338-346) =====
+var PLANTS = ["Andromeda","Azalea","Darwin Barberry","Rosy Glow Barberry","Dwarf Crimson Pygmy Barberry","Warty Barberry","Common Boxwood","English Boxwood","Camellia sasanqua","Camellia japonica","Firethorn","American Holly","Chinese Holly","English Holly","Japanese Holly","Southern Magnolia","Sweet Bay Magnolia","Nandina","Privet","Glossy Privet","Rhododendron","Viburnum"];
+
+var TERMS = [
+  {t:"broadleaf",p:"339",d:["Evergreen with broad leaves instead of needlelike leaves.","Type of evergreen that holds leaves all year but is not needled like pines, yews, or junipers.","Holly and magnolia are this kind of evergreen."]},
+  {t:"desiccation",p:"345",d:["Another name for winter burn or winter drying.","Leaves turn brown in winter from cold drying winds, swinging temperatures, and frozen soil.","Drying out of evergreen leaves because roots in frozen soil cannot replace lost water."]},
+  {t:"drip line",p:"343",d:["Imaginary line directly below the outer edge of the branches.","The circle where fertilizer is spread around a broadleaf evergreen in spring.","Line on the ground straight under the branch tips."]},
+  {t:"raised beds",p:"344",d:["Planting areas built above the soil line for poorly drained or alkaline soil.","The fix that lets the root ball sit on top of wet, poorly drained soil."]},
+  {t:"root ball",p:"343",d:["Soil left intact around the roots and moved with the plant.","Broadleaf evergreens are always transplanted with this intact.","Roots plus the soil around them, kept together in a move."]},
+  {t:"soilless",p:"344",d:["A planting mix of 2 parts pine bark and 1 part peat moss.","Planting mix made without any field soil or topsoil."]},
+  {t:"spreader sticker",p:"344",d:["Chemical added to a pesticide so spray breaks into small droplets that spread and stick.","Additive that keeps spray from running off shiny leaves.","Ordinary soap can stand in for this if nothing else is available."]}
+];
+
+var REQUESTS = [
+  {q:"I need a hedge that grows very fast in full sun or shade. I don't care about flowers.",a:"Common Boxwood",why:"Common boxwood grows very fast, takes full sun or shade, has no flowers, and is used as a hedge.",p:"Fig. 28-5, p. 340"},
+  {q:"Low edging along a walkway, no taller than 3 feet, that I can shape into topiary.",a:"English Boxwood",why:"English boxwood is slow growing to 3 feet and is used for edging, walkways, and topiary.",p:"Fig. 28-5, p. 340"},
+  {q:"A large specimen tree native to the U.S. with big, fragrant white flowers in summer.",a:"Southern Magnolia",why:"Southern magnolia is native and has 6 to 10 inch fragrant white flowers in mid-summer.",p:"Fig. 28-5, p. 341"},
+  {q:"A shrub that blooms in AUTUMN with white to pink flowers. Part shade is OK.",a:"Camellia sasanqua",why:"Camellia sasanqua blooms in autumn and grows in full sun or partial shade.",p:"Fig. 28-5, p. 340"},
+  {q:"Something for the front of my taller evergreens, with red berries in fall and winter.",a:"Nandina",why:"Nandina is used in front of taller evergreens and has red berries in autumn and winter.",p:"Fig. 28-5, p. 341"},
+  {q:"A hedge plant with small, spineless leaves and black berries.",a:"Japanese Holly",why:"Japanese holly has small spineless leaves and black berries and is used for hedges.",p:"Fig. 28-5, p. 341"},
+  {q:"My soil tests pH 7.5. I want a specimen plant with orange fruit.",a:"Firethorn",why:"Firethorn takes pH 6.0 to 8.0 and has orange fruit. Buy it in a container because it is hard to transplant.",p:"Fig. 28-5, p. 341"},
+  {q:"A foundation shrub with fruit that will bring birds to my yard.",a:"Viburnum",why:"Viburnum has attractive fruit, especially to birds, and is used for foundations.",p:"Fig. 28-5, p. 342"},
+  {q:"A barberry with few thorns, bright orange flowers, and purple berries.",a:"Darwin Barberry",why:"Darwin barberry has few thorns, bright orange flowers, and purple berries.",p:"Fig. 28-5, p. 340"},
+  {q:"A 4-foot shrub with rich purple foliage that turns scarlet in autumn.",a:"Dwarf Crimson Pygmy Barberry",why:"Dwarf Crimson Pygmy barberry has rich purple foliage that turns scarlet in autumn.",p:"Fig. 28-5, p. 340"},
+  {q:"A shrub with yellow spring flowers and leaves that are white underneath.",a:"Warty Barberry",why:"Warty barberry has yellow flowers in spring and foliage white underneath.",p:"Fig. 28-5, p. 340"},
+  {q:"A plant with very early white blooms that works in the center of a group or as background.",a:"Andromeda",why:"Andromeda gives very early white blooms and is excellent for background or the center of a group.",p:"Fig. 28-5, p. 340"},
+  {q:"An easy hedge that grows in shade and blooms in August or September.",a:"Glossy Privet",why:"Glossy privet blooms August to September, is easy to grow, and grows in shade.",p:"Fig. 28-5, p. 342"},
+  {q:"A specimen shrub for Zone 4 that must have mulch at all times and soil high in organic matter.",a:"Rhododendron",why:"Rhododendron requires mulch at all times, good drainage, and high organic matter. Hardy in Zones 4 to 8.",p:"Fig. 28-5, p. 342"},
+  {q:"A 15 to 30 foot specimen with dark green foliage and white to deep red flowers in early spring.",a:"Camellia japonica",why:"Camellia japonica grows 15 to 30 feet, blooms early spring, white to deep red flowers, dark green foliage.",p:"Fig. 28-5, p. 341"},
+  {q:"A 20 to 30 foot specimen tree with spiny leaves and red berries for Christmas.",a:"American Holly",why:"American holly grows 20 to 30 feet with spiny leaves and red berries in fall and winter.",p:"Fig. 28-5, p. 341; Fig. 28-3"},
+  {q:"A magnolia that stays evergreen here in the South but drops its leaves in Zones 5 and 6.",a:"Sweet Bay Magnolia",why:"Sweet bay magnolia is evergreen in Zones 7 to 10 and deciduous in Zones 5 and 6.",p:"Fig. 28-5, p. 341"},
+  {q:"A holly with red or yellow berries that grows in sun or shade but needs heavy fertilization.",a:"Chinese Holly",why:"Chinese holly has red or yellow berries, takes full sun or shade, and needs heavy fertilization.",p:"Fig. 28-5, p. 341"},
+  {q:"A 2 to 10 foot specimen holly with glossy foliage and yellow and red berries.",a:"English Holly",why:"English holly grows 2 to 10 feet with glossy foliage and yellow and red berries.",p:"Fig. 28-5, p. 341"}
+];
+
+var CASES = [
+  {s:"Leaves look speckled white and yellow. Tiny specks move on the underside of the leaves.",c:"Mites or sucking insects like lace bug",f:"Spray so the pest is hit (malathion), use a systemic, or insecticidal soap, with a spreader sticker",p:"p. 344"},
+  {s:"An azalea has yellowing leaves. The soil test reads pH 7.2.",c:"Iron deficiency from soil pH above 6.0",f:"Replant in a raised bed of acidic soil or soilless mix of the proper pH",p:"pp. 343-344"},
+  {s:"A rhododendron under heavy shade is tall and leggy with very few flowers.",c:"Not enough light",f:"Give it more light; about 40 percent shade is best",p:"p. 343"},
+  {s:"In February, the boxwood on the windy side of the house has brown leaves.",c:"Winter burn (desiccation)",f:"Water in late fall, add protective barriers, and use an anti-desiccant spray",p:"p. 345"},
+  {s:"A holly that was fertilized heavily has soft, fast, open, straggly growth.",c:"Too much fertilizer, especially nitrogen",f:"Use small amounts of fertilizer in spring at the drip line",p:"p. 343"},
+  {s:"Spray keeps beading up and running off the shiny leaves, and the pests are not controlled.",c:"No spreader sticker in the spray",f:"Add a spreader sticker (ordinary soap for light suds in a pinch)",p:"p. 344"},
+  {s:"After bloom, the shrub has leaf spots and the branch tips are dying back.",c:"Fungus disease",f:"Spray just after bloom and again in 10 days with Captan or Aliette",p:"p. 344"},
+  {s:"A Japanese holly has short twig growth and small, pale green leaves. Everything else is right.",c:"Not enough fertilizer",f:"Apply 2 to 3 lb of 10-5-5 per 100 sq ft in spring",p:"p. 343"},
+  {s:"A newly moved azalea is wilting. The crew shook all the soil off the roots before replanting.",c:"Root ball was not kept intact",f:"Always move broadleaf evergreens with the root ball intact",p:"p. 343"},
+  {s:"A boxwood is declining under a thick layer of mulch piled over its roots.",c:"Mulch on boxwood; its roots need oxygen",f:"Pull the mulch off; do not mulch boxwood",p:"p. 342"},
+  {s:"A new shrub planted in wet clay has sunk below grade and sits in water.",c:"Poor drainage and a soft hole bottom",f:"Firm the hole bottom and plant in a raised bed above the wet soil",p:"pp. 343-344"},
+  {s:"Chewing insects left a few holes in the leaves of a large, healthy shrub.",c:"Chewing insects, seldom serious on big plants",f:"Usually no spray needed; if needed, malathion and Sevin or Orthene",p:"p. 344"}
+];
+
+var STEPS = [
+  "Dig the hole wide enough for 12 to 18 inches of space around the root ball",
+  "Firm the soil in the bottom of the hole so the root ball will not sink",
+  "Set the plant at the same depth or slightly higher, never deeper",
+  "Fill to soil level (no soil on top of the root ball) and firm it with your hands",
+  "Water with a garden hose at low pressure",
+  "Mulch 2 to 3 inches deep with wood chips or pine bark, out past the branch ends"
+];
+
+// ===== Helpers =====
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function pick(a,n){return shuffle(a).slice(0,n)}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function store(k,v){try{if(v===undefined){return JSON.parse(localStorage.getItem(k))}localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+function norm(s){return String(s||"").trim().toLowerCase().replace(/\s+/g," ")}
+function fnv(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}return h>>>0}
+var ALPHA="ACDEFGHJKMNPQRTUVWXY34679";
+function makeCode(name,period,pct,date,mins){
+  var h=fnv(SALT+"|"+norm(name)+"|"+norm(period)+"|"+pct+"|"+date+"|"+mins), s="";
+  for(var i=0;i<6;i++){s+=ALPHA[h%25];h=Math.floor(h/25)}
+  return s.slice(0,3)+"-"+s.slice(3);
+}
+function fmt(n){return (Math.round(n*100)/100).toString()}
+
+// ===== Game state =====
+var G;
+function newGame(name,period){
+  G={name:name,period:period,start:Date.now(),items:[],ri:0,qi:0,rounds:[]};
+  G.rounds.push({key:"terms",title:"Round 1: Triage the Terms",topic:"Key terms (pp. 339-345)",qs:pick(TERMS,5).map(function(x){return{type:"term",x:x,d:rnd(x.d)}})});
+  G.rounds.push({key:"plants",title:"Round 2: Right Plant, Right Place",topic:"Figure 28-5 plant chart (pp. 340-342)",qs:pick(REQUESTS,6).map(function(x){return{type:"plant",x:x}})});
+  G.rounds.push({key:"dx",title:"Round 3: Diagnose the Patient",topic:"Care problems: pH, light, fertilizer, pests, winter burn (pp. 342-345)",qs:pick(CASES,5).map(function(x){return{type:"case",x:x}})});
+  G.rounds.push({key:"surgery",title:"Round 4: Transplant Surgery",topic:"Transplanting procedure (pp. 343-344)",qs:[{type:"order"}]});
+  G.rounds.push({key:"math",title:"Round 5: Pharmacy Math",topic:"Fertilizer, hole size, and soilless mix math (pp. 343-344)",qs:pick(["bed","holly","tree","hole","mix"],4).map(function(k){return{type:"math",k:k}})});
+  G.rounds.forEach(function(r){r.got=0;r.max=0});
+}
+function hud(){
+  if(!G){$("hud").innerHTML="";return}
+  var got=0,max=0;G.rounds.forEach(function(r){got+=r.got;max+=r.max});
+  $("hud").innerHTML='<span class="pill">'+esc(G.name)+'</span><span class="pill">Patients saved: '+got+'</span><span class="pill">Round '+(G.ri+1)+' of 5</span>';
+}
+
+// ===== Screens =====
+function startScreen(){
+  G=null;hud();
+  var best=store("u28er_best");
+  $("app").innerHTML='<div class="card"><h2>Welcome to the Evergreen ER</h2>'+
+  '<p>Sick shrubs are rolling in. Learn the terms, prescribe the right plant, diagnose the problems, perform a transplant, and do the math. Every answer shows the reason and the textbook page.</p>'+
+  '<label for="fn">First name</label><input id="fn" autocomplete="given-name">'+
+  '<label for="ln">Last name</label><input id="ln" autocomplete="family-name">'+
+  '<label for="per">Class period</label><input id="per" inputmode="numeric">'+
+  '<div id="err" class="small" style="color:var(--bad)"></div>'+
+  '<button class="btn" id="go">Start my shift</button>'+
+  (best?'<p class="small">Best score on this device: '+esc(best.pct)+'% ('+esc(best.name)+')</p>':'')+
+  '<button class="link noprint" id="tc">Teacher check</button></div>';
+  $("go").onclick=function(){
+    var f=$("fn").value.trim(),l=$("ln").value.trim(),p=$("per").value.trim();
+    if(!f||!l){$("err").textContent="Enter your first and last name.";return}
+    newGame(f+" "+l,p||"-");run();
+  };
+  $("tc").onclick=teacherScreen;
+}
+
+function run(){
+  hud();
+  var r=G.rounds[G.ri];
+  if(!r){return finish()}
+  var q=r.qs[G.qi];
+  if(!q){G.ri++;G.qi=0;return roundBreak()}
+  var head='<div class="round">'+esc(r.title)+' &bull; '+(G.qi+1)+' of '+r.qs.length+'</div>';
+  if(q.type==="term")return mc(head+'<h3>Which key term matches?</h3><div class="patient">'+esc(q.d)+'</div>',
+    shuffle([q.x.t].concat(pick(TERMS.filter(function(t){return t!==q.x}).map(function(t){return t.t}),3))),q.x.t,
+    "<b>"+esc(q.x.t)+":</b> "+esc(q.x.d[0])+" (p. "+q.x.p+")",r);
+  if(q.type==="plant")return mc(head+'<h3>A client calls:</h3><div class="patient">&ldquo;'+esc(q.x.q)+'&rdquo;</div><div class="chart">Prescribe the best plant from Figure 28-5.</div>',
+    shuffle([q.x.a].concat(pick(PLANTS.filter(function(p){return p!==q.x.a}),3))),q.x.a,
+    "<b>"+esc(q.x.a)+".</b> "+esc(q.x.why)+" ("+esc(q.x.p)+")",r);
+  if(q.type==="case")return caseQ(head,q.x,r);
+  if(q.type==="order")return orderQ(head,r);
+  if(q.type==="math")return mathQ(head,q.k,r);
+}
+
+function mc(html,opts,ans,fb,r,after){
+  r.max++;G.curAns=ans;
+  $("app").innerHTML='<div class="card">'+html+'<div class="opts" id="opts"></div><div id="fb"></div></div>';
+  opts.forEach(function(o){
+    var b=document.createElement("button");b.className="opt";b.textContent=o;
+    b.onclick=function(){
+      var all=$("opts").querySelectorAll(".opt"),ok=o===ans;
+      all.forEach(function(x){x.disabled=true;if(x.textContent===ans)x.classList.add("right")});
+      if(!ok)b.classList.add("wrong");else r.got++;
+      G.items.push({round:r.key,ok:ok});
+      $("fb").innerHTML='<div class="fb">'+(ok?"Correct. ":"Not quite. ")+fb+'</div><button class="btn" id="next">Next</button>';
+      hud();
+      $("next").onclick=after||function(){G.qi++;run()};
+    };
+    $("opts").appendChild(b);
+  });
+}
+
+function caseQ(head,x,r){
+  var causes=shuffle([x.c].concat(pick(CASES.filter(function(c){return c!==x}).map(function(c){return c.c}),3)));
+  mc(head+'<h3>Step 1: What is the cause?</h3><div class="patient">'+esc(x.s)+'</div>',causes,x.c,"<b>Cause:</b> "+esc(x.c)+" ("+x.p+")",r,function(){
+    var fixes=shuffle([x.f].concat(pick(CASES.filter(function(c){return c!==x}).map(function(c){return c.f}),3)));
+    mc(head+'<h3>Step 2: What is the treatment?</h3><div class="patient">'+esc(x.s)+'<div class="small">Cause: '+esc(x.c)+'</div></div>',fixes,x.f,"<b>Treatment:</b> "+esc(x.f)+" ("+x.p+")",r);
+  });
+}
+
+function orderQ(head,r){
+  r.max+=STEPS.length;
+  var picked=[],sh=shuffle(STEPS.map(function(s,i){return i}));
+  function draw(){
+    var html='<div class="card">'+head+'<h3>Tap the transplant steps in the correct order.</h3><div class="opts steps" id="opts"></div>'+
+      '<div class="order" id="ord"></div><button class="btn ghost" id="undo">Undo</button> <button class="btn" id="done" disabled>Check my order</button><div id="fb"></div></div>';
+    $("app").innerHTML=html;
+    sh.forEach(function(i){
+      if(picked.indexOf(i)>=0)return;
+      var b=document.createElement("button");b.className="opt";b.innerHTML='<span class="num">?</span><span>'+esc(STEPS[i])+'</span>';
+      b.onclick=function(){picked.push(i);draw()};$("opts").appendChild(b);
+    });
+    picked.forEach(function(i,k){var d=document.createElement("div");d.innerHTML='<span class="num">'+(k+1)+'</span> '+esc(STEPS[i]);$("ord").appendChild(d)});
+    $("undo").disabled=!picked.length;$("undo").onclick=function(){picked.pop();draw()};
+    $("done").disabled=picked.length!==STEPS.length;
+    $("done").onclick=function(){
+      var got=0;picked.forEach(function(i,k){if(i===k)got++});r.got+=got;
+      for(var k=0;k<STEPS.length;k++)G.items.push({round:r.key,ok:picked[k]===k});
+      $("undo").disabled=true;$("done").disabled=true;
+      $("fb").innerHTML='<div class="fb">'+got+' of '+STEPS.length+' steps in the right spot. Correct order:<ol>'+STEPS.map(function(s){return"<li>"+esc(s)+"</li>"}).join("")+'</ol>Broadleaf evergreens always move with the root ball because their demand for moisture is always high (pp. 343-344, Fig. 28-7).</div><button class="btn" id="next">Next</button>';
+      hud();$("next").onclick=function(){G.qi++;run()};
+    };
+  }
+  draw();
+}
+
+function mathQ(head,k,r){
+  var q,a,d,fb;
+  if(k==="bed"){var dims=rnd([[10,20],[10,30],[20,20],[20,25],[10,40],[15,20],[25,40]]),A=dims[0]*dims[1],u=A/100;
+    q="A Japanese holly bed is "+dims[0]+" ft by "+dims[1]+" ft. How much 10-5-5 does it need?";a=fmt(2*u)+" to "+fmt(3*u)+" lb";
+    d=[fmt(u)+" to "+fmt(1.5*u)+" lb",fmt(4*u)+" to "+fmt(6*u)+" lb",fmt(3*u)+" to "+fmt(4.5*u)+" lb"];fb=A+" sq ft is "+fmt(u)+" units of 100 sq ft. "+fmt(u)+" x 2 to 3 lb = "+a+" (p. 343).";}
+  if(k==="holly"){var h=rnd([3,6,9,12,15]);q="A single Chinese holly is "+h+" ft tall. How much fertilizer does it get?";a=fmt(1.5*h/3)+" lb";
+    d=[fmt(1.5*h)+" lb",fmt(h/3)+" lb",fmt(3*h/3)+" lb"];fb="1 1/2 lb per 3 ft of height or spread: "+h+" / 3 = "+fmt(h/3)+", x 1.5 = "+a+" (p. 343).";}
+  if(k==="tree"){var t=rnd([4,5,6,8,10,12]);q="A large American holly has a "+t+" inch trunk. What is the fertilizer range?";a=fmt(t)+" to "+fmt(1.5*t)+" lb";
+    d=[fmt(2*t)+" to "+fmt(3*t)+" lb",fmt(t/2)+" to "+fmt(t)+" lb",fmt(1.5*t)+" to "+fmt(3*t)+" lb"];fb="1 to 1 1/2 lb per inch of trunk: "+a+" (p. 343).";}
+  if(k==="hole"){var b=rnd([12,18,24,30,36]);q="A root ball is "+b+" inches wide. How wide should the hole be?";a=(b+24)+" to "+(b+36)+" in.";
+    d=[(b+12)+" to "+(b+18)+" in.",b+" to "+(b+18)+" in.",(b+36)+" to "+(b+48)+" in."];fb="12 to 18 inches on EACH side, so add 24 to 36 inches: "+a+" (p. 343).";}
+  if(k==="mix"){var m=rnd([3,6,9,12,15,18]);q="You need "+m+" cubic feet of soilless mix. How much pine bark and peat moss?";a=fmt(2*m/3)+" cu ft pine bark + "+fmt(m/3)+" cu ft peat moss";
+    d=[fmt(m/3)+" cu ft pine bark + "+fmt(2*m/3)+" cu ft peat moss",fmt(m/2)+" cu ft pine bark + "+fmt(m/2)+" cu ft peat moss",fmt(2*m)+" cu ft pine bark + "+fmt(m)+" cu ft peat moss"];fb="2 parts pine bark to 1 part peat moss = 3 parts. "+m+" / 3 = "+fmt(m/3)+" per part (p. 344).";}
+  d=d.filter(function(x,i){return x!==a&&d.indexOf(x)===i});
+  mc(head+'<h3>Pharmacy math</h3><div class="patient">'+esc(q)+'</div>',shuffle([a].concat(d)),a,esc(fb),r);
+}
+
+function roundBreak(){
+  hud();
+  var prev=G.rounds[G.ri-1];
+  if(G.ri>=G.rounds.length)return finish();
+  $("app").innerHTML='<div class="card"><div class="round">Shift report</div><h2>'+esc(prev.title)+' complete</h2><p>You saved '+prev.got+' of '+prev.max+'.</p><p>Next up: <b>'+esc(G.rounds[G.ri].title)+'</b></p><button class="btn" id="next">Keep going</button></div>';
+  $("next").onclick=run;
+}
+
+function rating(p){return p>=90?"Chief of Evergreen Medicine":p>=75?"Attending Horticulturist":p>=60?"Resident":"Intern (review and replay)"}
+
+function finish(){
+  var got=0,max=0;G.rounds.forEach(function(r){got+=r.got;max+=r.max});
+  var pct=Math.round(100*got/max),mins=Math.max(1,Math.round((Date.now()-G.start)/60000)),now=new Date();
+  var date=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+  var code=makeCode(G.name,G.period,pct,date,mins);
+  var best=store("u28er_best");if(!best||pct>best.pct)store("u28er_best",{pct:pct,name:G.name});
+  var rows=G.rounds.map(function(r){var p=r.max?Math.round(100*r.got/r.max):0;return'<tr><td>'+esc(r.title)+'</td><td>'+r.got+' / '+r.max+'</td><td>'+(p<80?"Review: "+esc(r.topic):"Strong")+'</td></tr>'}).join("");
+  G.result={pct:pct,code:code};
+  $("hud").innerHTML="";
+  $("app").innerHTML='<div class="card" id="certCard"><div class="cert">'+
+    '<div class="kicker" style="color:var(--green)">North Paulding Agriculture &bull; Unit 28 Broadleaf Evergreens</div>'+
+    '<h2>Evergreen ER Shift Certificate</h2><p>This certifies that</p><h3 id="cName">'+esc(G.name)+'</h3><p>Period '+esc(G.period)+'</p>'+
+    '<div class="big" id="cPct">'+pct+'%</div><p><b>'+got+' of '+max+'</b> patients saved &bull; Rank: <b>'+rating(pct)+'</b></p>'+
+    '<p class="small">'+mins+' minute'+(mins===1?"":"s")+' played &bull; '+date+' '+now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+'</p>'+
+    '<div>Completion code</div><div class="code" id="cCode">'+code+'</div>'+
+    '<table><tr><th>Round</th><th>Score</th><th>Next step</th></tr>'+rows+'</table></div>'+
+    '<div class="noprint"><button class="btn" id="pr">Print / Save as PDF</button> <button class="btn alt" id="again">Play again</button></div></div>';
+  $("pr").onclick=function(){window.print()};
+  $("again").onclick=function(){var n=G.name,p=G.period;newGame(n,p);run()};
+}
+
+function teacherScreen(){
+  var pin=window.prompt("Teacher PIN");
+  if(pin===null)return;
+  if(pin!==TEACHER_PIN){alert("Incorrect PIN.");return}
+  var t=new Date(),dd=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+  $("app").innerHTML='<div class="card"><h2>Teacher Check</h2><p class="small">Type exactly what the certificate shows.</p>'+
+    '<label for="tn">Student name (first last)</label><input id="tn"><label for="tp">Period</label><input id="tp">'+
+    '<label for="tpc">Percent (number only)</label><input id="tpc" inputmode="numeric"><label for="td">Date (YYYY-MM-DD)</label><input id="td" value="'+dd+'">'+
+    '<label for="tm">Minutes played</label><input id="tm" inputmode="numeric"><label for="tcd">Completion code</label><input id="tcd">'+
+    '<button class="btn" id="chk">Check code</button> <button class="btn ghost" id="back">Back</button><div class="res" id="res"></div></div>';
+  $("chk").onclick=function(){
+    var c=makeCode($("tn").value,$("tp").value||"-",parseInt($("tpc").value,10),$("td").value.trim(),parseInt($("tm").value,10));
+    var typed=$("tcd").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+    var ok=typed===c.replace("-","");
+    $("res").innerHTML=ok?'<span style="color:var(--ok)">Match. This certificate is genuine.</span>':'<span style="color:var(--bad)">No match. Expected '+c+' for those details.</span>';
+  };
+  $("back").onclick=startScreen;
+}
+
+startScreen();
+</script>
+</body>
+</html>
