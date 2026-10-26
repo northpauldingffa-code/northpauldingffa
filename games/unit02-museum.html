@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 2: Agriscience Museum Curator</title>
+<style>
+:root{--red:#6B3226;--green:#3C6255;--tan:#D9C4A3;--cream:#F3ECE1;--ink:#2B2118;--muted:#6E6255;--gold:#C47A2C;--ok:#2f6b3a;--bad:#9b2c1f}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.4}
+body{overflow-x:hidden}
+h1,h2,h3{font-family:Cambria,Georgia,"Times New Roman",serif;margin:0 0 .4em}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.band{background:var(--green);color:#fff;padding:14px 16px;border-bottom:5px solid var(--red)}
+.band .kick{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.band h1{font-size:1.6rem;margin:.1em 0 0}
+.card{background:#fff;border:2px solid var(--tan);border-radius:10px;padding:16px;margin:14px 0}
+label{display:block;font-weight:bold;margin:.6em 0 .2em}
+input,select{width:100%;font-size:1rem;padding:10px;border:2px solid var(--tan);border-radius:8px;background:#fff;color:var(--ink)}
+button{font:inherit;cursor:pointer;border:none;border-radius:8px;padding:12px 16px;background:var(--red);color:#fff;font-weight:bold}
+button.alt{background:var(--green)}
+button.ghost{background:transparent;color:var(--muted);text-decoration:underline;padding:6px;font-weight:normal}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 140px}
+.hud{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:.9rem;color:var(--muted);margin-bottom:6px}
+.hud b{color:var(--ink)}
+.bar{height:8px;background:var(--tan);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.bar i{display:block;height:100%;background:var(--gold);width:0}
+.hall{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--green);font-weight:bold}
+.visitor{background:var(--cream);border-left:5px solid var(--gold);padding:10px 12px;border-radius:6px;margin:8px 0 12px;font-style:italic;color:var(--muted)}
+.q{font-size:1.1rem;font-weight:bold;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:#fff;color:var(--ink);border:2px solid var(--tan);font-weight:normal}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:#e3efe4;border-color:var(--ok)}
+.opt.wrong{background:#f6e1dc;border-color:var(--bad)}
+.fb{margin-top:12px;padding:10px 12px;border-radius:8px;display:none}
+.fb.show{display:block}
+.fb.good{background:#e3efe4;border:1px solid var(--ok)}
+.fb.bad{background:#f6e1dc;border:1px solid var(--bad)}
+.fb .pg{color:var(--muted);font-style:italic;font-size:.9rem}
+.order-list{display:grid;gap:8px}
+.ev{display:flex;align-items:center;gap:10px;text-align:left;background:#fff;color:var(--ink);border:2px solid var(--tan);font-weight:normal}
+.ev .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--tan);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:bold}
+.ev.picked .num{background:var(--green);color:#fff}
+.ev .yr{margin-left:auto;font-weight:bold;color:var(--green);display:none}
+.reveal .ev .yr{display:inline}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.center{text-align:center}
+.cert{border:6px double var(--red);background:#fff;padding:20px;border-radius:6px;text-align:center}
+.cert .big{font-family:Cambria,Georgia,serif;font-size:1.9rem;color:var(--red);margin:.2em 0}
+.cert .code{font-family:Consolas,"Courier New",monospace;font-size:1.6rem;letter-spacing:.15em;background:var(--cream);display:inline-block;padding:6px 14px;border-radius:6px;margin:6px 0}
+.stars{color:var(--gold);font-size:1.6rem;letter-spacing:.1em}
+table.bd{width:100%;border-collapse:collapse;margin-top:10px;font-size:.9rem;text-align:left}
+table.bd td,table.bd th{border:1px solid var(--tan);padding:6px}
+table.bd th{background:var(--cream)}
+.hide{display:none!important}
+.err{color:var(--bad);font-weight:bold;margin-top:6px}
+@media print{
+ body{background:#fff}
+ .noprint,.band{display:none!important}
+ .wrap{max-width:none;padding:0}
+ #certCard{border:none;padding:0}
+}
+</style>
+</head>
+<body>
+<div class="band noprint"><div class="wrap" style="padding:0">
+ <div class="kick">Unit 2 &bull; Better Living through Agriscience</div>
+ <h1>Agriscience Museum Curator</h1>
+</div></div>
+
+<div class="wrap">
+
+<!-- START -->
+<section id="start">
+ <div class="card">
+  <h2>Welcome, new curator</h2>
+  <p>The county museum is opening a new wing called <b>Better Living through Agriscience</b>. You run five halls. Visitors will ask questions, and you will set up exhibits. Every correct answer brings in more visitors and earns stars for your museum.</p>
+  <ol class="small">
+   <li><b>Hall of Words:</b> key terms</li>
+   <li><b>Inventors' Gallery:</b> who invented what, plus a timeline exhibit</li>
+   <li><b>Living Environments Hall:</b> homes, water, climate, insects, and chemicals</li>
+   <li><b>Data Lab:</b> population pyramids and farm math</li>
+   <li><b>Research Wing:</b> breakthroughs that solved real problems</li>
+  </ol>
+  <label for="fname">First name</label><input id="fname" autocomplete="off">
+  <label for="lname">Last name</label><input id="lname" autocomplete="off">
+  <label for="period">Class period</label>
+  <select id="period"><option value="">Choose...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+  <div id="startErr" class="err"></div>
+  <p id="best" class="muted small"></p>
+  <button id="startBtn" style="width:100%;margin-top:8px">Open the museum</button>
+ </div>
+ <p class="center"><button class="ghost" id="teacherLink">Teacher check</button></p>
+</section>
+
+<!-- TEACHER -->
+<section id="teacher" class="hide">
+ <div class="card">
+  <h2>Teacher check</h2>
+  <div id="pinBox">
+   <label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric">
+   <button id="pinBtn" style="margin-top:8px">Unlock</button>
+   <div id="pinErr" class="err"></div>
+  </div>
+  <div id="verBox" class="hide">
+   <p class="small muted">Type exactly what is on the student's certificate.</p>
+   <label>Student name</label><input id="vName">
+   <div class="row">
+    <div><label>Period</label><input id="vPer"></div>
+    <div><label>Percent</label><input id="vPct" inputmode="numeric"></div>
+    <div><label>Minutes</label><input id="vMin" inputmode="numeric"></div>
+   </div>
+   <label>Date (YYYY-MM-DD)</label><input id="vDate" placeholder="2026-10-27">
+   <label>Completion code</label><input id="vCode" placeholder="ABC-DEF">
+   <button id="verBtn" style="margin-top:8px">Check code</button>
+   <div id="verOut" style="margin-top:10px;font-weight:bold"></div>
+  </div>
+  <p><button class="ghost" id="teacherBack">Back</button></p>
+ </div>
+</section>
+
+<!-- PLAY -->
+<section id="play" class="hide">
+ <div class="hud"><span id="hudHall"></span><span>Visitors: <b id="hudVis">0</b></span><span>Item <b id="hudN">1</b> of <b id="hudT">0</b></span></div>
+ <div class="bar"><i id="hudBar"></i></div>
+ <div class="card" id="qCard"></div>
+</section>
+
+<!-- HALL BREAK -->
+<section id="brk" class="hide">
+ <div class="card center" id="brkCard"></div>
+</section>
+
+<!-- CERT -->
+<section id="end" class="hide">
+ <div class="card" id="certCard"></div>
+ <div class="row noprint">
+  <button id="printBtn" class="alt">Print / Save as PDF</button>
+  <button id="againBtn">Play again</button>
+ </div>
+</section>
+
+</div>
+
+<script>
+/* ===== Teacher settings ===== */
+var TEACHER_PIN = "0545";
+var SALT = "NPFFA-U2-MUSEUM";
+var STORE_KEY = "npffa_unit2_museum_best";
+
+/* ===== Helpers ===== */
+function $(id){return document.getElementById(id);}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function rint(lo,hi){return lo+Math.floor(Math.random()*(hi-lo+1));}
+function fmt(n){var r=Math.round(n*100)/100;return r.toLocaleString("en-US");}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function norm(s){return String(s).toLowerCase().replace(/[^a-z0-9]/g,"");}
+function fnv(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h>>>0;}
+var ALPHA="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function makeCode(name,per,pct,date,mins){
+ var h=fnv(SALT+"|"+norm(name)+"|"+norm(per)+"|"+String(parseInt(pct,10))+"|"+date+"|"+String(parseInt(mins,10)));
+ var s="";for(var i=0;i<6;i++){s+=ALPHA[h&31];h=h>>>5;if(i===2){h=fnv(s+String(h)+SALT);}}
+ return s.slice(0,3)+"-"+s.slice(3);
+}
+function getBest(){try{var v=localStorage.getItem(STORE_KEY);return v?JSON.parse(v):null;}catch(e){return null;}}
+function setBest(o){try{localStorage.setItem(STORE_KEY,JSON.stringify(o));}catch(e){}}
+
+/* ===== Visitors (flavor only) ===== */
+var VISITORS=["A fourth grader on a field trip","A retired dairy farmer","A tourist from Canada","A nursing student","A county commissioner","A Paulding County FFA member","A grandmother visiting with her grandkids","A college engineering student","A local landscaper","A high school history teacher","A chef from Atlanta","A banker who grew up on a farm"];
+
+/* ===== HALL 1: Key terms ===== */
+var TERMS=[
+ {t:"sewage system",d:["Receives and treats human waste","Must decompose human waste and release by-products free of harmful chemicals and organisms","System like the one in Figure 2-5 with a primary clarifier and aeration tank"],p:"p. 22"},
+ {t:"polluted",d:["Unsafe to drink because it contains waste materials, chemicals, or unhealthful organisms","Describes water that is not safe because of waste, chemicals, or harmful organisms"],p:"p. 24"},
+ {t:"condominium",d:["A building with many individually owned living areas or units","Owned unit where all living space is generally on one floor"],p:"p. 24"},
+ {t:"townhouse",d:["One of a row of houses connected by common side walls","Connected home, usually two or three stories high"],p:"p. 24"},
+ {t:"famine",d:["Widespread starvation","A food shortage so severe that starvation spreads across a region"],p:"p. 24"},
+ {t:"contaminate",d:["To add material that changes the purity or usefulness of a substance","What urine and feces do to food and water"],p:"p. 28"},
+ {t:"parasite",d:["Organism that lives on or inside a host with no benefit to that host","An unwelcome guest that always causes its host some harm by feeding on it"],p:"p. 28"},
+ {t:"reaper",d:["Machine invented in 1834 to cut small grain","Cyrus McCormick's machine for cutting grain"],p:"p. 35"},
+ {t:"combine",d:["Machine that cuts and threshes grain in a single operation","Reaper plus a threshing device"],p:"p. 36"},
+ {t:"moldboard plow",d:["Steel plow that made it possible to farm rich, deep prairie soils","Plow John Deere shaped from a piece of steel cut from a saw blade"],p:"p. 36"},
+ {t:"cotton gin",d:["Machine that separated cotton seeds from cotton fiber","Eli Whitney's 1793 invention that expanded the cotton and textile industry"],p:"p. 36"},
+ {t:"corn picker",d:["Machine that removed ears of corn from the stalks","Edmund W. Quincy's 1850 invention"],p:"p. 37"},
+ {t:"milking machine",d:["Anna Baldwin's 1878 invention to replace hand milking","Machine that greatly reduced labor to care for dairy animals"],p:"p. 37"},
+ {t:"tractor",d:["Benjamin Holt's 1904 invention","Source of power for belt-driven machines and for pulling"],p:"p. 37"},
+ {t:"legume",d:["Plant that hosts nitrogen-fixing bacteria","Plant whose bacteria convert nitrogen from the air into a form plants can use"],p:"p. 39"},
+ {t:"tofu",d:["Food made by boiling and crushing soybeans, coagulating the soy milk, and pressing the curds","Curd from soybeans, first made by a Chinese scholar around 164 BC"],p:"p. 39"},
+ {t:"Katahdin",d:["Popular potato variety of the 1930s developed by the USDA","Potato variety that scientists used to develop the BelRus"],p:"p. 40"},
+ {t:"BelRus",d:["Superior baking potato bred to grow well in the Northeast","Potato developed from the Katahdin"],p:"p. 40"},
+ {t:"Russet",d:["Potato grown in the volcanic soils of Idaho and the Northwest","Potato improved through selection of parent stock for disease and insect resistance"],p:"p. 40"},
+ {t:"Green Revolution",d:["Process in which many countries became self-sufficient in food production in the 1960s","Use of improved plant varieties and proven management practices to end food shortages in developing countries"],p:"p. 40"},
+ {t:"feedstuff",d:["Any edible material used in the diets of animals","What detergent chemical methods test for nutritional value"],p:"p. 40"},
+ {t:"selective breeding",d:["Using plants or animals with desired genetic traits as parents of the next generation","Slow method of finding disease-resistant survivors and using them as parent stock"],p:"p. 42"},
+ {t:"genetic engineering",d:["Physically putting specific genes into the cells of a plant or animal","Technique that is much faster than selective breeding because genes are inserted directly"],p:"p. 42"},
+ {t:"monoclonal antibody",d:["Natural substance in blood that fights diseases and infections","Product made by transgenic goats in their milk"],p:"p. 41-42"},
+ {t:"hybrid",d:["Offspring of a plant or animal from crossing two different species or varieties","Type of impatiens developed through ovuleculture"],p:"p. 43"},
+ {t:"laser",d:["Device used to determine wavelengths given off by plants","Nitrogen gas tool that measures plant nutrient levels"],p:"p. 44"}
+];
+
+/* ===== HALL 2: Inventors ===== */
+var INVENT=[
+ {who:"Eli Whitney",what:"cotton gin",yr:"1793"},
+ {who:"Cyrus McCormick",what:"reaper",yr:"1834"},
+ {who:"John Deere",what:"steel moldboard plow",yr:"1837"},
+ {who:"Edmund W. Quincy",what:"mechanical corn picker",yr:"1850"},
+ {who:"Anna Baldwin",what:"milking machine",yr:"1878"},
+ {who:"Benjamin Holt",what:"tractor",yr:"1904"},
+ {who:"Joseph Glidden",what:"barbed wire",yr:""},
+ {who:"Thomas Jefferson",what:"iron plow",yr:""}
+];
+var INV_MC=[
+ {q:"Who invented the iron plow that replaced the wooden plow of the time?",a:"Thomas Jefferson",x:["John Deere","Cyrus McCormick","Joseph Glidden"],w:"Thomas Jefferson's iron plow replaced wooden plows. John Deere's steel moldboard plow came later (1837) for prairie soils.",p:"p. 36"},
+ {q:"Why did John Deere need a new kind of plow in 1837?",a:"Prairie soil stuck to the cast-iron plows of the time",x:["Wooden plows were too heavy for horses","Cotton fields needed deeper furrows","Tractors could not pull iron plows"],w:"Rich prairie soil stuck to cast-iron plows. Deere polished a piece of steel from a saw blade into a moldboard that worked.",p:"p. 36"},
+ {q:"What two machines were combined to make the first combine?",a:"A reaper and a threshing device",x:["A reaper and a corn picker","A cotton gin and a tractor","A plow and a threshing device"],w:"A threshing device was added to the reaper. Today's combine cuts and threshes in one operation.",p:"p. 35-36"},
+ {q:"One modern combine operator can harvest as much grain in a day as how many 1830s workers?",a:"100",x:["10","25","1,000"],w:"One operator can cut and thresh as much grain in one day as 100 individuals could cut and bundle in the 1830s.",p:"p. 36"},
+ {q:"What did Joseph Glidden's barbed wire make possible?",a:"Ranches with definite boundaries",x:["Larger cotton plantations","Milking more cows per hour","Plowing prairie soils"],w:"Sharp points discouraged livestock from touching fences, so ranches could have definite boundaries.",p:"p. 37"},
+ {q:"Which technology does the textbook call one of the most significant for farm efficiency, powering milking machines, water pumps, fans, and grain augers?",a:"Electricity in rural farming areas",x:["The steam engine","Barbed wire","The cotton gin"],w:"Generating and distributing electricity to rural farms let machines do jobs that were done by hand 75 years ago.",p:"p. 35"},
+ {q:"The share of U.S. workers who were farmers dropped from about 90 percent to what over 200 years?",a:"Less than 2 percent",x:["About 25 percent","About 14 percent","About 50 percent"],w:"The change from 90 percent to less than 2 percent happened over about 200 years, made possible by machines.",p:"p. 35"},
+ {q:"Why did forming machinery companies in the early 1900s matter?",a:"It made invention a continuing process",x:["It ended the need for farm labor","It lowered the price of land","It made all inventions free to farmers"],w:"Companies kept improving earlier inventions and building new equipment for a changing industry.",p:"p. 37"},
+ {q:"What kind of machines work best for agriculture in most developing countries?",a:"Simple, tough, reliable machines",x:["Highly computerized machines","The largest machines available","Machines imported only from the U.S."],w:"Complex, expensive U.S. machinery does not work long where repair services and trained mechanics are missing.",p:"p. 37-38"},
+ {q:"Why are some government leaders slow to adopt agriscience in their countries?",a:"Machines would displace workers and cause massive unemployment",x:["Their soils cannot grow crops","They do not have electricity laws","Agriscience is banned by the UN"],w:"The nation would initially see massive unemployment as machines replaced human labor.",p:"p. 35"},
+ {q:"Starting in the early 1800s, the use of what material spurred inventions that changed agriculture?",a:"Iron",x:["Plastic","Rubber","Aluminum"],w:"The use of iron spurred inventions in the U.S., British Isles, and northern Europe.",p:"p. 35"}
+];
+var TIMELINE=[
+ {e:"Chinese scholar first makes tofu",y:-164,s:"164 BC",p:"p. 39"},
+ {e:"Eli Whitney invents the cotton gin",y:1793,s:"1793",p:"p. 36"},
+ {e:"Cyrus McCormick invents the reaper",y:1834,s:"1834",p:"p. 35"},
+ {e:"John Deere develops the steel moldboard plow",y:1837,s:"1837",p:"p. 36"},
+ {e:"Edmund W. Quincy invents the corn picker",y:1850,s:"1850",p:"p. 37"},
+ {e:"Anna Baldwin invents the milking machine",y:1878,s:"1878",p:"p. 37"},
+ {e:"Benjamin Holt invents the tractor",y:1904,s:"1904",p:"p. 37"},
+ {e:"Katahdin is a popular potato variety",y:1935,s:"1930s",p:"p. 40"},
+ {e:"Starvation is rampant in many countries",y:1955,s:"1950s",p:"p. 40"},
+ {e:"Green Revolution makes many countries self-sufficient",y:1965,s:"1960s",p:"p. 40"},
+ {e:"DDT is banned in the United States",y:1972,s:"1972",p:"p. 30"},
+ {e:"China begins its one-child 4-2-1 policy",y:1975,s:"mid-1970s",p:"p. 34"},
+ {e:"Maryland bans genetically engineered fish",y:2002,s:"2002",p:"p. 42"},
+ {e:"World population reaches 7 billion",y:2011,s:"2011",p:"p. 21"}
+];
+
+/* ===== HALL 3: Living environments ===== */
+var ENV=[
+ {q:"To be regarded as safe, a sewage system must...",a:"decompose human waste",x:["be connected to a city system","be built from concrete block","discharge into a stream or river"],w:"A safe system decomposes waste and releases by-products free of harmful chemicals and disease-causing organisms.",p:"p. 22-23"},
+ {q:"Safe water is water that is...",a:"free of harmful chemicals and organisms",x:["any water pumped from a well","water collected from a roof","taken from free-flowing rivers"],w:"Safe water is free of harmful chemicals and disease-causing organisms.",p:"p. 24"},
+ {q:"In Figure 2-5, what does a modern treatment plant make from sewage sludge?",a:"Methane gas used as fuel to generate electricity",x:["Drinking water for cities","Fertilizer pellets only","Natural rubber"],w:"Sludge goes to a digester that produces methane, which fuels engines that drive generators.",p:"p. 23, Fig. 2-5, 2-6"},
+ {q:"In developing countries, what is generally the first evidence of community development?",a:"Modest, simple running-water facilities",x:["Paved highways","Shopping centers","Cell phone towers"],w:"Even a single faucet with unpolluted water is a major step forward for many communities.",p:"p. 24"},
+ {q:"UN scientist John Tanner concluded that the world...",a:"could feed itself in theory, but not in practice",x:["could never keep up with population growth","produces more food than it needs and should cut back","has no famine anywhere today"],w:"Tanner said the world could feed itself in theory but not in practice. Nearly a billion people lack enough food.",p:"p. 25"},
+ {q:"What does the textbook call the dominant force that shapes the environment for most individuals?",a:"Family life",x:["The national government","Climate","The school system"],w:"The family controls household activities and sets the priorities of its members.",p:"p. 25"},
+ {q:"Climate is best defined as...",a:"the average yearly temperature and precipitation for a region",x:["the physical shape of the Earth","the weather on a single day","the distance from the equator"],w:"Climate is average yearly temperature and precipitation. Topography is the physical shape of the Earth.",p:"p. 26"},
+ {q:"Topography means...",a:"the physical shape of the Earth",x:["the average yearly rainfall","the study of insects","the number of people per square mile"],w:"Topography is the physical shape of the Earth, like mountains that can have snow on top near warm sea-level areas.",p:"p. 26-27"},
+ {q:"On the Figure 2-9 globe, the equator is 0 degrees. What is 90 degrees North?",a:"The North Pole",x:["The Tropic of Cancer","Alaska","The Arctic Circle"],w:"Distance from the equator is measured in degrees, with 90 degrees North being the North Pole.",p:"p. 27, Fig. 2-9"},
+ {q:"Why can Anchorage, Alaska, grow giant vegetables despite a short season?",a:"Many hours of daylight per day during the growing season",x:["Volcanic soil","Warm ocean currents all year","Irrigation from glaciers"],w:"The growing season is short, but the long daylight hours give excellent growth conditions.",p:"p. 27, Fig. 2-11"},
+ {q:"Which disease kills unborn animals and humans and spreads through milk and birth fluids?",a:"Brucellosis",x:["Mastitis","Malaria","Coccidiosis"],w:"Brucellosis is an animal disease that can be transferred to humans.",p:"p. 28"},
+ {q:"Which pest feeds on human waste and then on human food, spreading disease between households?",a:"Cockroach",x:["Lady bird beetle","Pine beetle","Honeybee"],w:"Cockroaches move from waste to food and from household to household, leaving disease organisms behind.",p:"p. 28, Fig. 2-13"},
+ {q:"A tree that is not affected by a harmful insect is described as...",a:"immune",x:["contaminated","hybrid","dormant"],w:"A plant not affected by a harmful insect is immune, though it may be vulnerable to other species.",p:"p. 29"},
+ {q:"Which insect is named in the text as a predator that helps keep harmful insects in check?",a:"Lady bird beetle",x:["Colorado potato beetle","Cockroach","Fire ant"],w:"Lady bird beetles prey on harmful insects. Bees and other pollinators are also useful.",p:"p. 30"},
+ {q:"Why was DDT banned in the U.S. in 1972?",a:"It weakened bird egg shells and interfered with reproduction",x:["It stopped working on mosquitoes","It was too expensive","It caused cotton to rot"],w:"DDT controlled mosquitoes and flies, but it damaged bird reproduction by weakening egg shells.",p:"p. 30"},
+ {q:"Rachel Carson's book Silent Spring was one of the first to show convincing evidence of...",a:"environmental damage from pesticides",x:["the benefits of hybrid rice","world population growth","soil erosion in China"],w:"In the mid-1960s Silent Spring shocked the world with evidence of pesticide damage.",p:"p. 30"},
+ {q:"After China cut most of its forests in the 1960s, what did the government make a high priority?",a:"Reforestation",x:["Building dams","Importing lumber","The Green Revolution"],w:"Rapid soil erosion followed, so China put a high priority on reforestation and reversed the trend.",p:"p. 31-32"},
+ {q:"What does permanent plant cover do on steep slopes?",a:"Its roots bind soil and reduce erosion",x:["It adds nitrogen to the air","It speeds up runoff","It raises the temperature"],w:"Roots bind soil particles and reduce the tendency to erode.",p:"p. 31, Fig. 2-17"},
+ {q:"According to the Hot Topic, how could intensive farming help preserve forests?",a:"Higher yields on current farmland mean forests are not cleared for new farms",x:["Farms can be moved into forests safely","Fertilizer makes trees grow faster","Pesticides kill pine beetles"],w:"If food production on current land rises, forests will not have to be converted to farms.",p:"p. 26"},
+ {q:"The USDA reported that pesticide use declined by what percent over eight years after genetically engineered plants were adopted?",a:"14 percent",x:["40 percent","75 percent","2 percent"],w:"Pest-resistant GM crops, like beetle-resistant potatoes, cut pesticide use by 14 percent.",p:"p. 29"},
+ {q:"National parks and wilderness areas are set aside to...",a:"preserve the environment and the plants and animals there",x:["grow extra food crops","hold landfills","test new pesticides"],w:"Efficient food production frees land so some areas can be preserved in their natural condition.",p:"p. 32, Fig. 2-19"}
+];
+
+/* ===== HALL 4: Data lab ===== */
+var POP=[
+ {q:"Which country's graph has its largest group under 5 years old and narrows to a point, shaped like a pyramid?",a:"Honduras",x:["Sweden","Canada","Sierra Leone"],w:"Honduras has the traditional pattern, largest under 5 and smallest over 80.",p:"p. 34, Fig. 2-22"},
+ {q:"Which country's graph looks like a Christmas tree, with its largest group around age 20?",a:"Canada",x:["Honduras","Sweden","Sierra Leone"],w:"Canada's narrow bottom and cone shape look like a Christmas tree.",p:"p. 34, Fig. 2-22"},
+ {q:"Which country's graph shows a loss in the 20 to 30 year-old group because of civil war?",a:"Sierra Leone",x:["Canada","Sweden","Honduras"],w:"Sierra Leone's 20 to 30 year-old population was reduced by civil war.",p:"p. 34, Fig. 2-22"},
+ {q:"Which country, known for excellent health services, has age groups that are about equal, like a column?",a:"Sweden",x:["Honduras","Sierra Leone","Canada"],w:"Sweden's high survival rate gives a column or pillar shape.",p:"p. 34, Fig. 2-22"},
+ {q:"If China's 4-2-1 policy were strictly enforced for generations, its graph would change from a pyramid to...",a:"a Christmas tree, then an upside-down pyramid",x:["a column, then a pyramid","a wider pyramid","a Christmas tree, then a column"],w:"Fewer children each generation would leave mostly elderly people: an upside-down pyramid.",p:"p. 34-35"},
+ {q:"According to Figure 2-20, what has happened to infant mortality since 1950?",a:"It has fallen in both developed and developing countries",x:["It has risen in developing countries","It has stayed the same everywhere","It has fallen only in developed countries"],w:"Infant mortality rates have been falling in both developed and developing countries.",p:"p. 34, Fig. 2-20"},
+ {q:"According to Figure 2-22, which pattern is the world moving toward?",a:"A more even pillar pattern",x:["A sharper pyramid","An upside-down pyramid","A Christmas tree"],w:"The tendency all over the world is to move to a more even pillar pattern.",p:"p. 35, Fig. 2-22"},
+ {q:"China has about one-fifth of the world's people. About what share of its work force does it keep on farms?",a:"About 70 percent",x:["Less than 2 percent","About 14 percent","About 40 percent"],w:"China keeps about 70 percent of its work force on farms. The U.S. needs less than 2 percent.",p:"p. 34"}
+];
+var LABOR={crops:["Wheat (100 bu.)","Corn (100 bu.)","Cotton (1 bale)"],per:["1800","1935-39","1955-59","1980-84","1990 or later"],v:[[373,67,17,7,7],[344,108,20,3,2.88],[601,209,74,5,5]]};
+var YIELD={crops:["Wheat (bu.)","Corn (bu.)","Cotton (lb.)"],per:["1800","1940","1960","1985-86","1990"],v:[[15,15,20,34,39.5],[25,29,55,118,118.5],[154,253,446,630,640]]};
+var MATH=[
+ function(){var c=rint(0,2),i=rint(0,2),j=rint(i+1,4);while(LABOR.v[c][i]-LABOR.v[c][j]<=0){i=rint(0,2);j=rint(i+1,4);}
+  var a=Math.round((LABOR.v[c][i]-LABOR.v[c][j])*100)/100;
+  return {q:"Figure 2-21, Table #1: How many FEWER labor hours did it take to produce "+LABOR.crops[c]+" in "+LABOR.per[j]+" than in "+LABOR.per[i]+"?",a:a,u:"hours",w:LABOR.per[i]+": "+fmt(LABOR.v[c][i])+" hours. "+LABOR.per[j]+": "+fmt(LABOR.v[c][j])+" hours. "+fmt(LABOR.v[c][i])+" minus "+fmt(LABOR.v[c][j])+" = "+fmt(a)+".",p:"p. 34, Fig. 2-21"};},
+ function(){var c=rint(0,2),y=rint(0,4),n=pick([10,20,25,40,50,80,100]);var a=Math.round(YIELD.v[c][y]*n*100)/100;var unit=c===2?"pounds":"bushels";
+  return {q:"Figure 2-21, Table #2: A farm planted "+n+" acres of "+YIELD.crops[c].split(" ")[0].toLowerCase()+" in "+YIELD.per[y]+". At the yield per acre in the table, what was the total harvest in "+unit+"?",a:a,u:unit,w:YIELD.per[y]+" yield: "+fmt(YIELD.v[c][y])+" per acre. "+fmt(YIELD.v[c][y])+" x "+n+" = "+fmt(a)+".",p:"p. 34, Fig. 2-21"};},
+ function(){var c=rint(0,2);var a=Math.round((YIELD.v[c][4]-YIELD.v[c][0])*100)/100;var unit=c===2?"pounds":"bushels";
+  return {q:"Figure 2-21, Table #2: How many more "+unit+" per acre of "+YIELD.crops[c].split(" ")[0].toLowerCase()+" were produced in 1990 than in 1800?",a:a,u:unit,w:"1990: "+fmt(YIELD.v[c][4])+". 1800: "+fmt(YIELD.v[c][0])+". Difference = "+fmt(a)+".",p:"p. 34, Fig. 2-21"};},
+ function(){var d=rint(2,9);return {q:"The world population grows by about 220,000 people a day. How many people are added in "+d+" days?",a:220000*d,u:"people",w:"220,000 x "+d+" = "+fmt(220000*d)+".",p:"p. 32, Fig. 2-18"};},
+ function(){var m=rint(5,60);return {q:"The world population grows by about 150 people every minute. How many people are added during a "+m+"-minute class?",a:150*m,u:"people",w:"150 x "+m+" = "+fmt(150*m)+".",p:"p. 32, Fig. 2-18"};},
+ function(){var k=rint(3,60);return {q:"In 2011 one American farmer produced food and fiber for about 167 people. How many farmers would it take to supply a town of "+fmt(167*k)+" people?",a:k,u:"farmers",w:fmt(167*k)+" divided by 167 = "+k+".",p:"p. 44"};},
+ function(){var n=rint(20,150),d=pick([7,10,30]);return {q:"Plastic udder loops raised milk production by about 4 lb. per cow per day. How many extra pounds would a "+n+"-cow herd produce in "+d+" days?",a:4*n*d,u:"pounds",w:"4 lb. x "+n+" cows x "+d+" days = "+fmt(4*n*d)+".",p:"p. 42-43"};},
+ function(){var h=rint(2,40);return {q:"Engineered guayule yields up to 1,000 kg of rubber per hectare compared to 200 kg from native plants. How many MORE kilograms would "+h+" hectares produce?",a:800*h,u:"kg",w:"1,000 minus 200 = 800 kg more per hectare. 800 x "+h+" = "+fmt(800*h)+".",p:"p. 41"};},
+ function(){var l=rint(5,60);return {q:"Transgenic goats produce up to 4 g of monoclonal antibody in each liter of milk. What is the most antibody in "+l+" liters?",a:4*l,u:"grams",w:"4 g x "+l+" liters = "+(4*l)+" g.",p:"p. 42"};},
+ function(){var k=rint(2,12);return {q:"One modern combine operator can harvest as much grain in a day as 100 workers in the 1830s. "+k+" combine operators equal how many 1830s workers?",a:100*k,u:"workers",w:"100 x "+k+" = "+(100*k)+".",p:"p. 36"};}
+];
+
+/* ===== HALL 5: Research wing ===== */
+var RES=[
+ {q:"Which American scientist found more than 300 uses for the peanut?",a:"George Washington Carver",x:["Cyrus McCormick","Rachel Carson","Benjamin Holt"],w:"Carver found uses including food, livestock feed, cosmetics, wallboard, plastics, paints, and explosives.",p:"p. 39"},
+ {q:"The Chinese call this crop the \"yellow jewel.\"",a:"Soybean",x:["Corn","Rice","Garden peas"],w:"The Chinese grew soybeans about 3,000 years ago and call it the yellow jewel.",p:"p. 39"},
+ {q:"What is the world's most plentiful vegetable oil?",a:"Soy oil",x:["Peanut oil","Corn oil","Olive oil"],w:"Soy oil is extracted first, and what is left becomes protein-rich soybean meal for livestock.",p:"p. 39, Fig. 2-28"},
+ {q:"What is the protein-rich livestock feed left after oil is extracted from soybeans?",a:"Soybean meal",x:["Tofu","Silage","Tallow"],w:"The material left after extracting soy oil is processed into soybean meal.",p:"p. 39"},
+ {q:"Small families wanted a smaller turkey than the typical 30-lb. bird. What breed solved this?",a:"Beltsville Small White",x:["Broad Breasted Bronze","Katahdin","BelRus"],w:"The Beltsville Small White weighs 8 to 12 lb. at maturity, named after the Beltsville Agricultural Research Center in Maryland.",p:"p. 40, Fig. 2-29"},
+ {q:"Labor costs became too high to pick tiny wild berries for sale. What was the solution?",a:"High-quality, large-fruited cultivated blueberries",x:["Hybrid rice","Wild berry pesticides","Mechanical corn pickers"],w:"Breeders developed large-fruited blueberries from the wild, starting today's cultivated-blueberry industry.",p:"p. 40"},
+ {q:"How did scientists solve the problem of not knowing what was in feed and food?",a:"Detergent chemical methods to find the nutritional value of feedstuff",x:["Satellite photos of fields","Selective breeding of cattle","Taste tests by farmers"],w:"Detergent methods for testing feedstuff are now used worldwide in human and animal nutrition.",p:"p. 40"},
+ {q:"How are lab-made insect attractants used in integrated pest management?",a:"For mass trapping to survey insect populations",x:["As a spray that kills all insects","To make crops grow faster","To feed beneficial insects"],w:"Insects give off chemicals to attract mates. Lab copies lure insects to traps, bait, or sterility programs.",p:"p. 40-41, Fig. 2-30"},
+ {q:"How did Calgene make a tomato that resists rotting?",a:"Turned off the gene that causes softening and rot",x:["Crossed it with a potato","Sprayed it with wax","Grew it under lasers"],w:"The tomato lasts longer on the shelf, keeps its flavor, and did well in taste tests.",p:"p. 41"},
+ {q:"Which scrubby bush was engineered to produce a domestic supply of natural rubber?",a:"Guayule",x:["Sagebrush","Impatiens","Sugar beet"],w:"USDA scientists in Albany, California, raised guayule rubber yields from 200 to 1,000 kg per hectare.",p:"p. 41"},
+ {q:"Crispy vegetables, sweeter carrots, leaner meats, and high-protein milk are examples of...",a:"bioengineered designer foods",x:["Green Revolution crops","feedstuffs","biological attractants"],w:"Scientists changed the genetic structure of foods to create these products.",p:"p. 41"},
+ {q:"Transgenic goats were developed to produce what in their milk?",a:"Monoclonal antibodies, including an anticancer antibody",x:["Insulin for diabetics","Extra butterfat","Biodiesel"],w:"Goats make up to 4 g per liter, 10 to 100 times more than cell cultures.",p:"p. 41-42"},
+ {q:"Tallow, a low-value by-product trimmed from meat carcasses, can be turned into...",a:"Bio-diesel",x:["Soy oil","Plastic loops","Fertilizer"],w:"Fat is heated, purified, and mixed with methyl alcohol and a catalyst. It burns in an ordinary diesel engine.",p:"p. 42, Fig. 2-31"},
+ {q:"Mastitis is an infection of what?",a:"The milk-secreting glands",x:["The hooves","The lungs","The digestive tract"],w:"Mastitis infects the milk-secreting glands of cattle, goats, and other milk animals.",p:"p. 42"},
+ {q:"Abraded plastic loops inserted into cow udders reduced clinical mastitis by how much?",a:"75 percent",x:["15 percent","40 percent","14 percent"],w:"Fewer infections raised production nearly 4 lb. of milk per cow per day.",p:"p. 42-43"},
+ {q:"Human nutrition research shows benefits from...",a:"Less animal fat and more fat from vegetable sources",x:["More animal fat and less vegetable fat","Cutting out all fats","Eating only soybeans"],w:"This practice reduces high blood pressure and risk of heart attack.",p:"p. 43"},
+ {q:"How does the new synthetic fire ant control work?",a:"It raises the ratio of drone ants to worker ants until the colony dies",x:["It poisons the queen directly","It floods the mound","It attracts ladybird beetles"],w:"Fire ants infest more than 320 million acres in 13 states. Shifting the ratio weakens the colony.",p:"p. 43, Fig. 2-32"},
+ {q:"Plant breeders used a technique called ovuleculture to develop new kinds of which flower?",a:"Impatiens",x:["Petunias","Roses","Sunflowers"],w:"Explorers brought exotic germ plasm, and breeders made new hybrid impatiens.",p:"p. 43, Fig. 2-33"},
+ {q:"How do satellites and nitrogen gas lasers help corn and soybean growers?",a:"They detect nutrient deficiencies from wavelengths plants give off",x:["They kill weeds from space","They forecast rainfall","They count the number of plants"],w:"Wavelengths indicate the levels of nutrients like iron, nitrogen, and potassium.",p:"p. 44, Fig. 2-34"},
+ {q:"A new sugar beet hybrid with a high taproot-to-leaf ratio yields about how much more sugar per acre?",a:"15 percent",x:["40 percent","75 percent","4 percent"],w:"The hybrid yields about 15 percent more sugar per acre than previous varieties.",p:"p. 44, Fig. 2-35"},
+ {q:"What does the genetically engineered Roundup-tolerant sugar beet let farmers do?",a:"Control all the weeds in a field without hand labor",x:["Grow beets without water","Skip fertilizer","Harvest twice a year"],w:"Advocacy groups continue to fight the variety in court.",p:"p. 44"},
+ {q:"Hybrid rice developed by Chinese agronomists can yield up to how much more than traditional varieties?",a:"40 percent",x:["15 percent","75 percent","100 percent"],w:"With irrigation and fertilizer, world rice production rose from 240 million metric tons in the 1960s to over 650 million in 2007.",p:"p. 44"},
+ {q:"In the Green Revolution, countries became self-sufficient mainly by using...",a:"Improved plant varieties and proven management practices",x:["More farm workers","Imported food","Larger tractors"],w:"Higher-yielding, disease- and insect-resistant small grains were developed for developing countries.",p:"p. 40"},
+ {q:"What scientists developed from the 1930s Katahdin potato?",a:"The BelRus, a superior baking potato for the Northeast",x:["The Russet, for Idaho","Hybrid rice","The Colorado potato beetle"],w:"USDA research on the Katahdin produced the BelRus.",p:"p. 40"},
+ {q:"Why does selective breeding take so long compared to genetic engineering?",a:"Breeders must grow, test, and select over many generations",x:["It requires lasers","It only works on animals","It is illegal in most states"],w:"Genetic engineering puts specific genes directly into cells, so it is much faster.",p:"p. 42"},
+ {q:"Which two countries have become two of the biggest markets for U.S. farm products, and also competitors?",a:"Canada and Mexico",x:["China and Japan","Brazil and Argentina","England and France"],w:"A major share of U.S. production is consumed in foreign countries, and that trend is expected to grow.",p:"p. 44-45"}
+];
+
+/* ===== Game build ===== */
+var HALLS=[
+ {name:"Hall of Words",icon:"I",blurb:"Label the exhibits with the right key terms."},
+ {name:"Inventors' Gallery",icon:"II",blurb:"Match inventors to inventions and build a timeline exhibit."},
+ {name:"Living Environments Hall",icon:"III",blurb:"Answer visitors' questions about homes, water, climate, insects, and chemicals."},
+ {name:"Data Lab",icon:"IV",blurb:"Read population pyramids and run the farm numbers. Type your answers."},
+ {name:"Research Wing",icon:"V",blurb:"Explain which breakthrough solved each problem."}
+];
+
+function mcFrom(o,hall){return {type:"mc",hall:hall,q:o.q,a:o.a,opts:shuffle([o.a].concat(o.x)),w:o.w,p:o.p};}
+
+function buildGame(){
+ var items=[];
+ // Hall 1: 8 terms
+ shuffle(TERMS).slice(0,8).forEach(function(t){
+  var others=shuffle(TERMS.filter(function(z){return z.t!==t.t;})).slice(0,3);
+  if(Math.random()<0.6){
+   items.push({type:"mc",hall:0,q:"Which term matches this exhibit label: \""+pick(t.d)+"\"?",a:t.t,opts:shuffle([t.t].concat(others.map(function(z){return z.t;}))),w:"The term is "+t.t+".",p:t.p});
+  }else{
+   var a=pick(t.d);
+   items.push({type:"mc",hall:0,q:"Which exhibit label fits the term \""+t.t+"\"?",a:a,opts:shuffle([a].concat(others.map(function(z){return pick(z.d);}))),w:t.t+": "+t.d[0]+".",p:t.p});
+  }
+ });
+ // Hall 2: 3 who-made-what, 2 MC, 1 timeline
+ shuffle(INVENT).slice(0,3).forEach(function(v){
+  var others=shuffle(INVENT.filter(function(z){return z.who!==v.who;})).slice(0,3);
+  if(Math.random()<0.5){
+   items.push({type:"mc",hall:1,q:"Who should get credit on the plaque for the "+v.what+(v.yr?" ("+v.yr+")":"")+"?",a:v.who,opts:shuffle([v.who].concat(others.map(function(z){return z.who;}))),w:v.who+" invented the "+v.what+(v.yr?" in "+v.yr:"")+".",p:"p. 35-37"});
+  }else{
+   items.push({type:"mc",hall:1,q:"Which invention belongs in the "+v.who+" display?",a:v.what,opts:shuffle([v.what].concat(others.map(function(z){return z.what;}))),w:v.who+" invented the "+v.what+(v.yr?" in "+v.yr:"")+".",p:"p. 35-37"});
+  }
+ });
+ shuffle(INV_MC).slice(0,2).forEach(function(o){items.push(mcFrom(o,1));});
+ var tl=shuffle(TIMELINE).slice(0,5);
+ items.push({type:"order",hall:1,q:"Timeline exhibit: tap the events from EARLIEST to LATEST.",ev:tl,w:"",p:""});
+ // Hall 3: 7
+ shuffle(ENV).slice(0,7).forEach(function(o){items.push(mcFrom(o,2));});
+ // Hall 4: 3 pyramid MC + 4 math
+ shuffle(POP).slice(0,3).forEach(function(o){items.push(mcFrom(o,3));});
+ shuffle(MATH).slice(0,4).forEach(function(f){var m=f();m.type="num";m.hall=3;items.push(m);});
+ // Hall 5: 8
+ shuffle(RES).slice(0,8).forEach(function(o){items.push(mcFrom(o,4));});
+ return items;
+}
+
+/* ===== State ===== */
+var S=null;
+function show(id){["start","teacher","play","brk","end"].forEach(function(s){$(s).classList.toggle("hide",s!==id);});window.scrollTo(0,0);}
+
+function showBest(){var b=getBest();$("best").textContent=b?("Best score on this device: "+b.pct+"% ("+b.stars+" stars) by "+b.name):"";}
+
+$("startBtn").onclick=function(){
+ var f=$("fname").value.trim(),l=$("lname").value.trim(),p=$("period").value;
+ if(!f||!l){$("startErr").textContent="Please enter your first and last name.";return;}
+ if(!p){$("startErr").textContent="Please choose your class period.";return;}
+ $("startErr").textContent="";
+ S={name:f+" "+l,per:p,items:buildGame(),i:0,correct:0,visitors:0,t0:Date.now(),hallStats:[0,0,0,0,0].map(function(){return {c:0,n:0,miss:[]};}),lastHall:-1};
+ $("hudT").textContent=S.items.length;
+ next();
+};
+
+function next(){
+ if(S.i>=S.items.length){finish();return;}
+ var it=S.items[S.i];
+ if(it.hall!==S.lastHall){S.lastHall=it.hall;hallIntro(it.hall);return;}
+ render(it);
+}
+
+function hallIntro(h){
+ var H=HALLS[h];
+ var prev="";
+ if(h>0){var st=S.hallStats[h-1];prev="<p class='muted'>"+HALLS[h-1].name+": "+st.c+" of "+st.n+" correct.</p>";}
+ $("brkCard").innerHTML=prev+"<div class='hall'>Hall "+H.icon+"</div><h2>"+H.name+"</h2><p>"+H.blurb+"</p><button id='goHall'>Enter the hall</button>";
+ show("brk");
+ $("goHall").onclick=function(){render(S.items[S.i]);};
+}
+
+function hud(it){
+ $("hudHall").textContent="Hall "+HALLS[it.hall].icon+": "+HALLS[it.hall].name;
+ $("hudVis").textContent=S.visitors.toLocaleString("en-US");
+ $("hudN").textContent=S.i+1;
+ $("hudBar").style.width=(100*S.i/S.items.length)+"%";
+}
+
+function render(it){
+ show("play");hud(it);
+ var c=$("qCard");
+ var vis="<div class='visitor'>"+esc(pick(VISITORS))+" stops by...</div>";
+ if(it.type==="mc"){
+  c.innerHTML=vis+"<div class='q'>"+esc(it.q)+"</div><div class='opts' id='opts'></div><div class='fb' id='fb'></div>";
+  it.opts.forEach(function(o){
+   var b=document.createElement("button");b.className="opt";b.textContent=o;
+   b.onclick=function(){answerMC(it,o,b);};
+   $("opts").appendChild(b);
+  });
+ }else if(it.type==="num"){
+  c.innerHTML=vis+"<div class='q'>"+esc(it.q)+"</div><div class='row'><input id='numIn' inputmode='decimal' placeholder='Answer in "+esc(it.u)+"' autocomplete='off'><button id='numBtn' style='flex:0 0 auto'>Submit</button></div><div class='err' id='numErr'></div><div class='fb' id='fb'></div>";
+  $("numBtn").onclick=function(){answerNum(it);};
+  $("numIn").onkeydown=function(e){if(e.key==="Enter")answerNum(it);};
+ }else{
+  c.innerHTML="<div class='visitor'>The museum director needs a timeline wall...</div><div class='q'>"+esc(it.q)+"</div><div class='order-list' id='ol'></div><div class='row' style='margin-top:10px'><button class='ghost' id='olReset' style='flex:0 0 auto'>Start over</button><button id='olBtn' disabled>Lock in timeline</button></div><div class='fb' id='fb'></div>";
+  it.sel=[];
+  it.ev.forEach(function(e,k){
+   var b=document.createElement("button");b.className="ev";b.dataset.k=k;
+   b.innerHTML="<span class='num'></span><span>"+esc(e.e)+"</span><span class='yr'>"+esc(e.s)+"</span>";
+   b.onclick=function(){
+    if(it.done||it.sel.indexOf(k)>=0)return;
+    it.sel.push(k);b.classList.add("picked");b.querySelector(".num").textContent=it.sel.length;
+    $("olBtn").disabled=it.sel.length!==it.ev.length;
+   };
+   $("ol").appendChild(b);
+  });
+  $("olReset").onclick=function(){if(it.done)return;it.sel=[];Array.prototype.forEach.call(document.querySelectorAll("#ol .ev"),function(b){b.classList.remove("picked");b.querySelector(".num").textContent="";});$("olBtn").disabled=true;};
+  $("olBtn").onclick=function(){answerOrder(it);};
+ }
+}
+
+function score(it,ok,missLabel){
+ var st=S.hallStats[it.hall];st.n++;
+ if(ok){st.c++;S.correct++;S.visitors+=rint(180,320);}else{st.miss.push(missLabel);}
+ $("hudVis").textContent=S.visitors.toLocaleString("en-US");
+}
+function feedback(ok,text,page){
+ var fb=$("fb");fb.className="fb show "+(ok?"good":"bad");
+ fb.innerHTML="<b>"+(ok?pick(["Correct! The crowd grows.","Right on. Visitors are impressed.","Exactly. Great exhibit.","Correct. That plaque is perfect."]):pick(["Not quite.","Close, but not this time.","That one needs a new plaque."]))+"</b> "+esc(text)+(page?" <span class='pg'>("+esc(page)+")</span>":"")+"<div style='margin-top:10px'><button id='nextBtn'>"+(S.i+1>=S.items.length?"Close the museum":"Next")+"</button></div>";
+ $("nextBtn").onclick=function(){S.i++;next();};
+ $("nextBtn").focus();
+}
+function answerMC(it,o,btn){
+ var ok=o===it.a;
+ Array.prototype.forEach.call(document.querySelectorAll("#opts .opt"),function(b){b.disabled=true;if(b.textContent===it.a)b.classList.add("right");});
+ if(!ok)btn.classList.add("wrong");
+ score(it,ok,shortTopic(it));
+ feedback(ok,(ok?"":"Answer: "+it.a+". ")+it.w,it.p);
+}
+function answerNum(it){
+ var raw=$("numIn").value.replace(/[,\s]/g,"").replace(/[a-z]/gi,"");
+ if(raw===""||isNaN(Number(raw))){$("numErr").textContent="Type a number.";return;}
+ $("numErr").textContent="";
+ var v=Number(raw);var ok=Math.abs(v-it.a)<=Math.max(0.011,Math.abs(it.a)*0.0001);
+ $("numIn").disabled=true;$("numBtn").disabled=true;
+ score(it,ok,shortTopic(it));
+ feedback(ok,(ok?"":"Answer: "+fmt(it.a)+" "+it.u+". ")+it.w,it.p);
+}
+function answerOrder(it){
+ it.done=true;
+ var chosen=it.sel.map(function(k){return it.ev[k].y;});
+ var ok=true;for(var i=1;i<chosen.length;i++){if(chosen[i]<chosen[i-1])ok=false;}
+ $("ol").parentNode.classList.add("reveal");
+ $("olBtn").disabled=true;
+ var sorted=it.ev.slice().sort(function(a,b){return a.y-b.y;});
+ score(it,ok,"Timeline of inventions and events");
+ feedback(ok,"Correct order: "+sorted.map(function(e){return e.s+" "+e.e;}).join("; ")+".",sorted.map(function(e){return e.p;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(", "));
+}
+function shortTopic(it){var q=it.q||"";return (q.length>70?q.slice(0,67)+"...":q)+(it.p?" ("+it.p+")":"");}
+
+/* ===== Finish ===== */
+function pad(n){return (n<10?"0":"")+n;}
+function finish(){
+ var n=S.items.length,pct=Math.round(100*S.correct/n);
+ var mins=Math.max(1,Math.round((Date.now()-S.t0)/60000));
+ var d=new Date();var date=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+ var time=d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+ var stars=pct>=95?5:pct>=85?4:pct>=75?3:pct>=60?2:1;
+ var title=["Volunteer Docent","Assistant Curator","Exhibit Curator","Senior Curator","Museum Director"][stars-1];
+ var code=makeCode(S.name,S.per,pct,date,mins);
+ var b=getBest();if(!b||pct>b.pct){setBest({pct:pct,stars:stars,name:S.name});}
+ var rows=S.hallStats.map(function(st,h){
+  var rv=st.miss.length?st.miss.map(function(m){return "&bull; "+esc(m);}).join("<br>"):"<span class='muted'>Nothing to review</span>";
+  return "<tr><td><b>"+HALLS[h].name+"</b><br>"+st.c+" of "+st.n+"</td><td class='small'>"+rv+"</td></tr>";
+ }).join("");
+ $("certCard").innerHTML="<div class='cert'><div class='small muted'>North Paulding Agriculture &bull; Unit 2: Better Living through Agriscience</div>"+
+  "<h2 style='margin-top:.4em'>Certificate of Curatorship</h2><div>This certifies that</div><div class='big'>"+esc(S.name)+"</div>"+
+  "<div>Period "+esc(S.per)+" &bull; earned the title of <b>"+title+"</b></div>"+
+  "<div class='stars'>"+"&#9733;".repeat(stars)+"&#9734;".repeat(5-stars)+"</div>"+
+  "<div style='font-size:1.3rem'><b>"+pct+"%</b> ("+S.correct+" of "+n+" correct) &bull; "+S.visitors.toLocaleString("en-US")+" visitors</div>"+
+  "<div class='small muted'>"+mins+" minute"+(mins===1?"":"s")+" played &bull; "+date+" at "+time+"</div>"+
+  "<div style='margin-top:8px'>Completion code</div><div class='code'>"+code+"</div></div>"+
+  "<h3 style='margin-top:14px'>Hall-by-hall review</h3><table class='bd'><tr><th style='width:34%'>Hall</th><th>Review these</th></tr>"+rows+"</table>";
+ S.result={pct:pct,code:code,date:date,mins:mins};
+ show("end");
+}
+$("printBtn").onclick=function(){window.print();};
+$("againBtn").onclick=function(){showBest();show("start");};
+
+/* ===== Teacher ===== */
+$("teacherLink").onclick=function(){show("teacher");$("pinBox").classList.remove("hide");$("verBox").classList.add("hide");$("pin").value="";};
+$("teacherBack").onclick=function(){show("start");};
+$("pinBtn").onclick=function(){if($("pin").value===TEACHER_PIN){$("pinBox").classList.add("hide");$("verBox").classList.remove("hide");$("pinErr").textContent="";}else{$("pinErr").textContent="Wrong PIN.";}};
+$("verBtn").onclick=function(){
+ var exp=makeCode($("vName").value,$("vPer").value,$("vPct").value,$("vDate").value.trim(),$("vMin").value);
+ var got=$("vCode").value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+ var ok=got===exp.replace("-","");
+ $("verOut").innerHTML=ok?"<span style='color:var(--ok)'>MATCH. This certificate is genuine.</span>":"<span style='color:var(--bad)'>NO MATCH. Check the typing, or the certificate was changed.</span>";
+};
+showBest();
+</script>
+</body>
+</html>
