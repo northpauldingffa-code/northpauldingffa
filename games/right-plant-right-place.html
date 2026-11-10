@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Right Plant, Right Place</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+  :root{--forest:#1F3A2B;--forest2:#2B4D39;--paper:#F6F2E7;--ink:#1D2B22;--body:#43524A;--muted:#6B7A70;--gold:#E9B949;--good:#3E9B5A;--bad:#D9694A;}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--forest);color:var(--ink);font-family:'Nunito Sans',Arial,sans-serif}
+  h1,h2,h3{font-family:'Bitter',Georgia,serif}
+  button{font-family:inherit;cursor:pointer}
+  .app{display:grid;grid-template-rows:auto 1fr;height:100vh;min-height:560px}
+  header{display:flex;align-items:center;gap:20px;padding:10px 18px;color:var(--paper);flex-wrap:wrap}
+  header h1{margin:0;font-size:26px;color:var(--gold)}
+  .roundinfo{font-weight:700;color:#CFE0D2;font-size:15px}
+  .scores{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+  .score{background:var(--forest2);border:2px solid transparent;border-radius:12px;padding:5px 14px;font-weight:800;font-size:15px;display:flex;gap:10px;align-items:center}
+  .score.active{border-color:var(--gold)}
+  .score b{color:var(--gold);font-size:19px}
+  main{display:grid;grid-template-columns:1fr 410px;gap:14px;padding:0 14px 14px;min-height:0}
+  .mapwrap{position:relative;background:#BFD8A6;border-radius:18px;overflow:hidden;min-height:0;display:flex;flex-direction:column}
+  #plan{width:100%;flex:1;min-height:0;display:block}
+  .zone{fill:rgba(255,253,240,.55);stroke:#3D5A3A;stroke-width:2;stroke-dasharray:7 5;cursor:pointer;transition:fill .15s}
+  .zone:hover,.zone.hl{fill:rgba(233,185,73,.7)}
+  .zone.wrong{fill:rgba(217,105,74,.75)}
+  .zone.right{fill:rgba(62,155,90,.8);stroke:#1F5A33;stroke-dasharray:none}
+  .zone.also{fill:rgba(62,155,90,.45);stroke:#1F5A33}
+  .zlabel{font:700 15px 'Nunito Sans',Arial,sans-serif;fill:#1D2B22;paint-order:stroke;stroke:#F6F2E7;stroke-width:4px;stroke-linejoin:round;pointer-events:none;text-anchor:middle}
+  .nolabels .zlabel{display:none}
+  .fixed{pointer-events:none}
+  .flabel{font:800 16px 'Bitter',Georgia,serif;fill:#5C4A33;pointer-events:none;text-anchor:middle;letter-spacing:2px}
+  .slabel{font:700 13px 'Nunito Sans',Arial,sans-serif;fill:#4A4A4A;pointer-events:none}
+  #shade{display:none;pointer-events:none}
+  .showshade #shade{display:inline}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;padding:8px 8px 0}
+  .badge{background:rgba(31,58,43,.9);color:var(--paper);padding:5px 10px;border-radius:10px;font-weight:700;font-size:13px;display:flex;gap:8px;align-items:center}
+  .badge input{width:17px;height:17px}
+  .legend{display:none}
+  .showshade .legend{display:flex}
+  .sw{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid rgba(255,255,255,.5)}
+  .tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;padding:6px 10px;border-radius:8px;font-weight:700;font-size:14px;display:none;max-width:280px;line-height:1.35;z-index:5}
+  .tip span{display:block;font-weight:600;color:#D5E5D8;font-size:13px}
+  .panel{background:var(--paper);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;overflow:auto;min-height:0}
+  .tag{align-self:flex-start;font-weight:800;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#fff;padding:5px 12px;border-radius:999px}
+  .turn{font-size:14px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .panel h2{margin:0;font-size:30px;line-height:1.1}
+  .bot{font-style:italic;color:var(--muted);font-weight:600;margin-top:-6px}
+  .traits{display:flex;flex-direction:column;gap:6px}
+  .trait{background:#fff;border:1px solid #E2DCCB;border-radius:10px;padding:8px 12px;font-size:16px;color:var(--body)}
+  .trait b{color:var(--ink)}
+  .note{font-size:16px;line-height:1.45;color:var(--body);background:#EEF3E6;border-radius:10px;padding:10px 12px}
+  .note b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+  .worth{font-weight:800;color:var(--forest);font-size:15px}
+  .guesses{font-size:14px;color:var(--muted);font-weight:700}
+  .guesses span{color:var(--bad)}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+  .btn{border:none;border-radius:12px;padding:11px 17px;font-size:16px;font-weight:800;background:var(--forest);color:var(--paper)}
+  .btn.ghost{background:transparent;color:var(--forest);border:2px solid var(--forest)}
+  .btn.gold{background:var(--gold);color:var(--forest)}
+  .verdict{font-family:'Bitter',Georgia,serif;font-weight:800;font-size:21px}
+  .verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+  .why{background:var(--forest);color:#E6F0E8;border-radius:14px;padding:13px 15px;font-size:16px;line-height:1.45}
+  .why b{color:var(--gold);display:block;font-family:'Bitter',Georgia,serif;font-size:14px;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+  .spots{font-size:15px;color:var(--body);font-weight:700}
+  .toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--bad);color:#fff;font-weight:800;font-size:18px;padding:10px 22px;border-radius:16px;display:none;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:min(720px,92vw);text-align:center;line-height:1.35}
+  .overlay{position:fixed;inset:0;background:rgba(14,30,20,.92);display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
+  .card{background:var(--paper);border-radius:24px;padding:26px 30px;max-width:720px;width:100%;display:flex;flex-direction:column;gap:12px;max-height:100%;overflow:auto}
+  .card h1{margin:0;font-size:40px;color:var(--forest);line-height:1}
+  .card .sub{margin:0;font-size:16px;color:var(--body);line-height:1.45}
+  .units{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .units button{text-align:left;padding:9px 11px;border-radius:12px;border:2px solid #D6CFBC;background:#fff;color:var(--ink);font-weight:700;font-size:14px;line-height:1.25}
+  .units button b{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .units button.on{border-color:var(--forest);background:#E2EBDB;box-shadow:0 0 0 3px rgba(31,58,43,.15)}
+  .row2{display:flex;gap:16px;flex-wrap:wrap}
+  .row2>div{flex:1;min-width:240px}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1;padding:8px;border-radius:10px;border:2px solid var(--forest);background:#fff;font-weight:800;font-size:16px;color:var(--forest)}
+  .seg button.on{background:var(--forest);color:var(--paper)}
+  .names{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .names input,.period{padding:9px 11px;border-radius:10px;border:2px solid #D6CFBC;font-size:15px;font-family:inherit;font-weight:700;width:100%}
+  label.chk{display:flex;gap:10px;align-items:center;font-weight:700;color:var(--body);font-size:15px}
+  .how{font-size:14px;color:var(--body);line-height:1.45;background:#fff;border-radius:12px;padding:9px 13px;margin:0}
+  .mini{font-size:13px;font-weight:800;color:var(--forest);background:none;border:none;text-decoration:underline;padding:0}
+  .cert{background:var(--paper);border-radius:24px;padding:24px 30px;max-width:1180px;width:100%;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px;border:6px double var(--forest)}
+  .certtop{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .certtop h1{margin:0;font-size:34px;color:var(--forest);line-height:1.05}
+  .meta{font-size:15px;color:var(--body);font-weight:700;margin-top:6px;line-height:1.5}
+  .code{margin-left:auto;text-align:right;font-weight:800;color:var(--muted);font-size:13px}
+  .code b{display:block;font-family:'Bitter',Georgia,serif;font-size:24px;color:var(--forest);letter-spacing:2px}
+  .teamrow{display:flex;gap:12px;flex-wrap:wrap}
+  .teamcard{background:var(--forest);color:var(--paper);border-radius:14px;padding:9px 16px;font-weight:800;font-size:17px}
+  .teamcard b{color:var(--gold);font-size:22px;margin-left:8px}
+  .teamcard.win{outline:3px solid var(--gold)}
+  .stats{font-size:15px;font-weight:700;color:var(--body)}
+  .loggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .logitem{background:#fff;border:1px solid #E2DCCB;border-left:6px solid var(--good);border-radius:8px;padding:5px 8px;font-size:13px;line-height:1.3;color:var(--body)}
+  .logitem.miss{border-left-color:var(--bad)}
+  .logitem b{color:var(--ink);font-size:14px}
+  .loggrid.compact{grid-template-columns:repeat(6,1fr);gap:4px}
+  .compact .logitem{font-size:12px;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .certfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .certfoot p{margin:0;font-size:15px;font-weight:700;color:var(--forest)}
+  .final li{font-size:21px;font-weight:800;margin:6px 0}
+  @media (max-width:980px){main{grid-template-columns:1fr;grid-template-rows:60vh auto}.units{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Right Plant, Right Place</h1>
+    <div class="roundinfo" id="roundinfo"></div>
+    <div class="scores" id="scores"></div>
+  </header>
+  <main>
+    <div class="mapwrap" id="mapwrap">
+      <div class="badges">
+        <div class="badge">⬆ North · ☀ Sun crosses the front (south) side</div>
+        <label class="badge"><input type="checkbox" id="shadetoggle"> Show sun and shade</label>
+        <label class="badge"><input type="checkbox" id="labeltoggle" checked> Show area names</label>
+        <div class="badge legend"><span class="sw" style="background:#BFD8A6"></span>Full sun <span class="sw" style="background:#7E9A73"></span>Part shade <span class="sw" style="background:#4C6249"></span>Deep shade</div>
+      </div>
+      <svg id="plan" viewBox="0 0 1200 820" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-label="Bird's-eye landscape plan of a house and yard. Click a planting area.">
+        <defs>
+          <pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="14" stroke="#8A9A6E" stroke-width="3"/></pattern>
+          <pattern id="brick" width="24" height="12" patternUnits="userSpaceOnUse"><rect width="24" height="12" fill="#E3D6BE"/><path d="M0 12H24M12 0V6M0 6H24M0 0V6" stroke="#CBB995" stroke-width="1.5" fill="none"/></pattern>
+          <radialGradient id="canopy"><stop offset="0" stop-color="#4E7A3E" stop-opacity=".55"/><stop offset="1" stop-color="#4E7A3E" stop-opacity=".25"/></radialGradient>
+        </defs>
+        <!-- ground -->
+        <rect x="0" y="0" width="1200" height="820" fill="#BFD8A6"/>
+        <rect x="0" y="770" width="1200" height="50" fill="#8E949B" class="fixed"/>
+        <line x1="0" y1="796" x2="1200" y2="796" stroke="#F2E5A0" stroke-width="3" stroke-dasharray="30 20" class="fixed"/>
+        <text x="80" y="801" class="slabel" fill="#fff" style="fill:#fff">STREET</text>
+        <rect x="0" y="752" width="1200" height="18" fill="#E4E1D8" class="fixed"/>
+        <rect x="24" y="12" width="1152" height="738" fill="none" stroke="#8C7A62" stroke-width="2" stroke-dasharray="3 6" class="fixed"/>
+        <!-- power line -->
+        <g class="fixed">
+          <line x1="24" y1="738" x2="1176" y2="738" stroke="#333" stroke-width="2" stroke-dasharray="14 8"/>
+          <circle cx="110" cy="738" r="6" fill="#6B5A44"/><circle cx="430" cy="738" r="6" fill="#6B5A44"/><circle cx="750" cy="738" r="6" fill="#6B5A44"/><circle cx="1070" cy="738" r="6" fill="#6B5A44"/>
+          <text x="440" y="730" class="slabel">Overhead power line</text>
+        </g>
+        <!-- old oak canopy (existing) drawn under zones -->
+        <circle cx="175" cy="175" r="150" fill="url(#canopy)" class="fixed"/>
+        <!-- house, garage, drive, walk -->
+        <g class="fixed">
+          <rect x="380" y="262" width="480" height="210" fill="#D9CBB5" stroke="#8C7A62" stroke-width="3"/>
+          <line x1="380" y1="367" x2="860" y2="367" stroke="#B8A68B" stroke-width="2"/>
+          <text x="620" y="360" class="flabel">HOUSE</text>
+          <rect x="860" y="292" width="140" height="180" fill="#CDBFA8" stroke="#8C7A62" stroke-width="3"/>
+          <text x="930" y="388" class="flabel">GARAGE</text>
+          <rect x="880" y="472" width="110" height="280" fill="#D5D2CB"/>
+          <text x="935" y="640" class="slabel" text-anchor="middle" style="text-anchor:middle">DRIVEWAY</text>
+          <rect x="585" y="472" width="30" height="280" fill="#E4E1D8"/>
+          <rect x="589" y="466" width="22" height="10" fill="#7A5230"/>
+          <text x="600" y="458" class="slabel" style="text-anchor:middle" text-anchor="middle">front door</text>
+          <rect x="740" y="380" width="130" height="1" fill="none"/>
+          <!-- downspout and drainage -->
+          <circle cx="852" cy="268" r="6" fill="#6C757D"/>
+          <path d="M852 262 C 850 220, 845 190, 830 160" stroke="#4A90B8" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+          <text x="870" y="240" class="slabel">downspout</text>
+        </g>
+        <!-- ZONES -->
+        <g id="zones">
+          <path class="zone" data-z="woodland" d="M175 55 a120 120 0 1 0 0.1 0 Z"/>
+          <rect class="zone" data-z="vine" x="330" y="16" width="520" height="24" rx="4"/>
+          <rect class="zone" data-z="vine" x="586" y="40" width="28" height="44" rx="3"/>
+          <rect class="zone" data-z="patio" x="540" y="168" width="180" height="94" rx="4" style="fill:url(#brick);fill-opacity:1"/>
+          <rect class="zone" data-z="north" x="380" y="224" width="156" height="36" rx="6"/>
+          <rect class="zone" data-z="north" x="724" y="224" width="136" height="36" rx="6"/>
+          <ellipse class="zone" data-z="wet" cx="800" cy="112" rx="78" ry="46"/>
+          <rect class="zone" data-z="meadow" x="930" y="50" width="220" height="165" rx="40"/>
+          <rect class="zone" data-z="border" x="314" y="270" width="60" height="200" rx="10"/>
+          <rect class="zone" data-z="screen" x="1100" y="240" width="58" height="470" rx="18"/>
+          <rect class="zone" data-z="slope" x="998" y="482" width="92" height="236" rx="10" style="fill:url(#hatch);fill-opacity:1"/>
+          <rect class="zone" data-z="foundation" x="380" y="476" width="200" height="46" rx="8"/>
+          <rect class="zone" data-z="foundation" x="620" y="476" width="240" height="46" rx="8"/>
+          <rect class="zone" data-z="entry" x="545" y="540" width="36" height="180" rx="8"/>
+          <rect class="zone" data-z="entry" x="619" y="540" width="36" height="180" rx="8"/>
+          <circle class="zone" data-z="specimen" cx="235" cy="625" r="58"/>
+          <circle class="zone" data-z="shade_tree" cx="775" cy="625" r="64"/>
+        </g>
+        <!-- fixed details over zones -->
+        <g class="fixed">
+          <circle cx="175" cy="175" r="16" fill="#6B4F35"/>
+          <text x="175" y="210" class="slabel" style="text-anchor:middle" text-anchor="middle">old oak</text>
+          <line x1="560" y1="180" x2="700" y2="180" stroke="#9C8566" stroke-width="3"/><line x1="560" y1="250" x2="700" y2="250" stroke="#9C8566" stroke-width="3"/>
+        </g>
+        <!-- shade overlay -->
+        <g id="shade">
+          <circle cx="175" cy="175" r="150" fill="#10241A" opacity=".38"/>
+          <rect x="372" y="150" width="496" height="112" fill="#10241A" opacity=".22"/>
+          <rect x="372" y="215" width="496" height="47" fill="#10241A" opacity=".3"/>
+          <rect x="860" y="230" width="140" height="62" fill="#10241A" opacity=".22"/>
+          <rect x="540" y="168" width="180" height="94" fill="#F2C14E" opacity=".25"/>
+          <text x="630" y="152" class="slabel" style="text-anchor:middle;fill:#fff;font-size:14px" text-anchor="middle">House shades the north side all day</text>
+          <text x="600" y="545" class="slabel" style="text-anchor:middle;fill:#7A4B00;font-size:14px" text-anchor="middle"></text>
+        </g>
+        <!-- labels -->
+        <g id="labels">
+          <text class="zlabel" x="175" y="120">Woodland bed under the oak</text>
+          <text class="zlabel" x="470" y="58">Fence &amp; arbor</text>
+          <text class="zlabel" x="630" y="205">Patio pots</text>
+          <text class="zlabel" x="630" y="225">&amp; baskets</text>
+          <text class="zlabel" x="458" y="247">North side bed</text>
+          <text class="zlabel" x="792" y="247">North side bed</text>
+          <text class="zlabel" x="800" y="108">Wet low spot</text>
+          <text class="zlabel" x="800" y="126">(rain garden)</text>
+          <text class="zlabel" x="1040" y="128">Pollinator</text>
+          <text class="zlabel" x="1040" y="146">meadow</text>
+          <text class="zlabel" x="344" y="365" transform="rotate(-90 344 365)">West border (hot sun)</text>
+          <text class="zlabel" x="1129" y="475" transform="rotate(-90 1129 475)">Privacy screen (property line)</text>
+          <text class="zlabel" x="1044" y="604" transform="rotate(-90 1044 604)">Sunny slope</text>
+          <text class="zlabel" x="480" y="504">Foundation bed</text>
+          <text class="zlabel" x="740" y="504">Foundation bed</text>
+          <text class="zlabel" x="563" y="630" transform="rotate(-90 563 630)">Entry beds</text>
+          <text class="zlabel" x="637" y="630" transform="rotate(-90 637 630)">Entry beds</text>
+          <text class="zlabel" x="235" y="620">Small tree spot</text>
+          <text class="zlabel" x="235" y="638">(under power line)</text>
+          <text class="zlabel" x="775" y="620">Shade tree spot</text>
+          <text class="zlabel" x="775" y="638">(open lawn)</text>
+        </g>
+        <!-- compass -->
+        <g class="fixed" transform="translate(1110,60)">
+          <circle r="0" />
+        </g>
+      </svg>
+      <div class="tip" id="tip"></div>
+    </div>
+    <aside class="panel" id="panel"></aside>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<div class="overlay" id="done" style="display:none"><div class="cert" id="cert"></div></div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <h1>Right Plant, Right Place</h1>
+    <p class="sub">You’re the landscape designer. A plant card comes up. Click the spot on the plan where it belongs. Check its sun needs, its mature size, and how it’s used.</p>
+    <div><div class="turn" style="margin-bottom:6px">Choose the units to review <button class="mini" id="allunits">Select all</button></div><div class="units" id="units"></div></div>
+    <div class="row2">
+      <div><div class="turn" style="margin-bottom:6px">How many plants?</div><div class="seg" id="roundseg"><button data-n="8">8</button><button data-n="12" class="on">12</button><button data-n="20">20</button><button data-n="999">All</button></div></div>
+      <div><div class="turn" style="margin-bottom:6px">How many teams?</div><div class="seg" id="teamseg"><button data-n="1">1</button><button data-n="2" class="on">2</button><button data-n="3">3</button><button data-n="4">4</button></div></div>
+    </div>
+    <div class="turn">Team or student names</div>
+    <div class="names" id="names"></div>
+    <input id="period" class="period" maxlength="30" placeholder="Class period (optional), e.g. 3rd Period Horticulture">
+    <label class="chk"><input type="checkbox" id="shuffle" checked> Shuffle the plants</label>
+    <p class="how"><b>Scoring:</b> Right on the first try = 3 points, second try = 2, third try = 1. A wrong spot tells you why it doesn’t fit. Many plants work in more than one spot, and any good spot counts.</p>
+    <button class="btn gold" id="go" style="font-size:21px;padding:14px">Start designing</button>
+  </div>
+</div>
+
+<script>
+/* [unit, common, botanical, light, size, type, height, note, zones, why, flags]
+   light: S sun, SP sun to part shade, P part shade, PS part shade to shade, Sh shade, A sun or shade
+   size: 0 vine, 1 low (under 1.5 ft), 2 medium (to about 4 ft), 3 large shrub, 4 small tree, 5 large tree
+   flags: v = vine, w = handles wet soil */
+const PLANT_ROWS = [
+ // ---------- Unit 25: Annuals ----------
+ ["25","Impatiens","Impatiens","Sh",1,"Annual","6\" to 18\"","Does best in a shaded area. Good for edging and hanging baskets.",["north","woodland","patio"],"Impatiens is one of the few annuals that blooms well in shade.",""],
+ ["25","Petunia","Petunia","S",1,"Annual","6\" to 18\"","The most widely used annual: edging, beds, and hanging baskets.",["entry","foundation","patio","border"],"Petunias need full sun and work almost anywhere you want summer color.",""],
+ ["25","Floss flower","Ageratum","S",1,"Annual","6\" to 12\"","Compact edging plant. Needs full sun.",["entry","foundation","border"],"Low, compact, and sun-loving, ageratum is made for edging the front of a sunny bed.",""],
+ ["25","Sweet alyssum","Lobularia","S",1,"Annual","4\" to 6\"","Edging, window boxes, and hanging baskets. Blooms all summer.",["entry","patio","foundation"],"At 4 to 6 inches, sweet alyssum spills over the edges of beds and containers.",""],
+ ["25","Coleus","Coleus","SP",2,"Annual grown for foliage","12\" to 24\"","Full to partial sun. Grown for its colorful leaves.",["patio","woodland","entry","foundation"],"Coleus gets its color from its leaves, so it brightens part-shade spots where many flowers struggle.",""],
+ ["25","Cosmos","Cosmos","S",3,"Annual","4 to 6 ft","Tall. Keep near the back of beds.",["meadow","border"],"At 4 to 6 feet, cosmos belongs at the back of a sunny bed or in a meadow, not up front.",""],
+ ["25","Zinnia","Zinnia","S",2,"Annual","8\" to 36\"","Excellent summer color and cut flowers.",["border","meadow","entry","foundation"],"Zinnias love heat and full sun and make great cut flowers.",""],
+ ["25","Mexican sunflower","Tithonia","S",2,"Annual","24\" to 30\"","Drought resistant. Attracts butterflies.",["meadow","border"],"Drought resistant and loved by butterflies, it fits a sunny pollinator planting.",""],
+ ["25","Morning glory","Ipomoea","S",0,"Annual vine","5 to 10 ft","Vine. Grown on a trellis.",["vine"],"Morning glory is a twining vine. It needs a fence or trellis to climb.","v"],
+ ["25","Hyacinth bean","Dolichos lablab","S",0,"Annual vine","climbs 10 ft or more","Purple flowers and pods. Vine texture.",["vine"],"Hyacinth bean is a fast annual vine, so put it where it can climb.","v"],
+ ["25","Black-eyed Susan vine","Thunbergia","S",0,"Annual vine","2 to 5 ft","Climbing vine or hanging basket.",["vine","patio"],"It can climb a trellis or trail down from a hanging basket.","v"],
+ ["25","Lantana","Lantana","S",2,"Annual","12\" to 36\"","Hanging baskets, beds, and pots. Can be trained as a patio topiary.",["patio","border","entry","foundation"],"Lantana loves heat and works in beds or pots. The book even suggests it as a patio topiary.",""],
+ ["25","Pansy","Viola","SP",1,"Annual (cool season)","6\" to 8\"","Edging, beds, and baskets. In Georgia, planted in fall for winter color.",["entry","foundation","patio"],"Pansies are low edging plants that give color through the cool season.",""],
+ ["25","Marigold","Tagetes","S",1,"Annual","6\" to 48\"","Wide range of varieties. Few insect problems.",["entry","border","foundation","patio"],"Marigolds are tough, sun-loving annuals for beds, edging, and pots.",""],
+
+ // ---------- Unit 26: Perennials, grasses, and vines ----------
+ ["26","Daylily","Hemerocallis","SP",2,"Herbaceous perennial","12\" to 48\"","Borders and among shrubbery. Plant several varieties for a longer bloom season.",["border","slope","foundation"],"Daylilies are tough enough to mass on a slope and showy enough for a border.",""],
+ ["26","Purple coneflower","Echinacea purpurea","S",2,"Herbaceous perennial","30\" to 36\"","Attracts butterflies. Deer resistant.",["border","meadow"],"A sun-loving native that butterflies love, it’s a pollinator garden favorite.",""],
+ ["26","Black-eyed Susan","Rudbeckia fulgida","SP",2,"Herbaceous perennial","30\" to 36\"","Attracts butterflies. Easy to grow. Deer and rabbit resistant.",["border","meadow"],"Easy, tough, and loved by butterflies, it fits a sunny border or meadow.",""],
+ ["26","Gayfeather","Liatris","S",2,"Herbaceous perennial","24\" to 60\"","Tall spikes that bloom summer to early fall.",["border","meadow"],"Its tall purple spikes need full sun and draw in pollinators.",""],
+ ["26","Columbine","Aquilegia","SP",2,"Perennial (best grown as a biennial)","30\" to 36\"","Sun or partial shade. Blooms late spring.",["woodland","border"],"Columbine handles partial shade, so it works at the edge of a woodland bed or in a border.",""],
+ ["26","Foxglove","Digitalis purpurea","SP",3,"Biennial","4 to 5 ft","Sun or partial shade. Tall spikes for the back of the border.",["woodland","border"],"Tall and happy in part shade, foxglove fits the back of a border or a woodland edge.",""],
+ ["26","Showy sedum","Sedum spectabile","S",1,"Herbaceous perennial","4\" to 15\"","Ground cover with fall interest. Handles dry spots.",["slope","border","entry"],"Sedum stores water in its leaves, so it thrives on a hot, dry slope.",""],
+ ["26","Moss phlox","Phlox subulata","S",1,"Herbaceous perennial","4\" to 5\"","Spring bloom. Drought resistant. Forms a mat.",["slope","entry","border"],"This low, drought-resistant mat is perfect for a sunny bank or the front edge of a bed.",""],
+ ["26","Rose mallow","Hibiscus moscheutos","SP",3,"Herbaceous perennial","3 to 8 ft","Huge flowers July to September.",["wet","border"],"Rose mallow is native to marshes, so it thrives in a wet spot and gets big enough for the back of a border.","w"],
+ ["26","Cardinal flower","Lobelia cardinalis","SP",2,"Native wildflower","2 to 5 ft","Wet soil. Red flowers July to September.",["wet"],"Cardinal flower is listed for wet soil, and hummingbirds love its red blooms.","w"],
+ ["26","Joe Pye weed","Eupatorium maculatum","S",3,"Native wildflower","4 to 6 ft","Wet soil and full sun. Pink summer flowers.",["wet","meadow"],"Joe Pye weed likes wet soil and full sun, and pollinators swarm it.","w"],
+ ["26","Blue flag iris","Iris versicolor","SP",2,"Native wildflower","2 to 3 ft","Wet soil. Blue flowers June to July.",["wet"],"Blue flag iris grows naturally at the water’s edge, so it’s made for a wet low spot.","w"],
+ ["26","Butterflyweed","Asclepias tuberosa","S",2,"Native wildflower","2 to 3 ft","Dry soil and full sun. Orange flowers all summer.",["meadow","border"],"This milkweed loves dry, sunny spots and feeds monarch caterpillars.",""],
+ ["26","Giant miscanthus","Miscanthus floridulus","S",3,"Ornamental grass","12 to 15 ft","Accent, screen, or windbreak. Effective in fall and winter.",["screen"],"At 12 to 15 feet tall, this grass is listed for screens and windbreaks.",""],
+ ["26","Dwarf fountain grass","Pennisetum","S",2,"Ornamental grass","about 3 ft","Accent plant with excellent fall color.",["border","meadow"],"Most ornamental grasses want hot, sunny, well-drained spots, and they make great accents.",""],
+ ["26","Blue fescue","Festuca glauca","S",1,"Ornamental grass","10\" to 12\"","Blue-gray foliage. Used on borders and banks.",["slope","entry","border"],"Blue fescue stays low and is listed for borders and banks.",""],
+ ["26","Clematis","Clematis hybrida","S",0,"Vine","climbs 6 to 12 ft","Train on a trellis, fence, or porch post. Flowers like sun; roots like cool shade.",["vine"],"Clematis climbs with tendrils and must be trained on a fence, trellis, or post.","v"],
+ ["26","Wisteria","Wisteria sinensis","S",0,"Vine","climbs 25 ft or more","Fragrant blue-violet flowers in spring. Climbs by twining.",["vine"],"Wisteria is a heavy twining vine that needs a sturdy arbor. Keep it pruned so it doesn’t take over.","v"],
+ ["26","Boston ivy","Parthenocissus tricuspidata","A",0,"Vine","climbs 30 ft or more","Very rapid grower. Does very well on walls.",["vine"],"Boston ivy clings with holdfasts and covers walls and fences fast.","v"],
+
+ // ---------- Unit 27: Narrowleaf evergreens ----------
+ ["27","Eastern arborvitae","Thuja occidentalis","S",4,"Narrowleaf evergreen (scalelike)","20 to 30 ft","Dense, upright, scalelike foliage.",["screen"],"Dense, narrow, and evergreen, arborvitae makes a classic privacy screen.",""],
+ ["27","Eastern red cedar","Juniperus virginiana","S",4,"Narrowleaf evergreen (scalelike)","30 to 40 ft","Native. Tough in heat, drought, and poor soil. Berries feed birds.",["screen"],"This tough native evergreen makes a year-round screen that also feeds wildlife.",""],
+ ["27","White pine","Pinus strobus","S",5,"Narrowleaf evergreen (5 needles)","50 to 80 ft","Soft needles in bundles of five.",["screen","shade_tree"],"A fast, big pine, it works as a tall screen or as a large tree with room to grow.",""],
+ ["27","Loblolly pine","Pinus taeda","S",5,"Narrowleaf evergreen (3 needles)","60 to 90 ft","The South’s main timber pine. Needles in bundles of three.",["shade_tree","screen"],"Loblolly grows tall and fast, so it needs open space well away from the house.",""],
+ ["27","Hemlock","Tsuga canadensis","P",4,"Narrowleaf evergreen (single needles)","40 to 70 ft","One of the few conifers that tolerates shade.",["woodland","screen"],"Hemlock is a conifer that tolerates shade and likes cool, moist woodland conditions.",""],
+ ["27","Deodar cedar","Cedrus deodara","S",5,"Narrowleaf evergreen","40 to 70 ft","Graceful, drooping branches. Needs lots of room.",["shade_tree"],"Deodar cedar is a big specimen tree that needs an open lawn to spread out.",""],
+ ["27","Bald cypress","Taxodium distichum","S",5,"Deciduous conifer","50 to 70 ft","Drops its needles in fall. Grows naturally in swamps.",["wet","shade_tree"],"Bald cypress grows in swamps, so a wet spot is no problem. It also works as a big lawn tree.","w"],
+ ["27","Dawn redwood","Metasequoia glyptostroboides","S",5,"Deciduous conifer","70 to 100 ft","Drops its needles in fall. Fast growing and tolerates wet soil.",["shade_tree","wet"],"This fast, huge deciduous conifer needs open space and handles moist soil.","w"],
+ ["27","Cryptomeria","Cryptomeria japonica","S",4,"Narrowleaf evergreen","40 to 60 ft","Fast growing and pyramid shaped.",["screen","shade_tree"],"Fast and pyramid shaped, cryptomeria is a popular screen tree.",""],
+ ["27","Dwarf hinoki false-cypress","Chamaecyparis obtusa","SP",3,"Narrowleaf evergreen (scalelike)","dwarf forms 4 to 6 ft","Slow-growing dwarf forms with rich green sprays.",["foundation","screen"],"Dwarf hinoki cultivars stay compact, so they work in a foundation bed.",""],
+
+ // ---------- Unit 28: Broadleaf evergreens ----------
+ ["28","Azalea","Rhododendron spp.","P",3,"Broadleaf evergreen shrub","3 to 6 ft","Needs acid soil and filtered shade.",["woodland","north"],"Azaleas like filtered shade and acid soil, like under tall pines and oaks or on the shady side of a house.",""],
+ ["28","Rhododendron","Rhododendron","PS",3,"Broadleaf evergreen shrub","6 to 10 ft","Needs acid soil and protection from hot afternoon sun.",["north","woodland"],"Rhododendrons scorch in hot sun. They do best in shade with acid soil.",""],
+ ["28","Japanese camellia","Camellia japonica","PS",3,"Broadleaf evergreen shrub","6 to 12 ft","Blooms in winter. Prefers part shade.",["north","woodland"],"Japanese camellias bloom in winter and do best in part shade.",""],
+ ["28","Sasanqua camellia","Camellia sasanqua","SP",3,"Broadleaf evergreen shrub","6 to 10 ft","Blooms in fall. Takes more sun than Japanese camellia. Makes a good hedge.",["screen","foundation","woodland"],"Sasanquas handle more sun and make a flowering hedge or foundation plant.",""],
+ ["28","Boxwood","Buxus sempervirens","SP",2,"Broadleaf evergreen shrub","2 to 4 ft when sheared","Small leaves. Takes shearing. Used for formal hedges and edging.",["foundation","entry"],"Boxwood takes shearing, so it’s the classic formal edging or low hedge by the house.",""],
+ ["28","Japanese holly","Ilex crenata","SP",2,"Broadleaf evergreen shrub","3 to 6 ft","Small leaves and dense growth.",["foundation","entry"],"Compact and dense, Japanese holly is a go-to foundation shrub.",""],
+ ["28","American holly","Ilex opaca","SP",4,"Broadleaf evergreen tree","40 to 50 ft","Native. Red berries on female plants.",["screen","woodland"],"This native holly grows into a tree. It’s too big for beside the house but great as a screen or at the woodland edge.",""],
+ ["28","Southern magnolia","Magnolia grandiflora","S",5,"Broadleaf evergreen tree","60 to 80 ft","Huge, fragrant white flowers. Big leaves drop all year.",["shade_tree","screen"],"Southern magnolia gets huge. Give it open space away from the house and walks.",""],
+ ["28","Sweet bay magnolia","Magnolia virginiana","SP",4,"Small semi-evergreen tree","10 to 20 ft","Native. Tolerates wet soil. Fragrant flowers.",["wet","specimen","woodland"],"Sweet bay is native to swamps, so it handles wet soil, and it stays small enough for a specimen.","w"],
+ ["28","Nandina","Nandina domestica","A",2,"Broadleaf evergreen shrub","2 to 6 ft","Red berries and fall color. Grows in sun or shade.",["foundation","north","woodland"],"Nandina grows in sun or shade, so it fits foundation beds on any side of the house.",""],
+ ["28","Firethorn","Pyracantha","S",3,"Broadleaf evergreen shrub","6 to 12 ft","Thorny with orange-red berries. Can be trained flat on a wall or fence.",["vine","screen"],"Firethorn can be trained flat against a fence (espalier), and its thorns make a tough barrier hedge.",""],
+ ["28","Glossy privet","Ligustrum lucidum","S",4,"Broadleaf evergreen","up to 20 ft","Fast hedge or screen.",["screen"],"Privet is a fast screen plant. Keep it trimmed so it doesn’t spread seed into nearby woods.",""],
+ ["28","Andromeda (pieris)","Pieris japonica","P",3,"Broadleaf evergreen shrub","4 to 8 ft","Acid soil and part shade. Drooping white spring flowers.",["woodland","north"],"Like azaleas, pieris wants acid soil and protection from hot sun.",""],
+
+ // ---------- Unit 29: Deciduous trees ----------
+ ["29","Flowering dogwood","Cornus florida","SP",4,"Small deciduous tree","20 to 30 ft","Native understory tree. Spring flowers and red fall color.",["specimen","woodland"],"Dogwoods grow naturally under big trees and are small enough for a front-yard specimen.",""],
+ ["29","Redbud","Cercis canadensis","SP",4,"Small deciduous tree","20 to 30 ft","Native. Pink-purple flowers in early spring.",["specimen","woodland"],"Redbud stays small, so it’s safe near the power line, and it handles a woodland edge.",""],
+ ["29","Japanese maple","Acer palmatum","SP",4,"Small deciduous tree","15 to 25 ft","Fine-textured leaves. Appreciates afternoon shade.",["specimen","woodland"],"A small, showy specimen tree that appreciates some afternoon shade.",""],
+ ["29","Kwanzan cherry","Prunus serrulata","S",4,"Small deciduous tree","25 to 30 ft","Double pink spring flowers.",["specimen"],"A small flowering tree that’s safe under a power line and makes a great front-yard focal point.",""],
+ ["29","Japanese flowering crabapple","Malus floribunda","S",4,"Small deciduous tree","15 to 25 ft","Spring flowers and small fruit.",["specimen"],"Crabapples stay small and bloom heavily, a classic front-yard specimen.",""],
+ ["29","Saucer magnolia","Magnolia soulangeana","S",4,"Small deciduous tree","20 to 25 ft","Big pink-white flowers before the leaves.",["specimen"],"Its big early flowers make it a showpiece, and it stays small enough for the front yard.",""],
+ ["29","White oak","Quercus alba","S",5,"Large deciduous tree","60 to 100 ft","Long-lived. Acorns feed wildlife.",["shade_tree"],"White oak is a giant that needs open space well away from the house and power lines.",""],
+ ["29","Pin oak","Quercus palustris","S",5,"Large deciduous tree","60 to 70 ft","Tolerates wet soil.",["shade_tree","wet"],"Pin oak handles wet soil, so it can go in the low spot or the open lawn.","w"],
+ ["29","Tulip tree","Liriodendron tulipifera","S",5,"Large deciduous tree","70 to 90 ft","Fast growing with tulip-shaped flowers.",["shade_tree"],"A fast, tall shade tree that needs plenty of open space.",""],
+ ["29","Red Sunset maple","Acer rubrum 'Red Sunset'","S",5,"Medium to large deciduous tree","40 to 50 ft","Brilliant red fall color. Red maples tolerate wet soil.",["shade_tree","wet"],"Red maples handle wet soil and make an excellent shade tree with great fall color.","w"],
+ ["29","Black gum","Nyssa sylvatica","S",5,"Large deciduous tree","30 to 50 ft","Brilliant fall color. Tolerates wet soil.",["shade_tree","wet"],"Black gum tolerates wet soil and has some of the best fall color of any tree.","w"],
+ ["29","Lombardy poplar","Populus nigra 'Italica'","S",5,"Large deciduous tree","40 to 60 ft","Very narrow, columnar shape. Fast but short-lived.",["screen"],"Its narrow, columnar shape makes a fast windbreak or screen, though it’s short-lived.",""],
+ ["29","Sweet gum","Liquidambar styraciflua","S",5,"Large deciduous tree","60 to 75 ft","Star-shaped leaves and spiky gumballs.",["shade_tree"],"Sweet gum needs room. Keep it away from walks, where the gumballs turn into ankle-rollers.",""],
+
+ // ---------- Unit 30: Deciduous shrubs ----------
+ ["30","Oakleaf hydrangea","Hydrangea quercifolia","SP",3,"Deciduous shrub","3 to 6 ft","Native. Gives a natural look when used to edge wooded lots.",["woodland"],"The book says it looks natural edging a wooded lot, so it fits the woodland bed.",""],
+ ["30","Abelia","Abelia grandiflora","S",3,"Deciduous shrub","3 to 6 ft","Flowers all summer. Good border or foundation plant.",["foundation","border"],"The book lists abelia as a good border or foundation plant.",""],
+ ["30","Butterfly bush","Buddleia davidii","S",3,"Deciduous shrub","3 to 6 ft","Fast-growing and arching with summer flower spikes. Cut back each spring.",["border","meadow"],"Butterfly bush wants full sun and attracts pollinators to a border or meadow.",""],
+ ["30","Border forsythia","Forsythia intermedia","S",3,"Deciduous shrub","6 to 10 ft","Yellow spring flowers. Good in borders. Fast growing.",["screen","border"],"Fast and tall, forsythia works in a shrub border or as an informal screen.",""],
+ ["30","Vanhoutte spirea","Spiraea vanhouttei","SP",3,"Deciduous shrub","3 to 6 ft","Good hedge. Should not be sheared; prune at the base.",["screen","border"],"The book calls it a good hedge, so it works along a property line.",""],
+ ["30","Anthony Waterer spirea","Spiraea bumalda","S",2,"Deciduous shrub","under 3 ft","Compact and bushy. Pink blooms all summer.",["foundation","entry","border"],"Staying under 3 feet, it won’t cover windows, which makes it great near the house.",""],
+ ["30","Winterberry","Ilex verticillata","S",3,"Deciduous shrub","6 to 10 ft","Showy red fruit in winter. Grows well in swamps.",["wet"],"Winterberry grows well in swamps, so it’s perfect for a wet low spot.","w"],
+ ["30","Arrowwood viburnum","Viburnum dentatum","SP",3,"Deciduous shrub","6 to 10 ft","Wet to damp woods. Excellent wildlife food.",["wet","woodland","screen"],"Arrowwood is listed for wet to damp woods and feeds wildlife.","w"],
+ ["30","Bottlebrush buckeye","Aesculus parviflora","P",3,"Deciduous shrub","6 to 10 ft","Semishade. White flower spikes in July.",["woodland"],"It’s listed for semishade, so it fits under the edge of the big oak.",""],
+ ["30","Cotoneaster","Cotoneaster horizontalis","S",1,"Deciduous shrub","under 3 ft","Low, spreading branches. Southern slopes and rock gardens.",["slope"],"The book lists cotoneaster for southern slopes, and its low branches spread across a bank.",""],
+ ["30","Fothergilla","Fothergilla","SP",3,"Deciduous shrub","3 to 6 ft","Fragrant white spring flowers and stunning fall color.",["border","woodland","foundation"],"Fothergilla fits a shrub border and handles some shade.",""],
+ ["30","Flame azalea","Rhododendron calendulaceum","P",3,"Deciduous shrub","3 to 6 ft","Native. Acid soil. Yellow to red flowers in late May.",["woodland"],"This native azalea likes acid soil and the dappled light of a woodland.",""],
+ ["30","Red leaf Japanese barberry","Berberis thunbergii 'Atropurpurea'","S",2,"Deciduous shrub","3 to 6 ft","Red all summer. Specimen or small hedge.",["foundation","entry","border"],"Its red leaves make an accent or low hedge in a sunny bed.",""],
+ ["30","Mock orange","Philadelphus","S",3,"Deciduous shrub","6 to 10 ft","Fragrant white June flowers.",["screen","border"],"Tall and fragrant, mock orange fits a shrub border or screen.",""],
+
+ // ---------- Unit 31: Ground covers ----------
+ ["31","Japanese spurge (pachysandra)","Pachysandra terminalis","Sh",1,"Ground cover","6\" to 12\"","Shade. Excellent with evergreens.",["north","woodland"],"Pachysandra needs shade and makes a dark green carpet under trees or on the shady side of a house.",""],
+ ["31","Plantain lily (hosta)","Hosta","Sh",1,"Ground cover / perennial","12\" to 24\"","Shade. Dies back in winter.",["north","woodland"],"Hostas are shade plants. Hot sun scorches their leaves.",""],
+ ["31","Blue rug juniper","Juniperus horizontalis 'Wiltonii'","S",1,"Ground cover","4\" to 6\"","Full sun. Spreading evergreen.",["slope"],"Blue rug spreads flat in full sun, a classic ground cover for a sunny bank.",""],
+ ["31","Bar Harbor juniper","Juniperus horizontalis 'Bar Harbor'","S",1,"Ground cover","about 12\"","Full sun evergreen.",["slope"],"Junipers are full-sun evergreens that hold a slope in place.",""],
+ ["31","Creeping mahonia","Mahonia repens","S",1,"Ground cover","about 10\"","Leathery, spiny leaves like holly.",["slope"],"Tough and spiny, creeping mahonia covers a sunny slope.",""],
+ ["31","Stonecrop","Sedum","S",1,"Ground cover","2\" to 6\"","Full sun. Good for dry areas.",["slope","entry"],"Sedum thrives in hot, dry spots like a sunny slope.",""],
+ ["31","Sweet woodruff","Galium odoratum","Sh",1,"Ground cover","6\" to 8\"","Shade. Scented leaves.",["north","woodland"],"Sweet woodruff is a shade ground cover with leaves that smell good when brushed.",""],
+ ["31","Partridgeberry","Mitchella repens","Sh",1,"Ground cover","about 2\"","Tolerates dense shade. Slow growing.",["north","woodland"],"Partridgeberry tolerates dense shade, so it can handle the darkest spot in the yard.",""],
+ ["31","Golden star","Chrysogonum virginianum","SP",1,"Ground cover (Georgia native)","4\" to 8\"","Bright yellow flowers May to June.",["entry","border","slope"],"This Georgia native is a low, bright edging plant.",""],
+ ["31","Germander","Teucrium","S",1,"Ground cover","10\" to 12\"","Used in knot gardens.",["entry"],"Germander is the book’s knot garden plant, made for neat, formal edging by the entry.",""],
+ ["31","Periwinkle","Vinca minor","PS",1,"Ground cover","4\" to 6\"","Evergreen with blue spring flowers. Shade.",["woodland","north"],"Periwinkle is an evergreen ground cover for shady spots under trees.",""],
+ ["31","Bugleweed","Ajuga reptans","A",1,"Ground cover","4\" to 6\"","Sun or shade. Blue spring flowers.",["woodland","north","slope"],"Bugleweed grows in sun or shade, so it can cover a slope or a shady bed.",""],
+ ["31","Sarcococca","Sarcococca","Sh",2,"Ground cover / low shrub","12\" to 18\"","Fragrant white flowers in mid-spring. Light to heavy shade.",["north"],"Sarcococca is listed for light to heavy shade, a fragrant choice for the shady side of the house.",""],
+
+ // ---------- Unit 32: Bulbs ----------
+ ["32","Daffodil","Narcissus","SP",1,"Fall-planted bulb","12\" to 18\"","Plant about 10\" deep in fall. Naturalizes.",["woodland","meadow","entry","border"],"Daffodils bloom before the trees leaf out, so they light up a woodland bed and come back for years.",""],
+ ["32","Tulip","Tulipa","S",1,"Fall-planted bulb","12\" to 24\"","Formal spring beds. Plant about 9 1/2\" deep.",["entry","foundation","border"],"Tulips make a bold, formal spring display near the house and entry.",""],
+ ["32","Crocus","Crocus","SP",1,"Fall-planted corm","3\" to 6\"","One of the first spring bloomers. Plant about 4 1/2\" deep.",["entry","woodland"],"Low and early, crocus belongs at the very front of a bed or tucked under bare trees.",""],
+ ["32","Hyacinth","Hyacinthus","S",1,"Fall-planted bulb","8\" to 12\"","Very fragrant. Plant about 6 1/2\" deep.",["entry","foundation","patio"],"Plant fragrant hyacinths where people walk by, like the entry or patio pots.",""],
+ ["32","Grape hyacinth","Muscari","SP",1,"Fall-planted bulb","6\" to 8\"","Small blue spikes for edging.",["entry","woodland"],"Small and low, grape hyacinth edges a walk or naturalizes under trees.",""],
+ ["32","Snowdrop","Galanthus","P",1,"Fall-planted bulb","4\" to 6\"","Blooms in late winter.",["woodland"],"Snowdrops bloom in late winter under bare trees, perfect for a woodland bed.",""],
+ ["32","Dahlia","Dahlia","S",2,"Spring-planted tuber","2 to 5 ft","Big summer flowers. Great for cutting. Plant about 8\" deep.",["border"],"Dahlias need full sun and belong in a border where you can cut them.",""],
+ ["32","Gladiolus","Gladiolus","S",2,"Spring-planted corm","3 to 5 ft","Tall spikes for cut flowers. May need staking.",["border","meadow"],"Tall gladiolus spikes go in a sunny border, often grown for cutting.",""],
+ ["32","Tuberous begonia","Begonia tuberhybrida","PS",1,"Spring-planted tuber","8\" to 12\"","Shade. Showy blooms for pots and baskets.",["patio","north","woodland"],"Tuberous begonias want shade and shine in patio pots and baskets.",""],
+ ["32","Calla lily","Zantedeschia","SP",2,"Spring-planted rhizome","2 to 3 ft","Likes moist soil.",["patio","wet","border"],"Callas like moist soil and look great in containers.","w"],
+ ["32","Lily","Lilium","S",2,"Fall-planted bulb","2 to 6 ft","Tall summer flowers for borders.",["border"],"Lilies give tall summer color in a sunny border.",""]
+];
+
+const UNITS = {
+ "25":{name:"Annual Bedding Plants",color:"#C2557A"},
+ "26":{name:"Perennials, Grasses & Vines",color:"#7A5BA6"},
+ "27":{name:"Narrowleaf Evergreens",color:"#2F6E5A"},
+ "28":{name:"Broadleaf Evergreens",color:"#3E7D3A"},
+ "29":{name:"Deciduous Trees",color:"#B07A2A"},
+ "30":{name:"Deciduous Shrubs",color:"#A0522D"},
+ "31":{name:"Ground Covers",color:"#4A7FA8"},
+ "32":{name:"Bulbs",color:"#B8892A"}
+};
+const ZONES = {
+ foundation:{name:"Front foundation bed",cond:"Full sun on the south face of the house. Plants here sit under windows.",light:"S",max:3},
+ entry:{name:"Entry beds along the front walk",cond:"Full sun, right where visitors walk. Low plants and seasonal color.",light:"S",max:2},
+ specimen:{name:"Small tree spot (front yard)",cond:"Full sun, under the overhead power line. Needs a small tree.",light:"S",min:4,max:4},
+ shade_tree:{name:"Shade tree spot (open lawn)",cond:"Full sun with lots of open space, away from the house and lines.",light:"S",min:5,max:5},
+ north:{name:"North side of the house",cond:"Deep shade all day. The house blocks the sun.",light:"Sh",max:3},
+ woodland:{name:"Woodland bed under the old oak",cond:"Dappled shade under a big tree. Natural, informal look.",light:"P",max:4},
+ border:{name:"West border",cond:"Hot afternoon sun along the west wall. A mixed flower border.",light:"S",max:3},
+ meadow:{name:"Pollinator meadow",cond:"Full sun, back corner, low maintenance and informal.",light:"S",max:3},
+ vine:{name:"Fence and arbor",cond:"A fence and arbor along the back property line. Something to climb.",light:"S",vine:true},
+ screen:{name:"Privacy screen",cond:"Full sun along the east property line. Block the neighbor’s view.",light:"S",min:3,max:5},
+ wet:{name:"Wet low spot (rain garden)",cond:"Where the downspout drains. Soggy after every rain.",light:"S",wet:true,max:5},
+ slope:{name:"Sunny slope by the driveway",cond:"Hot, dry bank that’s hard to mow. Needs low plants to stop erosion.",light:"S",max:2},
+ patio:{name:"Patio pots and hanging baskets",cond:"Morning sun, afternoon shade on the north-side patio. Containers.",light:"P",max:2}
+};
+const LIGHT = {S:"Full sun",SP:"Sun to part shade",P:"Part shade",PS:"Part shade to shade",Sh:"Shade",A:"Sun or shade"};
+const PLANTS = PLANT_ROWS.map(r=>({unit:r[0],name:r[1],bot:r[2],light:r[3],size:r[4],type:r[5],ht:r[6],note:r[7],zones:r[8],why:r[9],vine:r[10].includes("v"),wetok:r[10].includes("w")}));
+
+const S={teams:[],cur:0,idx:0,order:[],tries:0,wrong:[],over:false,log:[]};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
+function plant(){ return PLANTS[S.order[S.idx]]; }
+
+/* ---------- why a spot doesn't fit ---------- */
+function tooShady(pl,zl){ if(pl==="A") return false; if(pl==="S") return zl!=="S"; if(pl==="SP") return zl==="Sh"; return false; }
+function tooSunny(pl,zl){ return (pl==="P"||pl==="PS"||pl==="Sh") && zl==="S"; }
+function missReason(p,zid){
+  const z=ZONES[zid], n=p.name;
+  if(p.vine && !z.vine) return `${n} is a vine. It needs a fence or arbor to climb.`;
+  if(z.vine && !p.vine) return `The fence and arbor are for climbing vines. ${n} isn’t a vine.`;
+  if(z.wet && !p.wetok) return `That spot stays soggy after rain. ${n} needs better drainage.`;
+  if(tooShady(p.light,z.light)) return `Too shady there. ${n} needs ${LIGHT[p.light].toLowerCase()}.`;
+  if(tooSunny(p.light,z.light)) return `Too much hot sun there. ${n} wants ${LIGHT[p.light].toLowerCase()}.`;
+  if(z.max && p.size>z.max){
+    if(zid==="specimen") return `${n} gets too big for the spot under the power line (${p.ht}).`;
+    return `${n} gets too big for that spot (${p.ht}).`;
+  }
+  if(z.min && p.size<z.min){
+    if(zid==="specimen"||zid==="shade_tree") return `That spot calls for a tree. ${n} is too small to fill it.`;
+    return `${n} isn’t tall enough to block the neighbor’s view.`;
+  }
+  return `Close, but there’s a better spot for ${n}. Look at its size and how the book says it’s used.`;
+}
+
+/* ---------- map interaction ---------- */
+const zonesEls=[...document.querySelectorAll('.zone')];
+function zoneEls(id){ return zonesEls.filter(z=>z.dataset.z===id); }
+zonesEls.forEach(el=>{
+  const id=el.dataset.z;
+  el.addEventListener('mouseenter',()=>zoneEls(id).forEach(z=>z.classList.add('hl')));
+  el.addEventListener('mouseleave',()=>{ zoneEls(id).forEach(z=>z.classList.remove('hl')); $('tip').style.display='none'; });
+  el.addEventListener('mousemove',e=>{ const r=$('mapwrap').getBoundingClientRect(); const t=$('tip'); t.innerHTML=`${esc(ZONES[id].name)}<span>${esc(ZONES[id].cond)}</span>`; t.style.display='block';
+    let x=e.clientX-r.left+16, y=e.clientY-r.top+16; if(x>r.width-290) x=e.clientX-r.left-296; if(y>r.height-90) y=e.clientY-r.top-80; t.style.left=x+'px'; t.style.top=y+'px'; });
+  el.addEventListener('click',()=>guess(id));
+});
+$('shadetoggle').onchange=e=>$('mapwrap').classList.toggle('showshade',e.target.checked);
+$('labeltoggle').onchange=e=>$('mapwrap').classList.toggle('nolabels',!e.target.checked);
+function paintZones(){
+  zonesEls.forEach(z=>z.classList.remove('wrong','right','also'));
+  S.wrong.forEach(id=>zoneEls(id).forEach(z=>z.classList.add('wrong')));
+}
+
+/* ---------- game ---------- */
+function points(){ return 3-S.tries; }
+function renderScores(){
+  $('scores').innerHTML=S.teams.map((t,i)=>`<div class="score ${i===S.cur&&!S.finished?'active':''}">${esc(t.name)} <b>${t.score}</b></div>`).join('');
+  $('roundinfo').textContent=S.finished?'Final scores':`Plant ${S.idx+1} of ${S.order.length}`;
+}
+function traitsHTML(p){
+  return `<div class="traits"><div class="trait">☀ <b>Light:</b> ${LIGHT[p.light]}</div><div class="trait">📏 <b>Mature size:</b> ${esc(p.ht)}</div><div class="trait">🌱 <b>Type:</b> ${esc(p.type)}</div></div>`;
+}
+function renderPanel(){
+  const p=plant(), u=UNITS[p.unit], team=S.teams[S.cur];
+  let h=`<div class="tag" style="background:${u.color}">Unit ${p.unit} · ${u.name}</div>`;
+  h+=`<div class="turn">${S.teams.length>1?esc(team.name)+'’s turn':'Your turn'} · where does this go?</div>`;
+  h+=`<h2>${esc(p.name)}</h2><div class="bot">${esc(p.bot)}</div>`+traitsHTML(p);
+  h+=`<div class="note"><b>From the book</b>${esc(p.note)}</div>`;
+  h+=`<div class="worth">Try ${S.tries+1} of 3 · worth ${points()} point${points()>1?'s':''}</div>`;
+  if(S.wrong.length) h+=`<div class="guesses">Not here: <span>${S.wrong.map(z=>ZONES[z].name).join(', ')}</span></div>`;
+  h+=`<div class="btnrow"><button class="btn ghost" id="giveup">Show the answer</button></div>`;
+  $('panel').innerHTML=h; $('giveup').onclick=()=>reveal(false);
+}
+function toast(msg,color){ const t=$('toast'); t.textContent=msg; t.style.background=color||'var(--bad)'; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',3200); }
+function guess(id){
+  if(S.over||S.finished||!S.order.length) return;
+  const p=plant();
+  if(p.zones.includes(id)){ S.teams[S.cur].score+=points(); reveal(true,id); return; }
+  if(S.wrong.includes(id)){ toast(`Already tried the ${ZONES[id].name.toLowerCase()}.`,'#6B7A70'); return; }
+  S.wrong.push(id); paintZones(); toast(missReason(p,id));
+  if(S.tries>=2){ reveal(false); return; }
+  S.tries++; renderPanel();
+}
+function reveal(ok,id){
+  S.over=true; const p=plant(), u=UNITS[p.unit];
+  S.log.push({name:p.name,unit:p.unit,team:S.cur,ok:!!ok,pts:ok?3-S.tries:0,spot:ok?ZONES[id].name:ZONES[p.zones[0]].name});
+  paintZones();
+  p.zones.forEach(z=>zoneEls(z).forEach(el=>el.classList.add(z===id?'right':'also')));
+  if(id) zoneEls(id).forEach(el=>{el.classList.remove('also');el.classList.add('right');});
+  const team=S.teams[S.cur];
+  let h=`<div class="tag" style="background:${u.color}">Unit ${p.unit} · ${u.name}</div>`;
+  h+= ok ? `<div class="verdict ok">Good spot! ${S.teams.length>1?esc(team.name)+' earns':'You earn'} ${3-S.tries} point${3-S.tries>1?'s':''}.</div>`
+         : `<div class="verdict no">Here’s where it belongs.</div>`;
+  h+=`<h2>${esc(p.name)}</h2><div class="bot">${esc(p.bot)}</div>`+traitsHTML(p);
+  h+=`<div class="why"><b>Why it fits</b>${esc(p.why)}</div>`;
+  h+=`<div class="spots">✅ Good spots: ${p.zones.map(z=>ZONES[z].name).join('; ')}</div>`;
+  h+=`<div class="btnrow"><button class="btn gold" id="next">${S.idx+1<S.order.length?'Next plant →':'See final scores'}</button></div>`;
+  $('panel').innerHTML=h; $('next').onclick=nextRound; renderScores();
+}
+function nextRound(){
+  if(S.idx+1>=S.order.length) return finish();
+  S.idx++; S.cur=(S.cur+1)%S.teams.length; S.tries=0; S.wrong=[]; S.over=false;
+  paintZones(); renderScores(); renderPanel();
+}
+function finish(){
+  S.finished=true; S.endedAt=new Date(); renderScores(); paintZones();
+  const sorted=[...S.teams].sort((a,b)=>b.score-a.score); const top=sorted[0].score; const winners=sorted.filter(t=>t.score===top).map(t=>t.name);
+  let h=`<div class="tag" style="background:var(--gold);color:var(--forest)">🏆 Job complete</div><h2>${S.teams.length>1?(winners.length>1?'It’s a tie!':esc(winners[0])+' wins!'):'Nice design work!'}</h2><ol class="final">`;
+  sorted.forEach(t=>h+=`<li>${esc(t.name)}: ${t.score} points</li>`); h+=`</ol>`;
+  h+=`<div class="btnrow"><button class="btn gold" id="showcert">Show completion record</button><button class="btn ghost" id="again">Play again</button></div>`;
+  $('panel').innerHTML=h; $('again').onclick=()=>{ $('done').style.display='none'; $('start').style.display='flex'; }; $('showcert').onclick=showCert; showCert();
+}
+function checkCode(str){ let h=2166136261; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0).toString(36).toUpperCase().slice(0,6).padStart(6,'0'); }
+function showCert(){
+  const when=S.endedAt||new Date();
+  const stamp=when.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'})+' at '+when.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+  const found=S.log.filter(l=>l.ok).length, max=S.order.length*3, top=Math.max(...S.teams.map(t=>t.score));
+  const code=checkCode(S.teams.map(t=>t.name+t.score).join('|')+S.unitText+when.getTime()+S.log.map(l=>l.ok?1:0).join(''));
+  let h=`<div class="certtop"><div><h1>🌿 Right Plant, Right Place: Completion Record</h1>`;
+  h+=`<div class="meta">${esc(S.unitText)} · ${S.order.length} plants · ${esc(stamp)}${S.period?' · '+esc(S.period):''}</div></div>`;
+  h+=`<div class="code">Check code<b>${code}</b></div></div>`;
+  h+=`<div class="teamrow">${S.teams.map(t=>`<div class="teamcard ${S.teams.length>1&&t.score===top?'win':''}">${esc(t.name)}<b>${S.teams.length>1?t.score+' pts':t.score+' / '+max+' pts'}</b></div>`).join('')}</div>`;
+  h+=`<div class="stats">Plants placed correctly: ${found} of ${S.order.length} · Total points: ${S.teams.reduce((a,t)=>a+t.score,0)} of ${max} possible</div>`;
+  const compact=S.log.length>32;
+  h+= compact ? `<div class="loggrid compact">${S.log.map((l,i)=>`<div class="logitem ${l.ok?'':'miss'}">${l.ok?'✓':'✗'} ${esc(l.name)}</div>`).join('')}</div>`
+    : `<div class="loggrid">${S.log.map((l,i)=>`<div class="logitem ${l.ok?'':'miss'}">${i+1}. <b>${esc(l.name)}</b> (U${l.unit})<br>${esc(l.spot)} · ${l.ok?'✓ +'+l.pts:'✗ missed'}${S.teams.length>1?' · '+esc(S.teams[l.team].name):''}</div>`).join('')}</div>`;
+  h+=`<div class="certfoot"><p>📸 Take a screenshot of this screen and submit it for your assignment.</p><div style="flex:1"></div><button class="btn ghost" id="closecert">Close</button></div>`;
+  $('cert').innerHTML=h; $('done').style.display='flex'; $('closecert').onclick=()=>{ $('done').style.display='none'; };
+}
+
+/* ---------- start screen ---------- */
+let nTeams=2, nRounds=12; const picked=new Set(["25"]);
+function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function renderUnits(){
+  $('units').innerHTML=Object.entries(UNITS).map(([k,u])=>`<button data-u="${k}" class="${picked.has(k)?'on':''}"><b>Unit ${k}</b>${u.name} (${PLANTS.filter(p=>p.unit===k).length})</button>`).join('');
+  $('units').querySelectorAll('button').forEach(b=>b.onclick=()=>{ const k=b.dataset.u; if(picked.has(k)){ if(picked.size>1) picked.delete(k); } else picked.add(k); renderUnits(); });
+}
+renderUnits();
+$('allunits').onclick=()=>{ Object.keys(UNITS).forEach(k=>picked.add(k)); renderUnits(); };
+function renderNames(){ const old=[...document.querySelectorAll('#names input')].map(i=>i.value);
+  $('names').innerHTML=Array.from({length:nTeams},(_,i)=>`<input value="${esc(old[i]||(nTeams===1?'Player':'Team '+(i+1)))}" maxlength="20" aria-label="Team ${i+1} name">`).join(''); }
+$('teamseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ nTeams=+b.dataset.n; $('teamseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); renderNames(); });
+$('roundseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ nRounds=+b.dataset.n; $('roundseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); });
+renderNames();
+$('go').onclick=()=>{
+  S.teams=[...document.querySelectorAll('#names input')].map((i,k)=>({name:i.value.trim()||('Team '+(k+1)),score:0}));
+  S.order=PLANTS.map((p,i)=>picked.has(p.unit)?i:-1).filter(i=>i>=0);
+  if($('shuffle').checked||picked.size>1) shuffleArr(S.order);
+  S.order=S.order.slice(0,nRounds);
+  const us=[...picked].sort(); S.unitText=us.length===Object.keys(UNITS).length?'All units (25 to 32)':(us.length===1?`Unit ${us[0]}: ${UNITS[us[0]].name}`:'Units '+us.join(', '));
+  Object.assign(S,{cur:0,idx:0,tries:0,wrong:[],over:false,finished:false,log:[],endedAt:null,period:$('period').value.trim()});
+  $('start').style.display='none'; $('done').style.display='none'; paintZones(); renderScores(); renderPanel();
+};
+$('panel').innerHTML='<p class="note">Choose your units and teams to begin.</p>';
+</script>
+</body>
+</html>
