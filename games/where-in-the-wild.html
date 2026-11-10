@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where in the Wild?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+  :root{
+    --forest:#12301F; --forest2:#1B4029; --paper:#F5F1E6; --ink:#1D2B22; --body:#43524A; --muted:#6B7A70;
+    --gold:#E9B949; --ocean:#BFD9DD; --land:#EFE8D6; --stroke:#8FA195; --good:#3E9B5A; --bad:#D9694A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--forest);color:var(--ink);font-family:'Nunito Sans',Arial,sans-serif}
+  h1,h2,h3,.slab{font-family:'Bitter',Georgia,serif}
+  button{font-family:inherit;cursor:pointer}
+  .app{display:grid;grid-template-rows:auto 1fr;height:100vh;min-height:560px}
+  header{display:flex;align-items:center;gap:20px;padding:12px 20px;color:var(--paper);flex-wrap:wrap}
+  header h1{margin:0;font-size:28px;color:var(--gold);letter-spacing:.5px}
+  .roundinfo{font-weight:700;color:#CFE0D2;font-size:16px}
+  .scores{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+  .score{background:var(--forest2);border:2px solid transparent;border-radius:12px;padding:6px 14px;font-weight:800;font-size:16px;display:flex;gap:10px;align-items:center}
+  .score.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(233,185,73,.25)}
+  .score b{color:var(--gold);font-size:20px}
+  main{display:grid;grid-template-columns:1fr 430px;gap:16px;padding:0 16px 16px;min-height:0}
+  .mapwrap{position:relative;background:var(--ocean);border-radius:18px;overflow:hidden;min-height:0}
+  #map{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+  #map.dragging{cursor:grabbing}
+  #map path{fill:var(--land);stroke:var(--stroke);stroke-width:.7px;vector-effect:non-scaling-stroke;transition:fill .15s}
+  #map path:hover{fill:#F6DA92}
+  #map path.wrong{fill:var(--bad)}
+  #map path.right{fill:var(--good)}
+  #map path.answer{fill:var(--good);animation:pulse 1.2s ease-in-out 3}
+  @keyframes pulse{50%{fill:#8FD3A2}}
+  .mapctl{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px}
+  .mapctl button{width:42px;height:42px;border-radius:10px;border:none;background:rgba(18,48,31,.85);color:var(--paper);font-size:22px;font-weight:800}
+  .hovername{position:absolute;left:12px;bottom:12px;background:rgba(18,48,31,.85);color:var(--paper);padding:6px 12px;border-radius:10px;font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center}
+  .hovername input{width:18px;height:18px}
+  .tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;padding:4px 10px;border-radius:8px;font-weight:700;font-size:14px;display:none;white-space:nowrap}
+  .maploading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--forest)}
+  .mc{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}
+  .mc p{margin:0;font-weight:700;color:var(--forest);max-width:520px}
+  .mcgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:min(560px,100%)}
+  .mcgrid button{padding:18px;border-radius:14px;border:3px solid var(--forest);background:var(--paper);font-size:22px;font-weight:800;color:var(--forest)}
+  .mcgrid button.wrong{background:var(--bad);color:#fff;border-color:var(--bad)}
+  .mcgrid button.right{background:var(--good);color:#fff;border-color:var(--good)}
+  .panel{background:var(--paper);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;overflow:auto;min-height:0}
+  .tag{align-self:flex-start;font-weight:800;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:#fff;padding:5px 12px;border-radius:999px}
+  .turn{font-size:15px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .panel h2{margin:0;font-size:30px;line-height:1.15}
+  .worth{font-weight:800;color:var(--forest);background:#E5ECDF;border-radius:10px;padding:8px 12px;font-size:16px}
+  .clues{display:flex;flex-direction:column;gap:10px}
+  .clue{background:#fff;border:2px solid #E2DCCB;border-left:8px solid var(--gold);border-radius:12px;padding:12px 14px;font-size:18px;line-height:1.4;color:var(--body);animation:in .3s ease}
+  .clue .n{display:block;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+  .clue.locked{border-left-color:#CFC8B5;color:#A49D8A;font-style:italic}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}}
+  .guesses{font-size:15px;color:var(--muted);font-weight:700}
+  .guesses span{color:var(--bad)}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+  .btn{border:none;border-radius:12px;padding:12px 18px;font-size:17px;font-weight:800;background:var(--forest);color:var(--paper)}
+  .btn.ghost{background:transparent;color:var(--forest);border:2px solid var(--forest)}
+  .btn.gold{background:var(--gold);color:var(--forest)}
+  .reveal h2{font-size:34px}
+  .verdict{font-family:'Bitter',Georgia,serif;font-weight:800;font-size:22px}
+  .verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+  .native{font-weight:800;color:var(--forest);font-size:17px}
+  .fact{font-size:18px;line-height:1.45;color:var(--body);margin:0}
+  .why{background:var(--forest);color:#E6F0E8;border-radius:14px;padding:14px 16px;font-size:17px;line-height:1.45}
+  .why b{color:var(--gold);display:block;font-family:'Bitter',Georgia,serif;font-size:16px;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+  .toast{position:fixed;left:50%;top:84px;transform:translateX(-50%);background:var(--bad);color:#fff;font-weight:800;font-size:20px;padding:10px 22px;border-radius:999px;display:none;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .overlay{position:fixed;inset:0;background:rgba(10,28,18,.92);display:flex;align-items:center;justify-content:center;z-index:30;padding:20px}
+  .card{background:var(--paper);border-radius:24px;padding:28px 32px;max-width:660px;width:100%;display:flex;flex-direction:column;gap:12px;max-height:100%;overflow:auto}
+  .card h1{margin:0;font-size:42px;color:var(--forest);line-height:1}
+  .card .sub{margin:0;font-size:17px;color:var(--body);line-height:1.45}
+  .seg{display:flex;gap:8px}
+  .seg button{flex:1;padding:9px;border-radius:12px;border:2px solid var(--forest);background:#fff;font-weight:800;font-size:18px;color:var(--forest)}
+  .seg button.on{background:var(--forest);color:var(--paper)}
+  .names{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .names input{padding:10px 12px;border-radius:10px;border:2px solid #D6CFBC;font-size:17px;font-family:inherit;font-weight:700}
+  label.chk{display:flex;gap:10px;align-items:center;font-weight:700;color:var(--body)}
+  .how{font-size:14px;color:var(--body);line-height:1.45;background:#fff;border-radius:12px;padding:10px 14px;margin:0}
+  .versions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .versions button{text-align:left;padding:12px 14px;border-radius:14px;border:2px solid #D6CFBC;background:#fff;color:var(--ink)}
+  .versions button b{display:block;font-family:'Bitter',Georgia,serif;font-size:19px;color:var(--forest)}
+  .versions button span{font-size:14px;color:var(--muted);font-weight:600}
+  .versions button.on{border-color:var(--forest);background:#E5ECDF;box-shadow:0 0 0 3px rgba(18,48,31,.15)}
+  .period{padding:10px 12px;border-radius:10px;border:2px solid #D6CFBC;font-size:16px;font-family:inherit;font-weight:700}
+  #done .cert{background:var(--paper);border-radius:24px;padding:28px 32px;max-width:1180px;width:100%;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:14px;border:6px double var(--forest)}
+  .certtop{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .certtop h1{margin:0;font-size:38px;color:var(--forest);line-height:1.05}
+  .certtop .meta{font-size:16px;color:var(--body);font-weight:700;margin-top:6px;line-height:1.5}
+  .code{margin-left:auto;text-align:right;font-weight:800;color:var(--muted);font-size:14px}
+  .code b{display:block;font-family:'Bitter',Georgia,serif;font-size:26px;color:var(--forest);letter-spacing:2px}
+  .teamrow{display:flex;gap:12px;flex-wrap:wrap}
+  .teamcard{background:var(--forest);color:var(--paper);border-radius:14px;padding:10px 18px;font-weight:800;font-size:18px}
+  .teamcard b{color:var(--gold);font-size:24px;margin-left:8px}
+  .teamcard.win{outline:3px solid var(--gold)}
+  .stats{font-size:16px;font-weight:700;color:var(--body)}
+  .loggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .logitem{background:#fff;border:1px solid #E2DCCB;border-left:6px solid var(--good);border-radius:8px;padding:5px 8px;font-size:13px;line-height:1.3;color:var(--body)}
+  .logitem.miss{border-left-color:var(--bad)}
+  .logitem b{color:var(--ink);font-size:14px}
+  .certfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .certfoot p{margin:0;font-size:15px;font-weight:700;color:var(--forest)}
+  .final li{font-size:22px;font-weight:800;margin:6px 0}
+  @media (max-width:980px){main{grid-template-columns:1fr;grid-template-rows:55vh auto}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Where in the Wild?</h1>
+    <div class="roundinfo" id="roundinfo"></div>
+    <div class="scores" id="scores"></div>
+  </header>
+  <main>
+    <div class="mapwrap" id="mapwrap">
+      <svg id="map" xmlns="http://www.w3.org/2000/svg" aria-label="World map. Click a country to guess."><g id="land"></g></svg>
+      <div class="maploading" id="maploading">Loading the world map…</div>
+      <div class="mc" id="mc"><p id="mcnote">The map couldn’t load on this network, so this round is multiple choice.</p><div class="mcgrid" id="mcgrid"></div></div>
+      <div class="mapctl" id="mapctl"><button id="zin" title="Zoom in">+</button><button id="zout" title="Zoom out">−</button><button id="zreset" title="Reset map" style="font-size:16px">⟲</button></div>
+      <label class="hovername" id="hoverlabel"><input type="checkbox" id="hovertoggle"> Show country names on hover</label>
+      <div class="tip" id="tip"></div>
+    </div>
+    <aside class="panel" id="panel"></aside>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<div class="overlay" id="done" style="display:none"><div class="cert" id="cert"></div></div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <h1>Where in the Wild?</h1>
+    <p class="sub">A forestry, wildlife, food, and geography challenge. Read the clues, then click the country on the map where the tree, crop, or animal comes from.</p>
+    <div><div class="turn" style="margin-bottom:8px">Choose a version</div><div class="versions" id="versions"></div></div>
+    <div><div class="turn" style="margin-bottom:8px">How many rounds?</div>
+      <div class="seg" id="roundseg"><button data-n="8">8</button><button data-n="12">12</button><button data-n="16" class="on">16</button><button data-n="99">All</button></div></div>
+    <div><div class="turn" style="margin-bottom:8px">How many teams?</div>
+      <div class="seg" id="teamseg"><button data-n="1">1</button><button data-n="2" class="on">2</button><button data-n="3">3</button><button data-n="4">4</button></div></div>
+    <div class="turn">Team or student names</div>
+    <div class="names" id="names"></div>
+    <input id="period" class="period" maxlength="30" placeholder="Class period (optional), e.g. 3rd Period Horticulture">
+    <label class="chk"><input type="checkbox" id="shuffle" checked> Shuffle the rounds</label>
+    <p class="how"><b>Scoring:</b> Right on clue 1 = 3 points, clue 2 = 2 points, clue 3 = 1 point. Each wrong guess unlocks the next clue. Miss three times and the answer is revealed. Teams take turns, one species per turn.</p>
+    <button class="btn gold" id="go" style="font-size:22px;padding:16px">Start the game</button>
+  </div>
+</div>
+
+<script>
+const ROUNDS = [
+ {cat:"Georgia Invader", emoji:"🌿", name:"Kudzu", answer:["JP","CN","KR"], place:"Japan",
+  native:"Native to Japan, China, and Korea",
+  clues:["This vine can grow up to a foot a day in the heat of summer.",
+         "It was shown off in the US at the 1876 Centennial Exposition, and in the 1930s farmers were paid to plant it to stop soil erosion.",
+         "Its name comes from the Japanese word “kuzu.” Find the island nation it’s most famous for."],
+  fact:"Nicknamed “the vine that ate the South,” kudzu climbs over anything that holds still: fences, barns, and whole stands of trees.",
+  why:"Kudzu shades out and pulls down trees, so foresters fight it for years with herbicides, and sometimes with goats that love to eat it."},
+ {cat:"Forest Product", emoji:"🍁", name:"Sugar maple", answer:["CA"], place:"Canada",
+  native:"Native to eastern Canada and the northeastern US",
+  clues:["This tree’s sap flows best in late winter, when nights freeze and days thaw.",
+         "It takes about 40 gallons of its sap to boil down into one gallon of a sweet product.",
+         "This country makes most of the world’s supply, and the tree’s leaf is on its flag."],
+  fact:"The province of Quebec alone produces around 70 percent of the world’s maple syrup.",
+  why:"A “sugarbush” is a managed forest. Producers tap the same trees for decades without ever cutting them down."},
+ {cat:"Georgia Invader", emoji:"🐜", name:"Red imported fire ant", answer:["BR","AR","PY","UY","BO"], place:"Brazil or Argentina",
+  native:"Native to South America (Brazil, Argentina, Paraguay)",
+  clues:["This tiny invader arrived at the port of Mobile, Alabama, in the 1930s, probably hidden in soil used as ship ballast.",
+         "It now covers most of the Southeast, and its mounds can damage equipment in hay fields and pastures.",
+         "It comes from the floodplains of the Paraná River in South America. Try the continent’s largest country."],
+  fact:"Fire ants spread across the South with very few natural enemies to slow them down.",
+  why:"Fire ants attack ground-nesting birds, quail chicks, and newborn fawns, which makes them a wildlife problem as well as a pest."},
+ {cat:"Forest Giant", emoji:"🌳", name:"Baobab", answer:["MG"], place:"Madagascar",
+  native:"Six of the world’s nine baobab species grow wild only in Madagascar",
+  clues:["This tree can store thousands of liters of water in its huge, swollen trunk.",
+         "Six of the world’s nine species of this tree grow wild on just one island.",
+         "Find the big island off Africa’s southeast coast, famous for lemurs and a road called the Avenue of the Baobabs."],
+  fact:"Some baobabs are thought to be more than 1,000 years old, and their flowers open at night.",
+  why:"Bats and lemurs pollinate some baobabs, so losing the island’s forest wildlife puts the trees at risk too."},
+ {cat:"Forest Product", emoji:"🍾", name:"Cork oak", answer:["PT"], place:"Portugal",
+  native:"Native to the western Mediterranean (Portugal, Spain, North Africa)",
+  clues:["The bark of this tree is peeled off by hand about every 9 years, and the tree keeps on living.",
+         "Its bark ends up in wine stoppers, bulletin boards, and even heat shields for spacecraft.",
+         "About half the world’s supply comes from the country right next door to Spain."],
+  fact:"A cork oak can be harvested over and over for 150 years or more.",
+  why:"Cork oak woodlands are home to rare wildlife like the Iberian lynx, so buying real cork helps keep those forests standing."},
+ {cat:"Georgia Invader", emoji:"🪲", name:"Emerald ash borer", answer:["CN","KR","KP","JP","RU","MN"], place:"China",
+  native:"Native to northeast Asia (China, Korea, Japan, eastern Russia)",
+  clues:["This metallic green beetle is only about half an inch long, but its larvae kill trees by tunneling under the bark.",
+         "It was found near Detroit in 2002 and has since killed hundreds of millions of ash trees in North America.",
+         "It likely rode over in wooden shipping pallets from the country that built the Great Wall."],
+  fact:"The emerald ash borer was first found in Georgia in 2013.",
+  why:"It spreads fastest when people move firewood. The rule foresters teach: buy firewood where you burn it."},
+ {cat:"Wildlife", emoji:"🦋", name:"Monarch butterfly", answer:["MX"], place:"Mexico",
+  native:"Found across North America; winters in central Mexico",
+  clues:["This insect’s fall migration can stretch up to 3,000 miles.",
+         "Its caterpillars eat only one kind of plant: milkweed.",
+         "Millions spend the winter clustered on fir trees in the mountains of the country just south of the US."],
+  fact:"No single monarch makes the whole round trip. It takes several generations to get back north.",
+  why:"Protecting the oyamel fir forests where monarchs spend the winter is key to their survival. Planting milkweed in Georgia helps too."},
+ {cat:"Forest Product", emoji:"🛞", name:"Rubber tree", answer:["BR"], place:"Brazil",
+  native:"Native to the Amazon rainforest",
+  clues:["Slice this tree’s bark and a milky white liquid called latex drips out.",
+         "In 1876, an Englishman smuggled 70,000 of its seeds to London, and plantations later spread across Southeast Asia.",
+         "It’s native to the Amazon rainforest in South America’s largest country."],
+  fact:"Today Thailand, not Brazil, is the world’s top producer of natural rubber.",
+  why:"Natural rubber is a renewable forest product. Tappers can collect latex from the same tree for about 25 years."},
+ {cat:"Georgia Invader", emoji:"🌾", name:"Cogongrass", answer:["JP"], place:"Japan",
+  native:"Native to Southeast Asia; arrived in the US from Japan",
+  clues:["This grass has saw-edged leaves and burns extremely hot, making wildfires more dangerous.",
+         "It arrived in Grand Bay, Alabama, in 1912 as packing material in a shipment of satsuma oranges.",
+         "That orange shipment came from an island nation in East Asia, home of Tokyo."],
+  fact:"Cogongrass is on the federal noxious weed list and is spreading north into Georgia.",
+  why:"It crowds out young pines and native plants that wildlife depend on, and it can turn a mild controlled burn into a dangerous one."},
+ {cat:"Forest Giant", emoji:"🌲", name:"Coast redwood", answer:["US"], place:"United States",
+  native:"Native to coastal northern California and southern Oregon",
+  clues:["The tallest known tree on Earth, nicknamed Hyperion, is about 380 feet tall.",
+         "Its exact location is kept secret to protect it from too many visitors.",
+         "It grows in foggy coastal forests in the state of California."],
+  fact:"Redwoods have thick, spongy bark with very little resin, which helps them survive wildfires.",
+  why:"Old-growth redwoods shelter wildlife like the marbled murrelet, a seabird that nests high in the branches."},
+ {cat:"Wildlife", emoji:"🦧", name:"Orangutan", answer:["ID","MY"], place:"Indonesia",
+  native:"Found only on the islands of Borneo and Sumatra",
+  clues:["This great ape builds a fresh nest of branches in the trees almost every night.",
+         "Its name means “person of the forest” in the Malay language.",
+         "It lives only on Borneo and Sumatra. Click the country that Sumatra belongs to."],
+  fact:"Orangutans spend almost their entire lives in the treetops.",
+  why:"Clearing rainforest for palm oil plantations is a leading cause of orangutan habitat loss."},
+ {cat:"Forest Product", emoji:"☕", name:"Arabica coffee", answer:["ET"], place:"Ethiopia",
+  native:"Native to the highland forests of Ethiopia",
+  clues:["Legend says a goat herder noticed his goats got jumpy after eating red berries from this shrub.",
+         "The world’s most popular kind still grows wild in shady highland forests here.",
+         "Find this country in the Horn of Africa. Its capital is Addis Ababa."],
+  fact:"Coffee is a shrub that naturally grows in the shade of taller forest trees.",
+  why:"Shade-grown coffee keeps the forest canopy in place, which gives migrating songbirds a place to spend the winter."},
+ {cat:"Forest Giant", emoji:"🪵", name:"Teak", answer:["IN","MM","LA","TH"], place:"India or Myanmar",
+  native:"Native to India, Myanmar, Laos, and Thailand",
+  clues:["This hardwood is so rich in natural oils that it resists rot, water, and termites. Boat builders love it.",
+         "Its native forests stretch across South and Southeast Asia.",
+         "Find the biggest country in South Asia, home of the Taj Mahal."],
+  fact:"Teak is now grown on plantations in the tropics around the world.",
+  why:"Myanmar’s natural teak forests were heavily logged, so most teak sold today comes from planted forests."},
+ {cat:"Georgia Invader", emoji:"🐗", name:"Feral hog", answer:["ES"], place:"Spain",
+  native:"Descended from Eurasian wild boar and domestic pigs",
+  clues:["This animal can have two litters a year and causes billions of dollars in damage to US crops and land.",
+         "Its ancestors arrived in the 1500s with explorers like Hernando de Soto.",
+         "Those explorers sailed for this European country, home of Madrid."],
+  fact:"Feral hogs are found across Georgia and are some of the most destructive invasive animals in the US.",
+  why:"Hogs root up forest floors and food plots, eat the eggs of ground-nesting birds, and compete with deer and turkeys for acorns."},
+ {cat:"Wildlife", emoji:"🐅", name:"Amur (Siberian) tiger", answer:["RU"], place:"Russia",
+  native:"Lives in the far eastern forests of Russia, with a few in China",
+  clues:["This country holds about one-fifth of all the forest on Earth, more than any other.",
+         "Its huge northern forest of spruce, pine, and larch is called the taiga.",
+         "The world’s largest cat, the Amur tiger, hunts in its far eastern forests. It’s the biggest country on Earth."],
+  fact:"The taiga, or boreal forest, circles the top of the globe and is the largest land biome on Earth.",
+  why:"Amur tigers need huge areas of forest to hunt, so their survival depends on how that forest is logged and protected."},
+ {cat:"Wildlife", emoji:"🐨", name:"Koala and eucalyptus", answer:["AU"], place:"Australia",
+  native:"Nearly all of the 700+ eucalyptus species are native to Australia",
+  clues:["There are more than 700 species of this tree, and nearly all of them come from one country.",
+         "Its leaves are the main food of an animal that sleeps up to 20 hours a day.",
+         "Find the country that is also a continent, where the koala lives."],
+  fact:"Eucalyptus leaves are tough and low in nutrients, which is one reason koalas sleep so much.",
+  why:"Eucalyptus grows so fast that it’s planted for pulp and paper around the world, especially in Brazil."}
+];
+ROUNDS.forEach(r=>{ r.set="wild"; if(r.cat==="Georgia Invader"||r.name==="Monarch butterfly") r.ga=true; });
+const FOOD = [
+ {emoji:"🍎", name:"Apple", answer:["KZ","KG"], place:"Kazakhstan",
+  native:"Wild ancestor grows in the Tian Shan mountains of Central Asia",
+  clues:["Wild forests of this fruit tree still grow in the Tian Shan mountains, where bears snack on the fallen fruit.",
+         "The biggest city here, Almaty, has a name often translated as “father of apples.”",
+         "Find the world’s largest landlocked country, in Central Asia."],
+  fact:"The wild apple, Malus sieversii, is the main ancestor of the apples in every grocery store.",
+  why:"Scientists collect wild apples from Kazakhstan to breed disease resistance into new varieties. Genetic diversity is crop insurance."},
+ {emoji:"🥔", name:"Potato", answer:["PE","BO"], place:"Peru",
+  native:"Domesticated in the Andes Mountains near Lake Titicaca",
+  clues:["Farmers in this crop’s homeland grow thousands of native varieties, in colors from purple to yellow.",
+         "It was domesticated around Lake Titicaca, high in the Andes Mountains.",
+         "Find the South American country famous for Machu Picchu."],
+  fact:"The International Potato Center in Lima, Peru, keeps a gene bank of thousands of potato varieties.",
+  why:"Ireland depended on very few potato varieties, so when late blight hit in the 1840s, the whole crop collapsed."},
+ {emoji:"🌽", name:"Corn (maize)", answer:["MX"], place:"Mexico",
+  native:"Domesticated from teosinte in southern Mexico",
+  clues:["Its wild ancestor, teosinte, has tiny ears with only about a dozen rock-hard kernels.",
+         "Farmers began domesticating it about 9,000 years ago in the Balsas River valley.",
+         "Find the country directly south of Texas."],
+  fact:"Corn can’t reseed itself in the wild. It depends completely on people to plant it.",
+  why:"Corn is now the most-produced grain in the world, and the US grows more than any other country."},
+ {emoji:"🍅", name:"Tomato", answer:["MX","PE","EC"], place:"Mexico",
+  native:"Wild relatives from Peru and Ecuador; domesticated in Mexico",
+  clues:["Its wild ancestors have fruit about the size of a pea.",
+         "Wild relatives grow in Peru and Ecuador, but it was domesticated farther north. Its name comes from the Aztec word “tomatl.”",
+         "Find the country where the Aztec Empire was centered."],
+  fact:"Many Europeans once thought tomatoes were poisonous because they’re related to deadly nightshade.",
+  why:"Breeders still cross tomatoes with wild relatives from South America to add disease resistance."},
+ {emoji:"🥜", name:"Peanut", answer:["BO","AR","PY","BR"], place:"Bolivia",
+  native:"Domesticated in South America, near where Bolivia and Argentina meet",
+  clues:["This plant flowers above ground, then pushes its pods down into the soil to grow.",
+         "It was domesticated in South America, likely where Bolivia and Argentina meet.",
+         "Find the landlocked country in the heart of South America whose government sits in La Paz, the highest capital in the world."],
+  fact:"Georgia grows about half of all the peanuts in the United States.",
+  why:"George Washington Carver promoted peanuts to Southern farmers because, as a legume, they put nitrogen back into soil worn out by cotton."},
+ {emoji:"🍉", name:"Watermelon", answer:["SD","EG"], place:"Sudan",
+  native:"Northeast Africa, along the Nile",
+  clues:["Ancient Egyptians painted this fruit on tomb walls more than 4,000 years ago.",
+         "A 2021 DNA study found its closest wild relative is the Kordofan melon.",
+         "That melon grows in the country just south of Egypt, along the Nile."],
+  fact:"Watermelons are about 92 percent water, which made them a handy canteen in dry places.",
+  why:"Georgia is one of the top watermelon-growing states, with most of the crop grown in south Georgia."},
+ {emoji:"🍫", name:"Cacao (chocolate)", answer:["EC","PE","CO","BR"], place:"Ecuador",
+  native:"Upper Amazon rainforest",
+  clues:["The seeds of this tree are fermented, dried, and roasted before they become a favorite treat.",
+         "The oldest evidence of people using it, about 5,300 years old, was found in the upper Amazon, not Central America as scientists once thought.",
+         "Find the South American country named after the imaginary line that runs through it."],
+  fact:"Today most of the world’s cacao is grown in West Africa, especially Côte d’Ivoire.",
+  why:"Cacao grows best in the shade of taller trees, so shade-grown cacao can help protect rainforest habitat."},
+ {emoji:"🍚", name:"Rice", answer:["CN"], place:"China",
+  native:"Asian rice was domesticated in the Yangtze River valley",
+  clues:["This crop is often grown in flooded fields called paddies.",
+         "It was domesticated about 9,000 years ago along the Yangtze River.",
+         "Find the country that is home to giant pandas and the Great Wall."],
+  fact:"More than half the people on Earth eat rice as a main food.",
+  why:"Flooded rice fields are home to frogs, fish, and wading birds, but they also release methane, a greenhouse gas."},
+ {emoji:"🌾", name:"Wheat", answer:["TR","SY","IQ","IR","IL","JO","LB"], place:"Turkey",
+  native:"Domesticated in the Fertile Crescent of the Middle East",
+  clues:["It was one of the very first crops ever domesticated, about 10,000 years ago, in a region called the Fertile Crescent.",
+         "DNA points to the Karacadağ mountains as the place where einkorn wheat was first tamed.",
+         "Find the country that connects Europe and Asia, home of Istanbul."],
+  fact:"Wheat covers more of the world’s farmland than any other food crop.",
+  why:"Gene banks hold wild wheat relatives from the Middle East, which breeders use to fight diseases like stem rust."},
+ {emoji:"🍌", name:"Banana", answer:["PG","ID"], place:"Papua New Guinea",
+  native:"Southeast Asia and New Guinea",
+  clues:["This plant is really a giant herb, not a tree. Its “trunk” is made of tightly rolled leaves.",
+         "Farmers on the island of New Guinea were growing it about 7,000 years ago.",
+         "Find the country on the eastern half of New Guinea, just north of Australia."],
+  fact:"Almost every banana in US stores is one variety, the Cavendish, and they are all clones.",
+  why:"Because Cavendish bananas are clones, a fungus called Panama disease (TR4) threatens them, just like it wiped out the Gros Michel."},
+ {emoji:"🍑", name:"Peach", answer:["CN"], place:"China",
+  native:"Domesticated in the Yangtze River valley of China",
+  clues:["Archaeologists found pits of this fruit about 7,500 years old in the Yangtze River valley.",
+         "Its scientific name, Prunus persica, means “Persian plum,” because Europeans got it by way of Persia.",
+         "Even the famous Georgia version traces back to this country, the world’s top producer today."],
+  fact:"China grows more than half of all the world’s peaches.",
+  why:"Peach trees need enough winter “chill hours” to bloom well, so a warm winter can wreck a Georgia peach crop."},
+ {emoji:"🌰", name:"Pecan", answer:["US","MX"], place:"United States",
+  native:"Native to river valleys of the south-central US and Mexico",
+  clues:["This is the only major tree nut native to North America.",
+         "It grows wild along rivers from Texas north to Illinois, and south into Mexico.",
+         "It’s native to the same country you’re sitting in right now."],
+  fact:"Georgia is one of the top pecan-producing states in the country.",
+  why:"Pecan orchards are grafted, so every tree of a variety like ‘Desirable’ is a clone of the original tree."},
+ {emoji:"🍓", name:"Garden strawberry", answer:["FR"], place:"France",
+  native:"A hybrid of wild strawberries from Virginia and Chile",
+  clues:["Its seeds are on the outside, about 200 per berry.",
+         "The garden strawberry is a hybrid of a wild species from Virginia and one from Chile.",
+         "The two parents were first crossed in the 1700s in this European country, home of the Eiffel Tower."],
+  fact:"The Chilean parent brought big fruit, and the Virginia parent brought deep color and flavor.",
+  why:"The garden strawberry proves plant breeding can combine plants from opposite ends of the world."},
+ {emoji:"🥕", name:"Carrot", answer:["AF"], place:"Afghanistan",
+  native:"First domesticated in Central Asia",
+  clues:["Wild versions of this root are white, tough, and bitter.",
+         "The first domesticated ones, about 1,100 years ago, were purple and yellow.",
+         "They came from the mountain country between Iran and Pakistan, whose capital is Kabul."],
+  fact:"Orange carrots became popular in the Netherlands in the 1600s.",
+  why:"Carrot colors come from pigments like anthocyanins and beta-carotene, which also add nutritional value."},
+ {emoji:"🍍", name:"Pineapple", answer:["BR","PY","AR"], place:"Brazil",
+  native:"Domesticated in South America near the Paraná and Paraguay rivers",
+  clues:["Each pineapple is actually 100 or more small fruits fused together.",
+         "Christopher Columbus brought it back to Europe in 1493 after finding it in the Caribbean.",
+         "It was first domesticated in South America’s largest country, near its border with Paraguay."],
+  fact:"In Europe, pineapples were once so rare that people rented them just to show off at parties.",
+  why:"Pineapples are planted from crowns and side shoots, so most plantations are fields of clones."},
+ {emoji:"🌻", name:"Sunflower", answer:["US"], place:"United States",
+  native:"Domesticated by Native Americans in eastern North America",
+  clues:["Native Americans domesticated this plant more than 4,000 years ago for its seeds.",
+         "Today Russia and Ukraine grow more of it than any other countries.",
+         "But it’s one of the few major crops first domesticated in the country where you live."],
+  fact:"Young sunflower heads track the sun across the sky, but mature heads face east.",
+  why:"Sunflowers are a major source of cooking oil and a favorite food source for bees and other pollinators."}
+];
+FOOD.forEach(r=>{ r.set="food"; r.cat="Food Crop"; if(["Peanut","Watermelon","Peach","Pecan"].includes(r.name)) r.ga=true; ROUNDS.push(r); });
+const VERSIONS=[
+ {id:"wild", name:"Forests & Wildlife", desc:"Trees, forest products, wildlife, and invaders", pick:r=>r.set==="wild"},
+ {id:"food", name:"Food Crops", desc:"Where did dinner come from?", pick:r=>r.set==="food"},
+ {id:"ga", name:"Georgia Connections", desc:"Invaders, crops, and wildlife with a Georgia tie", pick:r=>r.ga},
+ {id:"mix", name:"Mega Mix", desc:"A random mix of everything", pick:r=>true}
+];
+const CATCOLOR = {"Georgia Invader":"#D9694A","Forest Giant":"#3E9B5A","Wildlife":"#4A90B8","Forest Product":"#B07A2A","Food Crop":"#7A5BA6"};
+const POOL = ["US","CA","MX","BR","AR","PE","CO","CL","GB","FR","ES","PT","DE","IT","RU","CN","JP","IN","ID","AU","ZA","EG","ET","KE","MG","NG","TH","VN","TR","SA","NZ","MY","KR","MM"];
+let DN=null; try{DN=new Intl.DisplayNames(['en'],{type:'region'});}catch(e){}
+let MAP=null, mcMode=false;
+const S={teams:[],cur:0,idx:0,order:[],clue:0,wrong:[],over:false};
+const $=id=>document.getElementById(id);
+function nameOf(c){ let n=null; try{n=DN&&DN.of(c);}catch(e){} return (n&&n!==c)?n:(MAP&&MAP[c]&&MAP[c].name)||c; }
+function esc(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
+
+/* ---------- map loading ---------- */
+window.jsVectorMap = { addMap(name, m){ if(!MAP && m && m.paths){ MAP={}; for(const k in m.paths){ MAP[k.toUpperCase()]={d:m.paths[k].path,name:m.paths[k].name}; } } } };
+const SOURCES=[
+ "https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js",
+ "https://unpkg.com/jsvectormap@1.5.3/dist/maps/world.js",
+ "https://cdn.jsdelivr.net/npm/jsvectormap@1.6.0/dist/maps/world.js",
+ "https://cdn.jsdelivr.net/npm/svgmap@2.10.1/dist/svgMap.min.js"
+];
+function loadMap(i){
+  if(MAP) return renderMap();
+  if(i>=SOURCES.length) return mapFailed();
+  const s=document.createElement('script'); let done=false;
+  const next=()=>{ if(done) return; done=true;
+    if(!MAP && window.svgMap && svgMap.prototype && svgMap.prototype.mapPaths){
+      MAP={}; const mp=svgMap.prototype.mapPaths; for(const k in mp){ if(mp[k]&&mp[k].d) MAP[k.toUpperCase()]={d:mp[k].d,name:k}; }
+      if(!Object.keys(MAP).length) MAP=null;
+    }
+    MAP?renderMap():loadMap(i+1); };
+  s.src=SOURCES[i]; s.onload=next; s.onerror=next; setTimeout(next,7000);
+  document.head.appendChild(s);
+}
+const svg=$('map'), land=$('land'); let VB0=null, vb=null;
+function renderMap(){
+  const NS="http://www.w3.org/2000/svg"; land.innerHTML="";
+  for(const c in MAP){ if(c==="AQ") continue; const p=document.createElementNS(NS,'path'); p.setAttribute('d',MAP[c].d); p.dataset.code=c; land.appendChild(p); }
+  const b=land.getBBox(); const pad=Math.max(b.width,b.height)*0.02;
+  VB0={x:b.x-pad,y:b.y-pad,w:b.width+2*pad,h:b.height+2*pad}; vb={...VB0}; setVB();
+  $('maploading').style.display='none'; markRound();
+}
+function mapFailed(){ mcMode=true; $('maploading').style.display='none'; svg.style.display='none'; $('mapctl').style.display='none'; $('hoverlabel').style.display='none'; $('mc').style.display='flex'; if(S.order.length) renderMC(); }
+function setVB(){ svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`); }
+function zoom(f,cx,cy){ if(!vb) return; const nw=Math.min(VB0.w*1.2,Math.max(VB0.w/14,vb.w*f)); const k=nw/vb.w;
+  if(cx===undefined){cx=vb.x+vb.w/2;cy=vb.y+vb.h/2;} vb={x:cx-(cx-vb.x)*k,y:cy-(cy-vb.y)*k,w:vb.w*k,h:vb.h*k}; setVB(); }
+function svgPt(e){ const r=svg.getBoundingClientRect(); const s=Math.max(vb.w/r.width,vb.h/r.height);
+  const ox=(r.width*s-vb.w)/2, oy=(r.height*s-vb.h)/2; return {x:vb.x-ox+(e.clientX-r.left)*s, y:vb.y-oy+(e.clientY-r.top)*s, s}; }
+svg.addEventListener('wheel',e=>{ if(!vb) return; e.preventDefault(); const p=svgPt(e); zoom(e.deltaY<0?0.85:1.18,p.x,p.y); },{passive:false});
+let drag=null;
+svg.addEventListener('pointerdown',e=>{ if(!vb) return; drag={x:e.clientX,y:e.clientY,vb:{...vb},moved:false,target:e.target}; });
+window.addEventListener('pointermove',e=>{
+  const t=e.target; const tip=$('tip');
+  if($('hovertoggle').checked && t.dataset && t.dataset.code && !drag){ const r=$('mapwrap').getBoundingClientRect(); tip.textContent=nameOf(t.dataset.code); tip.style.display='block'; tip.style.left=(e.clientX-r.left+14)+'px'; tip.style.top=(e.clientY-r.top+14)+'px'; } else tip.style.display='none';
+  if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+  if(!drag.moved && Math.hypot(dx,dy)>6){ drag.moved=true; svg.classList.add('dragging'); }
+  if(drag.moved){ const r=svg.getBoundingClientRect(); const s=Math.max(vb.w/r.width,vb.h/r.height); vb={...drag.vb,x:drag.vb.x-dx*s,y:drag.vb.y-dy*s}; setVB(); }
+});
+window.addEventListener('pointerup',e=>{ if(!drag) return; const d=drag; drag=null; svg.classList.remove('dragging');
+  if(!d.moved && d.target && d.target.dataset && d.target.dataset.code) guess(d.target.dataset.code); });
+$('zin').onclick=()=>zoom(0.7); $('zout').onclick=()=>zoom(1.4); $('zreset').onclick=()=>{ if(VB0){vb={...VB0};setVB();} };
+
+/* ---------- game ---------- */
+function round(){ return ROUNDS[S.order[S.idx]]; }
+function points(){ return 3-S.clue; }
+function renderScores(){
+  $('scores').innerHTML=S.teams.map((t,i)=>`<div class="score ${i===S.cur&&!S.finished?'active':''}">${esc(t.name)} <b>${t.score}</b></div>`).join('');
+  $('roundinfo').textContent=(S.version?S.version+' · ':'')+(S.finished?'Final scores':`Round ${S.idx+1} of ${S.order.length}`);
+}
+function renderPanel(){
+  const r=round(); const team=S.teams[S.cur];
+  let h=`<div class="tag" style="background:${CATCOLOR[r.cat]}">${r.emoji} ${r.cat}</div>`;
+  h+=`<div class="turn">${S.teams.length>1?esc(team.name)+'’s turn':'Your turn'}</div>`;
+  h+=`<h2>Where in the world does this come from?</h2>`;
+  h+=`<div class="worth">Clue ${S.clue+1} of 3 · worth ${points()} point${points()>1?'s':''}</div><div class="clues">`;
+  r.clues.forEach((c,i)=>{ h+= i<=S.clue ? `<div class="clue"><span class="n">Clue ${i+1}</span>${esc(c)}</div>` : `<div class="clue locked"><span class="n">Clue ${i+1}</span>Locked: guess wrong or ask for a hint to unlock</div>`; });
+  h+=`</div>`;
+  if(S.wrong.length) h+=`<div class="guesses">Wrong guesses: <span>${S.wrong.map(nameOf).join(', ')}</span></div>`;
+  h+=`<div class="btnrow">${S.clue<2?'<button class="btn ghost" id="hint">Next clue (−1 point)</button>':''}<button class="btn ghost" id="giveup">Reveal answer</button></div>`;
+  $('panel').innerHTML=h;
+  if($('hint')) $('hint').onclick=()=>{ S.clue++; renderPanel(); if(mcMode) renderMC(); };
+  $('giveup').onclick=()=>reveal(false);
+}
+function markRound(){
+  land.querySelectorAll('path').forEach(p=>{ p.classList.remove('wrong','right','answer'); });
+  S.wrong.forEach(c=>{ const p=land.querySelector(`[data-code="${c}"]`); if(p) p.classList.add('wrong'); });
+}
+function toast(msg,color){ const t=$('toast'); t.textContent=msg; t.style.background=color||'var(--bad)'; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',1800); }
+function guess(code){
+  if(S.over||S.finished||!S.order.length) return;
+  const r=round();
+  if(r.answer.includes(code)){ S.teams[S.cur].score+=points(); reveal(true,code); return; }
+  if(S.wrong.includes(code)){ toast(`Already guessed ${nameOf(code)}`,'#6B7A70'); return; }
+  S.wrong.push(code); markRound(); toast(`Not ${nameOf(code)}!`);
+  if(S.clue>=2){ reveal(false); return; }
+  S.clue++; renderPanel(); if(mcMode) renderMC();
+}
+function reveal(ok,code){
+  S.over=true; const r=round();
+  S.log.push({emoji:r.emoji,name:r.name,place:r.place,team:S.cur,ok:!!ok,pts:ok?3-S.clue:0});
+  r.answer.forEach(c=>{ const p=land.querySelector(`[data-code="${c}"]`); if(p) p.classList.add(c===code?'right':'answer'); });
+  if(mcMode) renderMC(true);
+  const team=S.teams[S.cur];
+  let h=`<div class="tag" style="background:${CATCOLOR[r.cat]}">${r.emoji} ${r.cat}</div><div class="reveal">`;
+  h+= ok ? `<div class="verdict ok">Correct! ${S.teams.length>1?esc(team.name)+' earns':'You earn'} ${3-S.clue} point${3-S.clue>1?'s':''}.</div>`
+         : `<div class="verdict no">The answer was ${esc(r.place)}.</div>`;
+  h+=`<h2>${esc(r.name)}</h2></div><div class="native">📍 ${esc(r.native)}</div><p class="fact">${esc(r.fact)}</p>`;
+  h+=`<div class="why"><b>Why it matters</b>${esc(r.why)}</div>`;
+  h+=`<div class="btnrow"><button class="btn gold" id="next">${S.idx+1<S.order.length?'Next round →':'See final scores'}</button></div>`;
+  $('panel').innerHTML=h; $('next').onclick=nextRound; renderScores();
+}
+function nextRound(){
+  if(S.idx+1>=S.order.length) return finish();
+  S.idx++; S.cur=(S.cur+1)%S.teams.length; S.clue=0; S.wrong=[]; S.over=false;
+  if(VB0){vb={...VB0};setVB();}
+  markRound(); renderScores(); renderPanel(); if(mcMode) renderMC();
+}
+function renderMC(showAnswer){
+  const r=round(); if(!r) return;
+  if(!S.mcOpts || S.mcFor!==S.idx){ const opts=[r.answer[0]]; const pool=POOL.filter(c=>!r.answer.includes(c)).sort(()=>Math.random()-.5); while(opts.length<4) opts.push(pool.pop()); S.mcOpts=opts.sort(()=>Math.random()-.5); S.mcFor=S.idx; }
+  $('mcgrid').innerHTML=S.mcOpts.map(c=>`<button data-c="${c}" class="${S.wrong.includes(c)?'wrong':''} ${showAnswer&&r.answer.includes(c)?'right':''}">${esc(nameOf(c))}</button>`).join('');
+  $('mcgrid').querySelectorAll('button').forEach(b=>b.onclick=()=>guess(b.dataset.c));
+}
+function finish(){
+  S.finished=true; renderScores();
+  const sorted=[...S.teams].sort((a,b)=>b.score-a.score); const top=sorted[0].score; const winners=sorted.filter(t=>t.score===top).map(t=>t.name);
+  let h=`<div class="tag" style="background:var(--gold);color:var(--forest)">🏆 Game over</div><h2>${S.teams.length>1?(winners.length>1?'It’s a tie!':esc(winners[0])+' wins!'):'Nice work, explorer!'}</h2><ol class="final">`;
+  sorted.forEach(t=>h+=`<li>${esc(t.name)}: ${t.score} points</li>`); h+=`</ol>`;
+  h+=`<p class="fact">Out of a possible ${S.order.length*3} points. Which species surprised you most? Which ones are already in Georgia’s forests?</p>`;
+  h+=`<div class="btnrow"><button class="btn gold" id="showcert">Show completion record</button><button class="btn ghost" id="again">Play again</button></div>`;
+  $('panel').innerHTML=h; $('again').onclick=()=>{ $('start').style.display='flex'; };
+  $('showcert').onclick=showCert; S.endedAt=new Date(); showCert();
+}
+function checkCode(str){ let h=2166136261; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0).toString(36).toUpperCase().slice(0,6).padStart(6,'0'); }
+function showCert(){
+  const when=S.endedAt||new Date();
+  const stamp=when.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'})+' at '+when.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+  const found=S.log.filter(l=>l.ok).length, max=S.order.length*3, top=Math.max(...S.teams.map(t=>t.score));
+  const code=checkCode(S.teams.map(t=>t.name+t.score).join('|')+S.version+when.getTime()+S.log.map(l=>l.ok?1:0).join(''));
+  let h=`<div class="certtop"><div><h1>🌍 Where in the Wild? Completion Record</h1>`;
+  h+=`<div class="meta">${esc(S.version)} · ${S.order.length} rounds · ${esc(stamp)}${S.period?' · '+esc(S.period):''}</div></div>`;
+  h+=`<div class="code">Check code<b>${code}</b></div></div>`;
+  h+=`<div class="teamrow">${S.teams.map(t=>`<div class="teamcard ${S.teams.length>1&&t.score===top?'win':''}">${esc(t.name)}<b>${S.teams.length>1?t.score+' pts':t.score+' / '+max+' pts'}</b></div>`).join('')}</div>`;
+  h+=`<div class="stats">Species found: ${found} of ${S.order.length} · Total points: ${S.teams.reduce((a,t)=>a+t.score,0)} of ${max} possible</div>`;
+  h+=`<div class="loggrid">${S.log.map((l,i)=>`<div class="logitem ${l.ok?'':'miss'}">${i+1}. ${l.emoji} <b>${esc(l.name)}</b><br>${esc(l.place)} · ${l.ok?'✓ +'+l.pts:'✗ missed'}${S.teams.length>1?' · '+esc(S.teams[l.team].name):''}</div>`).join('')}</div>`;
+  h+=`<div class="certfoot"><p>📸 Take a screenshot of this screen and submit it for your assignment.</p><div style="flex:1"></div><button class="btn ghost" id="closecert">Close</button></div>`;
+  $('cert').innerHTML=h; $('done').style.display='flex'; $('closecert').onclick=()=>{ $('done').style.display='none'; };
+}
+
+/* ---------- start screen ---------- */
+let nTeams=2, nRounds=16, version="wild";
+function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+$('versions').innerHTML=VERSIONS.map(v=>`<button data-v="${v.id}" class="${v.id===version?'on':''}"><b>${v.name}</b><span>${v.desc} · ${ROUNDS.filter(v.pick).length} rounds</span></button>`).join('');
+$('versions').querySelectorAll('button').forEach(b=>b.onclick=()=>{ version=b.dataset.v; $('versions').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); });
+$('roundseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ nRounds=+b.dataset.n; $('roundseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); });
+function renderNames(){ const old=[...document.querySelectorAll('#names input')].map(i=>i.value);
+  $('names').innerHTML=Array.from({length:nTeams},(_,i)=>`<input value="${esc(old[i]||(nTeams===1?'Player':'Team '+(i+1)))}" maxlength="20" aria-label="Team ${i+1} name">`).join(''); }
+$('teamseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ nTeams=+b.dataset.n; $('teamseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); renderNames(); });
+renderNames();
+$('go').onclick=()=>{
+  S.teams=[...document.querySelectorAll('#names input')].map((i,k)=>({name:i.value.trim()||('Team '+(k+1)),score:0}));
+  const V=VERSIONS.find(v=>v.id===version);
+  S.order=ROUNDS.map((r,i)=>V.pick(r)?i:-1).filter(i=>i>=0);
+  if($('shuffle').checked||version==="mix") shuffleArr(S.order);
+  S.order=S.order.slice(0,nRounds); S.version=V.name; S.log=[]; S.endedAt=null; S.period=$('period').value.trim(); $('done').style.display='none';
+  Object.assign(S,{cur:0,idx:0,clue:0,wrong:[],over:false,finished:false,mcFor:-1});
+  $('start').style.display='none'; if(VB0){vb={...VB0};setVB();} markRound(); renderScores(); renderPanel(); if(mcMode) renderMC();
+};
+$('panel').innerHTML='<p class="fact">Set up your teams to begin.</p>';
+loadMap(0);
+</script>
+</body>
+</html>
