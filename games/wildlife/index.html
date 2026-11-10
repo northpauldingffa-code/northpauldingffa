@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wildlife Management CDE Practice</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+  :root{--forest:#1F3A2B;--forest2:#2B4D39;--paper:#F6F2E7;--ink:#1D2B22;--body:#43524A;--muted:#6B7A70;--gold:#E9B949;--good:#3E9B5A;--bad:#D9694A;--line:#E2DCCB}
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--forest);color:var(--ink);font-family:'Nunito Sans',Arial,sans-serif}
+  h1,h2,h3{font-family:'Bitter',Georgia,serif;margin:0}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:980px;margin:0 auto;padding:18px 16px 40px}
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:var(--paper);margin-bottom:14px}
+  header h1{font-size:26px;color:var(--gold)}
+  header .sub{color:#CFE0D2;font-weight:700;font-size:15px}
+  header .right{margin-left:auto;font-weight:800;color:var(--paper);background:var(--forest2);padding:6px 14px;border-radius:12px}
+  header .right b{color:var(--gold)}
+  .card{background:var(--paper);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:14px}
+  .turn{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .lead{font-size:17px;line-height:1.5;color:var(--body);margin:0}
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .modes button,.pick button{text-align:left;padding:12px 14px;border-radius:14px;border:2px solid #D6CFBC;background:#fff;color:var(--ink)}
+  .modes button b{display:block;font-family:'Bitter',Georgia,serif;font-size:17px;color:var(--forest)}
+  .modes button span{font-size:14px;color:var(--muted);font-weight:600;line-height:1.35;display:block;margin-top:2px}
+  .modes button.on,.pick button.on{border-color:var(--forest);background:#E2EBDB;box-shadow:0 0 0 3px rgba(31,58,43,.15)}
+  .pick{display:flex;flex-wrap:wrap;gap:8px}
+  .pick button{padding:8px 12px;font-weight:700;font-size:14px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .row>*{flex:1;min-width:220px}
+  input.txt{padding:10px 12px;border-radius:10px;border:2px solid #D6CFBC;font-size:16px;font-family:inherit;font-weight:700;width:100%}
+  .btn{border:none;border-radius:12px;padding:12px 18px;font-size:17px;font-weight:800;background:var(--forest);color:var(--paper)}
+  .btn.ghost{background:transparent;color:var(--forest);border:2px solid var(--forest)}
+  .btn.gold{background:var(--gold);color:var(--forest)}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .tag{align-self:flex-start;font-weight:800;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#fff;background:var(--forest);padding:5px 12px;border-radius:999px}
+  .bar{height:8px;background:#E2DCCB;border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--gold)}
+  .q{font-size:22px;line-height:1.4;font-weight:700;margin:0}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opts button{text-align:left;padding:14px 16px;border-radius:14px;border:2px solid #D6CFBC;background:#fff;font-size:18px;font-weight:700;color:var(--ink)}
+  .opts button:hover:not(:disabled){border-color:var(--forest)}
+  .opts button.picked{border-color:var(--forest);background:#E2EBDB}
+  .opts button.right{border-color:var(--good);background:#DDF0E2}
+  .opts button.wrong{border-color:var(--bad);background:#F8E0D8}
+  .opts button:disabled{cursor:default}
+  .why{background:var(--forest);color:#E6F0E8;border-radius:14px;padding:13px 15px;font-size:16px;line-height:1.45}
+  .why b{color:var(--gold)}
+  .verdict{font-family:'Bitter',Georgia,serif;font-weight:800;font-size:20px}
+  .verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+  .review{display:flex;flex-direction:column;gap:8px}
+  .review div{background:#fff;border:1px solid var(--line);border-left:6px solid var(--bad);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.4;color:var(--body)}
+  .review b{color:var(--ink)}
+  .overlay{position:fixed;inset:0;background:rgba(14,30,20,.92);display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
+  .cert{background:var(--paper);border-radius:24px;padding:24px 30px;max-width:1100px;width:100%;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px;border:6px double var(--forest)}
+  .certtop{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .certtop h1{font-size:30px;color:var(--forest);line-height:1.1}
+  .meta{font-size:15px;color:var(--body);font-weight:700;margin-top:6px;line-height:1.5}
+  .code{margin-left:auto;text-align:right;font-weight:800;color:var(--muted);font-size:13px}
+  .code b{display:block;font-family:'Bitter',Georgia,serif;font-size:24px;color:var(--forest);letter-spacing:2px}
+  .big{display:flex;gap:12px;flex-wrap:wrap}
+  .big div{background:var(--forest);color:var(--paper);border-radius:14px;padding:10px 18px;font-weight:800;font-size:16px}
+  .big b{color:var(--gold);font-size:26px;display:block;font-family:'Bitter',Georgia,serif}
+  .loggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+  .logitem{background:#fff;border:1px solid var(--line);border-left:5px solid var(--good);border-radius:8px;padding:4px 8px;font-size:12.5px;line-height:1.3;color:var(--body)}
+  .logitem.miss{border-left-color:var(--bad)}
+  .certfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .certfoot p{margin:0;font-size:15px;font-weight:700;color:var(--forest)}
+  @media (max-width:760px){.modes{grid-template-columns:1fr}.loggrid{grid-template-columns:1fr 1fr}}
+  .home{display:inline-block;color:#CFE0D2;font-weight:800;text-decoration:none;margin-bottom:8px;font-size:15px}
+  .home:hover{color:var(--gold)}
+
+  .hero{color:var(--paper);display:flex;flex-direction:column;gap:6px;margin:6px 0 18px}
+  .hero h1{font-size:38px;color:var(--gold)}
+  .hero p{margin:0;font-size:17px;line-height:1.5;color:#CFE0D2;max-width:760px}
+  .stations{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .station{background:var(--paper);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;border-top:10px solid var(--c)}
+  .station h2{font-size:24px;color:var(--forest);display:flex;align-items:center;gap:10px}
+  .station .pts{font-size:13px;font-weight:800;color:#fff;background:var(--c);padding:3px 10px;border-radius:999px;margin-left:auto;white-space:nowrap}
+  .station p{margin:0;font-size:15px;line-height:1.5;color:var(--body)}
+  .acts{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+  .act{display:flex;align-items:center;gap:12px;text-decoration:none;background:#fff;border:2px solid var(--line);border-radius:14px;padding:11px 14px;color:var(--ink)}
+  a.act:hover{border-color:var(--forest)}
+  .act b{display:block;font-size:16px;color:var(--forest)}
+  .act span{font-size:13px;color:var(--muted);font-weight:600}
+  .act .go{margin-left:auto;font-size:20px;color:var(--gold);font-weight:800}
+  .act.soon{opacity:.6;border-style:dashed}
+  .lockbadge{font-size:12px;font-weight:800;background:var(--forest);color:var(--gold);padding:2px 8px;border-radius:999px;margin-left:6px}
+  .note{color:#CFE0D2;font-size:14px;margin-top:18px;line-height:1.5}
+  @media (max-width:760px){.stations{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="turn" style="color:#CFE0D2">North Paulding FFA · Georgia FFA Senior Division (2024 rules)</div>
+    <h1>Wildlife Management CDE Practice</h1>
+    <p>Each team member competes in one practicum. Find your section below. Every practicum is 60 minutes and worth 100 points, and all four scores count toward the team total.</p>
+  </div>
+  <div class="stations">
+    <div class="station" style="--c:#8A5A2B">
+      <h2>🦌 Whitetail Deer <span class="pts">100 pts</span></h2>
+      <p>Up to 40 items: jawbone aging, Boone and Crockett antler measuring to the nearest 1/8 inch, the four standard management objectives, and questions from <i>Deer Herd Management for Georgia Hunters</i>.</p>
+      <div class="acts"><div class="act soon"><div><b>Coming soon</b><span>Jawbone aging, antler scoring, and management questions</span></div></div></div>
+    </div>
+    <div class="station" style="--c:#2F6E9A">
+      <h2>🦆 Game Bird Biology <span class="pts">100 pts</span></h2>
+      <p>10 call IDs (25 points) and up to 30 management questions (75 points) on 17 species. All questions come from the Game Bird Management Test Material.</p>
+      <div class="acts">
+        <a class="act" href="gamebird-quiz.html"><div><b>Game Bird Management Practice Test</b><span>149 questions · contest, practice, and study-by-species modes</span></div><span class="go">→</span></a>
+        <a class="act" href="gamebird-calls.html"><div><b>Game Bird Call ID Drill <span class="lockbadge">Team code</span></b><span>Learn every call, then take a 10-call contest drill</span></div><span class="go">→</span></a>
+      </div>
+    </div>
+    <div class="station" style="--c:#3E7D3A">
+      <h2>🌿 General Identification <span class="pts">100 pts</span></h2>
+      <p>Up to 50 items from 33 wildlife species, 49 wildlife plants, and 18 pieces of equipment. Items can be photos, mounts, tracks, fruits, cones, or written descriptions.</p>
+      <div class="acts"><div class="act soon"><div><b>Coming soon</b><span>Wildlife, plant, and equipment ID</span></div></div></div>
+    </div>
+    <div class="station" style="--c:#2C7A7B">
+      <h2>🐟 Aquatic Management <span class="pts">100 pts</span></h2>
+      <p>Up to 40 items: aquatic identification from a list of 46 and pond management questions from UGA Extension’s <i>Sport Fish Management in Ponds</i>.</p>
+      <div class="acts"><div class="act soon"><div><b>Coming soon</b><span>Aquatic ID and pond management</span></div></div></div>
+    </div>
+  </div>
+  <p class="note">The team activity (400 points) is only held at the State CDE. Study materials are built from the official Georgia FFA Wildlife Management CDE rules and references.</p>
+</div>
+</body>
+</html>
