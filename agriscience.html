@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agriscience Fair | North Paulding FFA</title>
+<meta name="description" content="North Paulding FFA Agriscience Fair hub: key dates, project ideas, research steps, the project proposal form, and official Georgia and National FFA resources.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #16264A;
+    --navy-deep: #0E1A34;
+    --gold: #C9962C;
+    --gold-light: #E2B85B;
+    --cream: #F4EFE1;
+    --paper: #FBF8F0;
+    --green: #3C5A40;
+    --rust: #A15C38;
+    --ink: #201C15;
+    --ink-soft: #4A4438;
+    --rule: rgba(22,38,74,0.16);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    color:var(--navy);
+    line-height:1.15;
+    margin:0;
+  }
+
+  a{ color:inherit; }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  img{ max-width:100%; display:block; }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- Top nav ---------- */
+  .topnav{
+    background:var(--navy-deep);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .topnav .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:14px;
+    padding-bottom:14px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .brand{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:1.05rem;
+    color:var(--cream);
+    letter-spacing:0.01em;
+  }
+  .brand span{ color:var(--gold-light); }
+  .navlinks{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    font-size:0.92rem;
+  }
+  .navlinks a{
+    color:rgba(244,239,225,0.82);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    padding-bottom:2px;
+  }
+  .navlinks a:hover{ border-bottom-color:var(--gold-light); color:var(--cream); }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse 800px 400px at 85% -10%, rgba(201,150,44,0.18), transparent 60%),
+      var(--navy);
+    color:var(--cream);
+    padding:74px 0 56px;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1fr 260px;
+    gap:40px;
+    align-items:center;
+  }
+  .hero .brand-row{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+    justify-self:end;
+  }
+  .hero .brand-row img{
+    width:220px;
+    height:auto;
+  }
+  .hero .brand-divider{
+    width:130px;
+    height:1px;
+    background:rgba(244,239,225,0.28);
+  }
+  @media (max-width:860px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero .brand-row{
+      order:-1;
+      flex-direction:row;
+      justify-self:start;
+      margin-bottom:8px;
+      gap:22px;
+    }
+    .hero .brand-row img{ width:120px; }
+    .hero .brand-divider{ width:1px; height:64px; }
+  }
+  @media (max-width:520px){
+    .hero .brand-row img{ width:88px; }
+    .hero .brand-divider{ height:48px; }
+  }
+  .hero .kicker{
+    font-size:0.85rem;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    color:var(--paper);
+    font-size:clamp(2.4rem, 5.4vw, 4rem);
+    max-width:14ch;
+  }
+  .hero .tagline{
+    margin-top:18px;
+    font-size:1.2rem;
+    color:rgba(244,239,225,0.86);
+    max-width:46ch;
+  }
+  .hero .meta-row{
+    margin-top:30px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    border-top:1px solid rgba(244,239,225,0.2);
+    padding-top:22px;
+  }
+  .hero .meta-item{
+    font-size:0.92rem;
+    color:rgba(244,239,225,0.72);
+  }
+  .hero .meta-item strong{
+    display:block;
+    color:var(--cream);
+    font-size:1rem;
+    margin-bottom:2px;
+  }
+
+  /* ---------- Announcement bar ---------- */
+  .announce{
+    background:var(--gold);
+    color:var(--navy-deep);
+  }
+  .announce .wrap{
+    padding:15px 28px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 28px;
+    align-items:center;
+    font-size:0.96rem;
+  }
+  .announce strong{ font-weight:700; }
+  .announce .divider{ opacity:0.5; }
+
+  /* ---------- Layout: main + sidebar ---------- */
+  main{ padding:56px 0 30px; }
+  .layout{
+    display:grid;
+    grid-template-columns:1fr 300px;
+    gap:56px;
+  }
+  section.block{ margin-bottom:58px; }
+  section.block:last-child{ margin-bottom:0; }
+
+  .eyebrow{
+    font-size:0.82rem;
+    color:var(--rust);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  h2.title{
+    font-size:1.7rem;
+    margin-bottom:16px;
+  }
+  .lede{
+    color:var(--ink-soft);
+    max-width:62ch;
+    margin-bottom:22px;
+  }
+
+  /* Alumni callout */
+  .callout{
+    border:1px solid var(--rule);
+    border-left:4px solid var(--green);
+    padding:26px 28px;
+    background:var(--cream);
+  }
+  .callout .when{
+    font-family:'Fraunces', Georgia, serif;
+    font-size:1.25rem;
+    color:var(--green);
+    margin-bottom:4px;
+  }
+  .callout .where{
+    color:var(--ink-soft);
+    font-size:0.95rem;
+    margin-bottom:20px;
+  }
+  .reasons{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px 28px;
+  }
+  .reasons li{
+    border-top:1px solid var(--rule);
+    padding-top:12px;
+  }
+  .reasons li strong{
+    display:block;
+    color:var(--navy);
+    font-size:0.95rem;
+    margin-bottom:3px;
+  }
+  .reasons li span{
+    color:var(--ink-soft);
+    font-size:0.92rem;
+  }
+  .callout .note{
+    margin-top:20px;
+    font-size:0.92rem;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  /* Officers */
+  .officers-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--rule);
+    border:1px solid var(--rule);
+  }
+  .officer-card{
+    background:var(--paper);
+    padding:22px 20px;
+  }
+  .officer-card .role{
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--rust);
+    margin-bottom:6px;
+  }
+  .officer-card .name{
+    font-family:'Fraunces', Georgia, serif;
+    font-size:1.15rem;
+    color:var(--navy);
+  }
+  @media (max-width: 640px){
+    .officers-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width: 420px){
+    .officers-grid{ grid-template-columns:1fr; }
+  }
+
+  /* Alumni */
+  .alumni-row{
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  .alumni-row .callout{ flex:1 1 380px; }
+  .alumni-badge{
+    flex:0 0 180px;
+    display:flex;
+    justify-content:center;
+    padding-top:6px;
+  }
+  .alumni-badge img{
+    width:150px;
+    height:auto;
+  }
+  @media (max-width:640px){
+    .alumni-badge{ flex:0 0 auto; width:100%; padding-top:0; margin-bottom:6px; }
+    .alumni-badge img{ width:110px; }
+  }
+
+  /* Coming soon / PackFresh */
+  .comingsoon{
+    border:1px solid var(--rule);
+    background:var(--navy);
+    color:var(--cream);
+    display:flex;
+    gap:30px;
+    align-items:center;
+    padding:30px 32px;
+    flex-wrap:wrap;
+  }
+  .comingsoon img{
+    width:120px;
+    height:auto;
+    flex:0 0 auto;
+  }
+  .comingsoon .cs-text{ flex:1 1 320px; }
+  .comingsoon .cs-tag{
+    display:inline-block;
+    font-size:0.76rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--navy-deep);
+    background:var(--gold-light);
+    padding:3px 10px;
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .comingsoon h3{
+    color:var(--paper);
+    font-size:1.3rem;
+    margin-bottom:10px;
+  }
+  .comingsoon p{
+    color:rgba(244,239,225,0.82);
+    font-size:0.95rem;
+    max-width:56ch;
+    margin:0;
+  }
+  @media (max-width:640px){
+    .comingsoon{ padding:26px 22px; }
+    .comingsoon img{ width:96px; }
+  }
+
+  /* Dues */
+  .dues-row{
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+    align-items:flex-start;
+  }
+  .dues-text{ flex:1 1 320px; color:var(--ink-soft); }
+  .btn{
+    display:inline-block;
+    background:var(--navy);
+    color:var(--paper);
+    text-decoration:none;
+    padding:11px 22px;
+    font-weight:600;
+    font-size:0.94rem;
+    border:1px solid var(--navy);
+    white-space:nowrap;
+  }
+  .btn:hover{ background:var(--navy-deep); }
+  .btn.alt{
+    background:transparent;
+    color:var(--navy);
+  }
+  .btn.alt:hover{ background:var(--navy); color:var(--paper); }
+
+  /* Calendar timeline */
+  .month-group{
+    margin-bottom:30px;
+  }
+  .month-group:last-child{ margin-bottom:0; }
+  .month-label{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    color:var(--rust);
+    font-size:1rem;
+    margin-bottom:10px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--rule);
+  }
+  .event{
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:18px;
+    padding:13px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .event:last-child{ border-bottom:none; }
+  .event .date{
+    font-weight:700;
+    color:var(--navy);
+    font-size:0.92rem;
+    padding-top:1px;
+  }
+  .event .info .ev-name{
+    font-weight:600;
+    color:var(--ink);
+  }
+  .event .info .ev-loc{
+    color:var(--ink-soft);
+    font-size:0.9rem;
+    margin-top:2px;
+  }
+
+  /* Sidebar */
+  .sidebar-card{
+    border:1px solid var(--rule);
+    padding:22px;
+    background:var(--cream);
+    margin-bottom:26px;
+  }
+  .sidebar-card h3{
+    font-size:1.05rem;
+    margin-bottom:14px;
+  }
+  .fact{
+    margin-bottom:12px;
+    font-size:0.92rem;
+  }
+  .fact:last-child{ margin-bottom:0; }
+  .fact .label{
+    display:block;
+    color:var(--rust);
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:2px;
+  }
+  .fact .value{ color:var(--ink); }
+  .fact .value a{ color:var(--navy); text-decoration:underline; text-decoration-color:var(--rule); }
+
+  .linklist{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .linklist li{
+    border-top:1px solid var(--rule);
+  }
+  .linklist li:first-child{ border-top:none; }
+  .linklist a{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:13px 2px;
+    text-decoration:none;
+    color:var(--navy);
+    font-size:0.94rem;
+    font-weight:600;
+  }
+  .linklist a:hover{ color:var(--rust); }
+  .linklist a .arrow{ color:var(--gold); font-weight:400; }
+  .study-group{
+    color:var(--rust);
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    font-weight:700;
+    margin:0 0 4px;
+    padding-bottom:6px;
+    border-bottom:2px solid var(--rule);
+  }
+  .linklist + .study-group{ margin-top:22px; }
+
+  /* Chapter Life gallery */
+  .gallery-section{
+    background:var(--cream);
+    border-top:1px solid var(--rule);
+    padding:56px 0 64px;
+  }
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    grid-auto-rows:170px;
+    gap:10px;
+  }
+  .gallery-grid figure{
+    margin:0;
+    overflow:hidden;
+    position:relative;
+    background:var(--navy);
+  }
+  .gallery-grid img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .gallery-grid .g-tall{ grid-row:span 2; }
+  .gallery-grid .g-wide{ grid-column:span 2; }
+  @media (max-width:760px){
+    .gallery-grid{ grid-template-columns:repeat(2, 1fr); grid-auto-rows:150px; }
+    .gallery-grid .g-wide{ grid-column:span 2; }
+  }
+  @media (max-width:480px){
+    .gallery-grid{ grid-template-columns:1fr; grid-auto-rows:220px; }
+    .gallery-grid .g-tall{ grid-row:span 1; }
+    .gallery-grid .g-wide{ grid-column:span 1; }
+  }
+
+  /* Footer */
+  footer{
+    background:var(--navy-deep);
+    color:rgba(244,239,225,0.78);
+    padding:44px 0 30px;
+    margin-top:20px;
+  }
+  footer .wrap{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:26px;
+  }
+  footer .f-brand{
+    font-family:'Fraunces', Georgia, serif;
+    color:var(--cream);
+    font-size:1.15rem;
+    margin-bottom:8px;
+  }
+  footer .f-addr{ font-size:0.92rem; line-height:1.7; }
+  footer .f-addr a{ color:rgba(244,239,225,0.78); text-decoration:underline; }
+  footer .f-note{
+    font-size:0.82rem;
+    color:rgba(244,239,225,0.45);
+    margin-top:26px;
+    border-top:1px solid rgba(244,239,225,0.12);
+    padding-top:18px;
+  }
+
+  /* Responsive */
+  @media (max-width: 860px){
+    .layout{ grid-template-columns:1fr; }
+    .sidebar-card{ position:static; }
+    .reasons{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 520px){
+    body{ font-size:16px; }
+    .hero{ padding:54px 0 40px; }
+    .wrap{ padding:0 20px; }
+    .event{ grid-template-columns:76px 1fr; gap:12px; }
+    footer .wrap{ flex-direction:column; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+
+  /* Agriscience Fair page */
+  .agri{ max-width:900px; }
+  .brand a{ color:inherit; }
+  .facts-list{ margin:0 0 22px; padding-left:20px; }
+  .facts-list li{ margin-bottom:8px; }
+  .table-scroll{ overflow-x:auto; margin-bottom:16px; }
+  .agri-table{ width:100%; border-collapse:collapse; font-size:0.95rem; background:var(--paper); }
+  .agri-table th, .agri-table td{ text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid var(--rule); }
+  .agri-table thead th{ background:var(--navy); color:var(--cream); font-weight:600; font-size:0.88rem; }
+  .agri-table tr.pick td{ background:rgba(201,150,44,0.13); }
+  .agri-table tr.hard td{ background:var(--cream); color:var(--navy); }
+  .form-table th{ width:42%; color:var(--navy); font-weight:600; background:var(--cream); }
+  .form-table td{ height:44px; }
+  .form-wrap{ margin-top:18px; }
+  .sign{ margin:14px 0 0; }
+  .small-note{ font-size:0.9rem; color:var(--ink-soft); margin:0 0 16px; }
+  .tag{ display:inline-block; background:rgba(201,150,44,0.25); color:var(--navy); font-weight:600; font-size:0.78rem; padding:2px 8px; margin-right:6px; }
+  .steps{ padding-left:22px; margin:0; }
+  .steps li{ margin-bottom:12px; }
+  .steps ul{ margin:8px 0 0; padding-left:20px; }
+  .steps ul li{ margin-bottom:4px; }
+  .archive-year{ border-left:4px solid var(--gold); padding:4px 0 4px 18px; }
+  .archive-year h3{ font-size:1.2rem; margin-bottom:6px; }
+  .archive-year p{ margin:0; color:var(--ink-soft); }
+  .back{ color:var(--navy); font-weight:600; }
+  section.block{ scroll-margin-top:70px; }
+
+  @media print{
+    .topnav, .hero, footer, #printForm, .back{ display:none !important; }
+    body{ background:#fff; font-size:12pt; }
+    body.print-form main section.block:not(#proposal){ display:none; }
+    body.print-form #proposal .lede{ display:none; }
+    .form-table td{ height:56px; }
+    .agri-table thead th{ background:#fff; color:#000; border-bottom:2px solid #000; }
+    .agri-table tr.pick td{ background:#fff; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="wrap">
+    <div class="brand"><a href="index.html" style="text-decoration:none">north paulding <span>ffa</span></a></div>
+    <nav class="navlinks">
+      <a href="index.html">Home</a>
+      <a href="#about">About</a>
+      <a href="#dates">Key Dates</a>
+      <a href="#ideas">Project Ideas</a>
+      <a href="#steps">How It Works</a>
+      <a href="#proposal">Proposal Form</a>
+      <a href="#resources">Resources</a>
+      <a href="#projects">Our Projects</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <div class="kicker">North Paulding FFA &middot; 2026&ndash;2027</div>
+      <h1>Agriscience Fair</h1>
+      <p class="tagline">Ask a real question about agriculture, run your own experiment, and explain what you found to judges at state convention.</p>
+      <div class="meta-row">
+        <div class="meta-item"><strong>Report due</strong>March 15, 2027</div>
+        <div class="meta-item"><strong>Submitted through</strong>AET Application Manager</div>
+        <div class="meta-item"><strong>Teams</strong>1 to 3 students</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap agri">
+
+    <section class="block" id="about">
+      <div class="eyebrow">The basics</div>
+      <h2 class="title">What the Agriscience Fair is</h2>
+      <p class="lede">The Agriscience Fair is a real research project. You ask a question about agriculture, run an experiment, and explain what you found to judges. Our goal this year is 2 or 3 strong North Paulding projects, and you could lead one of them.</p>
+      <ul class="facts-list">
+        <li><strong>Who can enter:</strong> FFA members enrolled in an ag class. Work alone or on a team of up to 3.</li>
+        <li><strong>Grade levels:</strong> Grades 9&ndash;10 and grades 11&ndash;12 compete separately. A mixed team competes at the highest grade on the team.</li>
+        <li><strong>Pathways:</strong> Animal Systems; Environmental Service/Natural Resource Systems; Food Products and Processing Systems; Plant Systems; Power, Structural and Technical Systems; and Social Science.</li>
+        <li><strong>What you turn in:</strong> A written report on the National FFA report template.</li>
+        <li><strong>How it is scored:</strong> The written report is 25% of your score. The interview with judges at state convention is 75%. Your display board is not scored.</li>
+      </ul>
+      <div class="callout"><p class="note" style="margin:0">That last point matters most. The judges want to hear you explain your own work for up to 15 minutes. If you did the work, you will be ready.</p></div>
+    </section>
+
+    <section class="block" id="dates">
+      <div class="eyebrow">2026&ndash;2027 timeline</div>
+      <h2 class="title">Key dates</h2>
+      <p class="lede">Data collection has to wrap up by February 20 to leave time for the report. That means experiments start the first week back from winter break.</p>
+      <div class="table-scroll">
+        <table class="agri-table">
+          <thead><tr><th>Checkpoint</th><th>Due date</th></tr></thead>
+          <tbody>
+            <tr><td>Pick a project idea and team</td><td>December 4</td></tr>
+            <tr><td>Proposal form approved</td><td>December 11</td></tr>
+            <tr><td>5 sources found, supplies gathered</td><td>December 18</td></tr>
+            <tr><td>Experiment set up</td><td>January 9</td></tr>
+            <tr><td>First data check with your advisor</td><td>January 23</td></tr>
+            <tr><td>Data collection finished</td><td>February 20</td></tr>
+            <tr><td>Graphs and results done</td><td>February 26</td></tr>
+            <tr><td>Full report draft</td><td>March 5</td></tr>
+            <tr><td>Final report submitted in AET (aim early)</td><td>March 10</td></tr>
+            <tr class="hard"><td><strong>State deadline</strong></td><td><strong>March 15</strong></td></tr>
+            <tr><td>Interview practice rounds</td><td>Before state convention</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="ideas">
+      <div class="eyebrow">Find your question</div>
+      <h2 class="title">Project ideas</h2>
+      <p class="lede">Every idea below can run with equipment our program already has. Pick one, change it to fit your interest, or bring your own. The first three are the best bets for winter because they run indoors and give fast results.</p>
+      <div class="table-scroll">
+        <table class="agri-table">
+          <thead><tr><th>Project idea</th><th>Pathway</th><th>What we use at school</th><th>What you can do at home</th></tr></thead>
+          <tbody>
+            <tr class="pick"><td><strong>Microgreens yield:</strong> seed density, soak time, or light hours vs. harvest weight</td><td>Plant Systems</td><td>4-level microgreens rack, scales</td><td>Repeat one trial on a windowsill</td></tr>
+            <tr class="pick"><td><strong>Microgreens or lettuce shelf life:</strong> packaging or storage method vs. days until spoiled</td><td>Food Products</td><td>Microgreens rack, scales</td><td>Store samples in your fridge and log daily</td></tr>
+            <tr class="pick"><td><strong>Southern pine lumber strength:</strong> species or drying method vs. load before breaking</td><td>Power, Structural and Technical</td><td>Sawmill, scales, a load rig we build</td><td>Research and write while boards dry</td></tr>
+            <tr><td><strong>Rooting hormone strength:</strong> hormone level vs. root count on cuttings</td><td>Plant Systems</td><td>Clone King cloner</td><td>Root cuttings in cups of soil</td></tr>
+            <tr><td><strong>Grow light type:</strong> light type or distance vs. plant growth</td><td>Plant Systems</td><td>LED lights, grow tent</td><td>Small home setup with one light</td></tr>
+            <tr><td><strong>Seed scarification:</strong> okra or other hard seeds vs. germination rate</td><td>Plant Systems</td><td>Incubator for steady temperature</td><td>Cheap and easy to run fully at home</td></tr>
+            <tr><td><strong>Kratky hydroponics:</strong> nutrient strength vs. lettuce growth</td><td>Plant Systems</td><td>Hydroponic tower (not PackFresh towers)</td><td>Mason jars on a windowsill</td></tr>
+            <tr><td><strong>Cut flower life:</strong> preservative type vs. vase life</td><td>Food Products or Plant Systems</td><td>Lab sinks, scales</td><td>Vases at home, logged daily</td></tr>
+            <tr><td><strong>Soil percolation:</strong> pine stand vs. hardwood stand vs. patio soil</td><td>Environmental/Natural Resources</td><td>West Woods, water bladder</td><td>Test your own yard soil</td></tr>
+            <tr><td><strong>Wildlife activity:</strong> location or time of day vs. animals seen on camera</td><td>Environmental/Natural Resources</td><td>Game camera, West Woods</td><td>Data entry and analysis</td></tr>
+            <tr><td><strong>Wood finish durability:</strong> sealant type vs. weathering on boards</td><td>Power, Structural and Technical</td><td>Sawmill boards</td><td>Boards left outside at home</td></tr>
+            <tr><td><strong>Consumer taste test:</strong> school-grown vs. store-bought lettuce</td><td>Social Science</td><td>PackFresh lettuce</td><td>Survey design and analysis</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small-note"><span class="tag">Best bet</span> Highlighted rows are the strongest picks for this winter.</p>
+      <div class="callout"><p class="note" style="margin:0"><strong>Extra approval needed before you start:</strong> anything with live animals (incubator eggs, fish) and anything with people as subjects (taste tests, surveys). These follow National FFA rules and need signed forms first.</p></div>
+    </section>
+
+    <section class="block" id="steps">
+      <div class="eyebrow">Step by step</div>
+      <h2 class="title">How a research project works</h2>
+      <p class="lede">A good project changes one thing, measures what happens, and repeats it enough times to trust the answer.</p>
+      <ol class="steps">
+        <li><strong>Pick a problem.</strong> Choose something you care about and keep it narrow. &ldquo;Plant growth&rdquo; is too big. &ldquo;Effect of soak time on radish microgreen yield&rdquo; works.</li>
+        <li><strong>Write a hypothesis.</strong> Turn your question into a prediction you can test. Example: &ldquo;Radish seeds soaked 8 hours will produce more grams per tray than unsoaked seeds.&rdquo;</li>
+        <li><strong>Read what others found.</strong> Find at least 5 sources: Extension publications, university research, and ag journals. Save every link and title for your references.</li>
+        <li><strong>Design the experiment.</strong>
+          <ul>
+            <li><strong>Independent variable:</strong> the one thing you change.</li>
+            <li><strong>Dependent variable:</strong> what you measure, with units (grams, cm, days, %).</li>
+            <li><strong>Control group:</strong> the normal or untreated version, to compare against.</li>
+            <li><strong>Keep everything else the same:</strong> water, light, temperature, soil, seed lot.</li>
+            <li><strong>Use enough samples:</strong> aim for 30 per group when possible, and mix up where pots or trays sit.</li>
+          </ul>
+        </li>
+        <li><strong>Write a proposal</strong> (the form below) and get it approved before you buy anything.</li>
+        <li><strong>Collect data.</strong> Record every measurement in your logbook the day you take it. Write down anything odd you notice, too.</li>
+        <li><strong>Analyze.</strong> Find the average for each group and how spread out the numbers are. Make a graph.</li>
+        <li><strong>Draw a conclusion.</strong> Did the data support your hypothesis or not? Both are fine answers. Stay within what your data shows.</li>
+        <li><strong>Write the report</strong> on the National FFA template: abstract, introduction, literature review, materials and methods, results, conclusions, acknowledgements, and references.</li>
+        <li><strong>Practice the interview.</strong> Explain your project out loud to your advisor, an officer, and someone who knows nothing about it.</li>
+      </ol>
+    </section>
+
+    <section class="block" id="proposal">
+      <div class="eyebrow">Turn this in first</div>
+      <h2 class="title">Project proposal form</h2>
+      <p class="lede">Turn this in before you start. Nothing gets bought or set up until it is approved.</p>
+      <button class="btn" type="button" id="printForm">Print the proposal form</button>
+      <div class="table-scroll form-wrap">
+        <table class="agri-table form-table">
+          <tbody>
+            <tr><th>Team members (up to 3) and grades</th><td></td></tr>
+            <tr><th>Pathway</th><td></td></tr>
+            <tr><th>Working title (15 words or less)</th><td></td></tr>
+            <tr><th>My question</th><td></td></tr>
+            <tr><th>My hypothesis (prediction)</th><td></td></tr>
+            <tr><th>Independent variable (what I change)</th><td></td></tr>
+            <tr><th>Dependent variable (what I measure, with units)</th><td></td></tr>
+            <tr><th>Control group</th><td></td></tr>
+            <tr><th>Things I will keep the same</th><td></td></tr>
+            <tr><th>Number of samples per group</th><td></td></tr>
+            <tr><th>How many times I will repeat it</th><td></td></tr>
+            <tr><th>Materials and equipment needed</th><td></td></tr>
+            <tr><th>Estimated cost</th><td></td></tr>
+            <tr><th>What I will do at school</th><td></td></tr>
+            <tr><th>What I will do at home</th><td></td></tr>
+            <tr><th>Who checks on it over weekends and breaks</th><td></td></tr>
+            <tr><th>Safety concerns or approval forms needed</th><td></td></tr>
+            <tr><th>Three sources I have found so far</th><td></td></tr>
+          </tbody>
+        </table>
+        <p class="sign"><strong>Approval:</strong> Advisor signature ______________________ &nbsp; Date __________</p>
+        <p class="sign"><strong>Advisor notes:</strong></p>
+      </div>
+    </section>
+
+    <section class="block" id="resources">
+      <div class="eyebrow">Official rules and templates</div>
+      <h2 class="title">Resources</h2>
+      <ul class="linklist">
+        <li><a href="https://www.georgiaffa.org/agriscience" target="_blank" rel="noopener">Georgia FFA Agriscience Fair Program (guidelines and deadlines) <span class="arrow">&rarr;</span></a></li>
+        <li><a href="https://www.ffa.org/participate/awards/agriscience-fair/" target="_blank" rel="noopener">National FFA Agriscience Fair (handbook, report template, rubrics) <span class="arrow">&rarr;</span></a></li>
+        <li><a href="https://www.theaet.com" target="_blank" rel="noopener">The AET Login (where reports are submitted) <span class="arrow">&rarr;</span></a></li>
+      </ul>
+      <p class="small-note">Rules can change each year. Always check the current Georgia guidelines and National FFA handbook before you start.</p>
+    </section>
+
+    <section class="block" id="projects">
+      <div class="eyebrow">Chapter archive</div>
+      <h2 class="title">North Paulding Agriscience Fair projects</h2>
+      <p class="lede">This is where our chapter's projects will live, year by year, so future members can see what has been done and build on it.</p>
+      <div class="archive-year">
+        <h3>2026&ndash;2027</h3>
+        <p>Our first year in the Agriscience Fair. Projects will be posted here once teams are set.</p>
+      </div>
+    </section>
+
+    <p><a class="back" href="index.html">&larr; Back to North Paulding FFA</a></p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="f-brand">North Paulding FFA</div>
+      <div class="f-addr">
+        300 North Paulding Dr<br>
+        Dallas, GA 30132<br>
+        <a href="mailto:mtownson@paulding.k12.ga.us">mtownson@paulding.k12.ga.us</a>
+      </div>
+    </div>
+    <div>
+      <div class="f-addr">
+        Chapter GA0545 &middot; Established 2017<br>
+        Area 1, North Region &middot; Georgia FFA
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="f-note">&copy; <span id="year"></span> North Paulding FFA. Built for students, families, and supporters of agricultural education at North Paulding High School.</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('printForm').addEventListener('click', function(){
+    document.body.classList.add('print-form');
+    window.print();
+  });
+  window.addEventListener('afterprint', function(){ document.body.classList.remove('print-form'); });
+</script>
+
+</body>
+</html>
