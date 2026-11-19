@@ -6,103 +6,76 @@
 <title>Sunlight Simulator</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <style>
-:root{--bg:#1F3A2B;--card:#fff;--ink:#2b2b28;--muted:#66645d;--line:#dcd8cc;--green:#3b6d11;--gold:#e8b23a;--accent:#185fa5}
+:root{--bg:#1F3A2B;--card:#F6F2E7;--ink:#2b2b28;--muted:#66645d;--line:#E2DCCB;--green:#3b6d11}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Nunito Sans',Arial,sans-serif}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 'Nunito Sans',Arial,sans-serif}
 h1,h2{font-family:'Bitter',Georgia,serif}
-.card{background:#F6F2E7!important;border-color:#E2DCCB!important}
-header{padding:18px 22px 6px}
-h1{font-size:28px;font-weight:800;margin:0 0 4px;color:#E9B949}
-.sub{color:#CFE0D2;margin:0;font-size:15px}
-.kicker{color:#CFE0D2;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;margin:0 0 2px}
-main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;padding:12px 22px 28px}
-@media (max-width:1000px){main{grid-template-columns:minmax(0,1fr)}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.card h2{font-size:15px;font-weight:600;margin:0 0 8px}
-.row{display:flex;align-items:center;gap:10px;margin:6px 0}
-.row label{min-width:78px;font-size:13px;color:var(--muted)}
-.row input[type=range]{flex:1;accent-color:var(--green)}
-.out{min-width:150px;text-align:right;font-weight:600;font-size:14px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
-button{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:5px 10px;cursor:pointer}
+header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:8px 14px 6px}
+h1{font-size:21px;font-weight:800;margin:0;color:#E9B949}
+.kicker{color:#CFE0D2;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:0}
+main{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:10px;padding:0 14px 12px;align-items:start}
+@media (max-width:820px){main{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.mapcard{display:flex;flex-direction:column;align-items:center}
+.mapcard .chips,.mapcard .legend,.mapcard .hover{align-self:stretch}
+canvas#yard{display:block;aspect-ratio:800/576;width:min(100%,calc((100vh - 150px)*800/576));height:auto;border-radius:8px;border:1px solid var(--line)}
+@media (max-width:820px){canvas#yard{width:100%}}
+.side h2{font-size:14px;font-weight:700;margin:8px 0 4px}
+.side h2:first-child{margin-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 6px}
+button{font:inherit;font-size:12px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:7px;padding:4px 8px;cursor:pointer}
 button:hover{border-color:#a9a596}
 button.on{background:#e6f1fb;border-color:#85b7eb;color:#0c447c}
-button.primary{background:var(--green);border-color:var(--green);color:#fff}
-button.primary:hover{background:#2f5a0c}
-.canvasWrap{position:relative}
-canvas#yard{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair;border:1px solid var(--line)}
-.hover{font-size:13px;color:var(--muted);min-height:20px;margin-top:6px}
-.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:4px}
-.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
-.stat{background:#f1efe8;border-radius:8px;padding:7px 9px}
+.ctl{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:0 8px;margin:2px 0 6px}
+.ctl label{font-size:12px;color:var(--muted)}
+.ctl .out{text-align:right;font-weight:700;font-size:12px}
+.ctl input{grid-column:1 / -1;width:100%;accent-color:var(--green);margin:3px 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);margin-top:5px}
+.sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
+.hover{font-size:12px;color:var(--muted);min-height:16px;margin-top:2px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.stat{background:#ebe6d8;border-radius:7px;padding:5px 7px}
 .stat .l{font-size:11px;color:var(--muted)}
-.stat .v{font-size:15px;font-weight:600}
-.plants{display:grid;grid-template-columns:1fr;gap:6px}
-.pbtn{display:flex;align-items:center;gap:8px;text-align:left;width:100%}
-.dot{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex:none}
-.need{margin-left:auto;font-size:11px;color:var(--muted)}
-.grp{font-size:12px;color:var(--muted);margin:8px 0 2px;font-weight:600}
-.list{font-size:13px;margin:8px 0 0;padding:0;list-style:none}
-.list li{display:flex;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid #eeebe2}
-.ok{color:#2f6b10;font-weight:700}.bad{color:#a32d2d;font-weight:700}
-.msg{font-size:13px;margin-top:6px;min-height:18px}
-.score{font-size:18px;font-weight:600;margin:6px 0 0}
-.note{font-size:13px;color:var(--muted);margin:6px 0 0}
-.side{display:flex;flex-direction:column;gap:14px}
+.stat .v{font-size:13px;font-weight:700}
+.note{font-size:11px;color:var(--muted);margin:8px 0 0}
 </style>
 </head>
 <body>
 <header>
 <p class="kicker">Right Plant, Right Place</p>
 <h1>Sunlight Simulator: Follow the Shade</h1>
-<p class="sub">Watch how the sun and shadows move around a whole yard at different places on Earth, then put each plant where it will get the light it needs.</p>
 </header>
 <main>
-<section>
-<div class="card">
+<section class="card mapcard">
 <div class="chips" id="modeBtns">
 <button data-m="now" class="on">Shadows at this time</button>
 <button data-m="day">Sun hours on this date</button>
-<button data-m="season">Answer key: growing-season sun</button>
+<button data-m="season">Growing-season sun</button>
 </div>
-<div class="canvasWrap"><canvas id="yard" width="800" height="576" aria-label="Top-down yard map with house, shed, trees, fences, and shadows"></canvas></div>
-<div class="hover" id="hover">Hover over the yard to read the sun hours at any spot.</div>
+<canvas id="yard" width="800" height="576" aria-label="Top-down yard map with house, shed, trees, fences, and shadows"></canvas>
 <div class="legend" id="legNow"><span><span class="sw" style="background:#9ccc65"></span>Sunlit</span><span><span class="sw" style="background:#4f7a35"></span>Shadow</span><span><span class="sw" style="background:#9a8f80"></span>Buildings</span><span><span class="sw" style="background:#c9c4b6"></span>Driveway and patio</span></div>
 <div class="legend" id="legHrs" style="display:none"><span><span class="sw" style="background:#f4c95d"></span>Full sun, 6+ hrs</span><span><span class="sw" style="background:#9ccc65"></span>Part sun / part shade, 3 to 6 hrs</span><span><span class="sw" style="background:#3e6b2a"></span>Shade, under 3 hrs</span></div>
-</div>
-<div class="card" style="margin-top:14px">
-<h2>Place and time</h2>
+<div class="hover" id="hover">Point at the yard to read the sun hours at any spot.</div>
+</section>
+<aside class="card side">
+<h2>Place</h2>
 <div class="chips" id="locBtns"></div>
-<div class="row"><label for="lat">Latitude</label><input type="range" id="lat" min="-60" max="60" step="0.1" value="33.9"><span class="out" id="latO"></span></div>
-<div class="row"><label for="day">Date</label><input type="range" id="day" min="1" max="365" step="1" value="172"><span class="out" id="dayO"></span></div>
+<div class="ctl"><label for="lat">Latitude</label><span class="out" id="latO"></span><input type="range" id="lat" min="-60" max="60" step="0.1" value="33.9"></div>
+<h2>Date</h2>
 <div class="chips" id="dayBtns">
 <button data-v="79">Mar 20</button><button data-v="172">Jun 21</button><button data-v="265">Sep 22</button><button data-v="355">Dec 21</button>
 </div>
-<div class="row"><label for="hr">Sun time</label><input type="range" id="hr" min="4" max="20" step="0.25" value="10"><span class="out" id="hrO"></span></div>
+<div class="ctl"><label for="day">Date</label><span class="out" id="dayO"></span><input type="range" id="day" min="1" max="365" step="1" value="172"></div>
+<h2>Time</h2>
+<div class="ctl"><label for="hr">Sun time</label><span class="out" id="hrO"></span><input type="range" id="hr" min="4" max="20" step="0.25" value="10"></div>
 <div class="chips"><button id="play">Play the day</button><button id="playYear">Play the year at noon</button></div>
-<p class="note">Longitude is left out on purpose. Moving east or west only changes what the clock reads when the sun is highest, not how much sun the yard gets. "Sun time" puts the highest sun at 12:00.</p>
-</div>
-</section>
-<aside class="side">
-<div class="card">
-<h2>Sun right now</h2>
 <div class="stats">
 <div class="stat"><div class="l">Sun height</div><div class="v" id="sAlt"></div></div>
 <div class="stat"><div class="l">Sun direction</div><div class="v" id="sAz"></div></div>
 <div class="stat"><div class="l">Daylight</div><div class="v" id="sDay"></div></div>
 <div class="stat"><div class="l">Noon sun</div><div class="v" id="sNoon"></div></div>
 </div>
-</div>
-<div class="card">
-<h2>Right plant, right place</h2>
-<p class="note" style="margin-top:0">Pick a plant, then click the yard to plant it. Click a planted spot to dig it back up. Plants are scored on their average daily sun over the <span id="seasonName">growing season</span>.</p>
-<div id="plantBtns"></div>
-<div class="msg" id="msg"></div>
-<div class="chips" style="margin-top:8px"><button class="primary" id="check">Check my yard</button><button id="clear">Clear yard</button></div>
-<div class="score" id="score"></div>
-<ul class="list" id="results"></ul>
-</div>
+<p class="note">Longitude doesn't matter for sun and shade. "Sun time" puts the highest sun at 12:00.</p>
 </aside>
 </main>
 <script>
@@ -127,19 +100,7 @@ const locs=[
 ['Edmonton, Canada',53.5],['Minneapolis, MN',45.0],['Dallas, GA',33.9],['Miami, FL',25.8],
 ['Quito, Ecuador',-0.2],['Sydney, Australia',-33.9],['Cape Town, South Africa',-33.9]
 ];
-const PLANTS=[
-{id:'tom',name:'Tomato',need:'full',code:'To'},
-{id:'lav',name:'Lavender',need:'full',code:'La'},
-{id:'cm',name:'Crape myrtle',need:'full',code:'Cm'},
-{id:'hyd',name:'Bigleaf hydrangea',need:'part',code:'Hy'},
-{id:'az',name:'Azalea',need:'part',code:'Az'},
-{id:'cb',name:'Coral bells',need:'part',code:'Cb'},
-{id:'hos',name:'Hosta',need:'shade',code:'Ho'},
-{id:'fern',name:'Christmas fern',need:'shade',code:'Fe'},
-{id:'hel',name:'Lenten rose',need:'shade',code:'Lr'}
-];
-const NEED={full:{label:'Full sun',txt:'6+ hrs',color:'#c98a12'},part:{label:'Part sun / part shade',txt:'3 to 6 hrs',color:'#1d9e75'},shade:{label:'Shade',txt:'under 3 hrs',color:'#534ab7'}};
-let mode='now',selected=null,placed=[],checked=false,playing=null,locName='Dallas, GA';
+let mode='now',playing=null,locName='Dallas, GA';
 const cache={};
 
 const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],md=[31,28,31,30,31,30,31,31,30,31,30,31];
@@ -214,11 +175,6 @@ const hb=boxes[0];cx.fillText('north side',(hb.x0+hb.x1)/2*S-60,(H-hb.y1)*S+14);
 cx.save();cx.translate(hb.x0*S+12,(H-(hb.y0+hb.y1)/2)*S);cx.rotate(-Math.PI/2);cx.fillText('west side',0,0);cx.restore();
 cx.save();cx.translate(hb.x1*S-6,(H-(hb.y0+hb.y1)/2)*S);cx.rotate(-Math.PI/2);cx.fillText('east side',0,0);cx.restore();
 cx.textAlign='left';
-const sg=checked?seasonGrid(lat):null;
-for(const p of placed){const pl=PLANTS.find(q=>q.id===p.id),X=p.x*S,Y=(H-p.y)*S;
-cx.beginPath();cx.arc(X,Y,11,0,2*Math.PI);cx.fillStyle=NEED[pl.need].color;cx.fill();
-cx.lineWidth=checked?3:1.5;cx.strokeStyle=checked?(cls(sample(sg,p.x,p.y))===pl.need?'#2fbf2f':'#e02424'):'#fff';cx.stroke();
-cx.fillStyle='#fff';cx.font='700 10px system-ui,sans-serif';cx.textAlign='center';cx.fillText(pl.code,X,Y+3.5);cx.textAlign='left'}
 drawCompass(sp,mode==='now');
 updateStats(lat,n,h,sp)}
 function drawCompass(sp,showSun){const x=cv.width-50,y=cv.height-50;screen();cx.fillStyle='rgba(255,255,255,0.9)';cx.beginPath();cx.arc(x,y,34,0,2*Math.PI);cx.fill();
@@ -236,51 +192,25 @@ $('sAz').textContent=sp.alt>0?'From the '+dirs[Math.round(az/45)%8]:'—';
 const dl=dayLen(lat,n);$('sDay').textContent=Math.floor(dl)+' h '+Math.round((dl%1)*60)+' m';
 const d=decl(n),noon=90-Math.abs(lat-d);
 $('sNoon').textContent=Math.round(noon)+'°, '+(Math.abs(lat-d)<0.5?'overhead':(d>lat?'north sky':'south sky'));
-$('seasonName').textContent=seasonDays(lat).name}
+}
 
 function buildUI(){
-const lb=$('locBtns');for(const [nm,l] of locs){const b=document.createElement('button');b.textContent=nm;b.dataset.v=l;b.dataset.n=nm;lb.appendChild(b)}
-lb.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('lat').value=b.dataset.v;locName=b.dataset.n;markLoc();resetCheck();render()});
-const pb=$('plantBtns');for(const k of ['full','part','shade']){const g=document.createElement('div');g.className='grp';g.textContent=NEED[k].label+' ('+NEED[k].txt+')';pb.appendChild(g);
-const wrap=document.createElement('div');wrap.className='plants';
-for(const p of PLANTS.filter(q=>q.need===k)){const b=document.createElement('button');b.className='pbtn';b.dataset.id=p.id;
-b.innerHTML='<span class="dot" style="background:'+NEED[k].color+'">'+p.code+'</span>'+p.name+'<span class="need" data-c="'+p.id+'"></span>';wrap.appendChild(b)}
-pb.appendChild(wrap)}
-pb.addEventListener('click',e=>{const b=e.target.closest('.pbtn');if(!b)return;selected=selected===b.dataset.id?null:b.dataset.id;
-document.querySelectorAll('.pbtn').forEach(x=>x.classList.toggle('on',x.dataset.id===selected));
-$('msg').textContent=selected?'Click the yard to plant '+PLANTS.find(q=>q.id===selected).name.toLowerCase()+'.':''});
-markLoc();updateCounts()}
+const lb=$('locBtns');for(const [nm,l] of locs){const b=document.createElement('button');b.textContent=nm.split(',')[0]==='Dallas'?'Dallas, GA':nm.split(',')[0];b.dataset.v=l;b.dataset.n=nm;lb.appendChild(b)}
+lb.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('lat').value=b.dataset.v;locName=b.dataset.n;markLoc();render()});
+markLoc()}
+
 function markLoc(){document.querySelectorAll('#locBtns button').forEach(b=>b.classList.toggle('on',b.dataset.n===locName))}
-function updateCounts(){for(const p of PLANTS){const c=placed.filter(q=>q.id===p.id).length;const el=document.querySelector('[data-c="'+p.id+'"]');if(el)el.textContent=c?c+' planted':''}}
-function resetCheck(){if(checked){checked=false;$('score').textContent='';$('results').innerHTML=''}}
-function blocked(x,y){for(const b of boxes)if(x>b.x0-0.4&&x<b.x1+0.4&&y>b.y0-0.4&&y<b.y1+0.4)return true;
-for(const p of paved)if(x>p.x0&&x<p.x1&&y>p.y0&&y<p.y1)return true;
-for(const t of trees)if(Math.hypot(x-t.x,y-t.y)<0.9)return true;return x<0.5||y>35.3}
 function toWorld(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,H-(e.clientY-r.top)/r.height*H]}
-cv.addEventListener('click',e=>{const [x,y]=toWorld(e);
-const hit=placed.findIndex(p=>Math.hypot(p.x-x,p.y-y)<0.9);
-if(hit>=0){const nm=PLANTS.find(q=>q.id===placed[hit].id).name;placed.splice(hit,1);$('msg').textContent='Dug up the '+nm.toLowerCase()+'.';resetCheck();updateCounts();render();return}
-if(!selected){$('msg').textContent='Pick a plant first.';return}
-if(blocked(x,y)){$('msg').textContent='You can\'t plant there. Try open ground.';return}
-placed.push({id:selected,x,y});$('msg').textContent='Planted. Pick another or keep clicking to add more.';resetCheck();updateCounts();render()});
 cv.addEventListener('mousemove',e=>{const [x,y]=toWorld(e);const lat=+$('lat').value,n=+$('day').value;
 const dh=sample(sunGrid(lat,n),x,y);let s='This spot: '+dh.toFixed(1)+' hrs of direct sun on '+dateStr(n);
-if(mode==='season'||checked)s+=' · '+sample(seasonGrid(lat),x,y).toFixed(1)+' hrs average over the '+seasonDays(lat).name.split(' (')[0];
+if(mode==='season')s+=' · '+sample(seasonGrid(lat),x,y).toFixed(1)+' hrs average over the '+seasonDays(lat).name.split(' (')[0];
 $('hover').textContent=s});
-cv.addEventListener('mouseleave',()=>{$('hover').textContent='Hover over the yard to read the sun hours at any spot.'});
-$('check').addEventListener('click',()=>{if(!placed.length){$('msg').textContent='Plant something first, then check.';return}
-const lat=+$('lat').value,sg=seasonGrid(lat);checked=true;let good=0;const ul=$('results');ul.innerHTML='';
-for(const p of placed){const pl=PLANTS.find(q=>q.id===p.id),hrs=sample(sg,p.x,p.y),ok=cls(hrs)===pl.need;if(ok)good++;
-const li=document.createElement('li');
-li.innerHTML='<span class="'+(ok?'ok':'bad')+'">'+(ok?'✓':'✗')+'</span>'+pl.name+'<span style="margin-left:auto;color:#66645d">'+hrs.toFixed(1)+' hrs · needs '+NEED[pl.need].txt+'</span>';ul.appendChild(li)}
-$('score').textContent=good+' of '+placed.length+' in the right spot';
-$('msg').textContent='Green rings are good fits, red rings need to move. Try a different location and check again.';render()});
-$('clear').addEventListener('click',()=>{placed=[];resetCheck();updateCounts();$('msg').textContent='';render()});
+cv.addEventListener('mouseleave',()=>{$('hover').textContent='Point at the yard to read the sun hours at any spot.'});
 $('modeBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mode=b.dataset.m;
 document.querySelectorAll('#modeBtns button').forEach(x=>x.classList.toggle('on',x===b));
 $('legNow').style.display=mode==='now'?'flex':'none';$('legHrs').style.display=mode==='now'?'none':'flex';render()});
 $('dayBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('day').value=b.dataset.v;render()});
-$('lat').addEventListener('input',()=>{locName=null;const v=+$('lat').value;const m=locs.find(l=>Math.abs(l[1]-v)<0.05);if(m&&m[1]!==-33.9)locName=m[0];markLoc();resetCheck();render()});
+$('lat').addEventListener('input',()=>{locName=null;const v=+$('lat').value;const m=locs.find(l=>Math.abs(l[1]-v)<0.05);if(m&&m[1]!==-33.9)locName=m[0];markLoc();render()});
 $('day').addEventListener('input',render);$('hr').addEventListener('input',render);
 function stop(){if(playing){clearInterval(playing);playing=null;$('play').textContent='Play the day';$('playYear').textContent='Play the year at noon'}}
 $('play').addEventListener('click',()=>{if(playing){stop();return}
