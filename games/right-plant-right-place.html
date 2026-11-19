@@ -102,8 +102,14 @@
   .compact .logitem{font-size:12px;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .certfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .certfoot p{margin:0;font-size:15px;font-weight:700;color:var(--forest)}
+  .photo{flex:1 1 0;min-height:110px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .photo img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);background:#fff}
+  .yards{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .yards button{text-align:left;padding:9px 11px;border-radius:12px;border:2px solid #D6CFBC;background:#fff;color:var(--ink);font-weight:800;font-size:14px;line-height:1.25}
+  .yards button span{display:block;font-weight:600;font-size:12px;color:var(--muted);margin-top:2px}
+  .yards button.on{border-color:var(--forest);background:#E2EBDB;box-shadow:0 0 0 3px rgba(31,58,43,.15)}
   .final li{font-size:21px;font-weight:800;margin:6px 0}
-  @media (max-width:980px){main{grid-template-columns:1fr;grid-template-rows:60vh auto}.units{grid-template-columns:1fr 1fr}}
+  @media (max-width:980px){main{grid-template-columns:1fr;grid-template-rows:60vh auto}.units,.yards{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -116,7 +122,7 @@
   <main>
     <div class="mapwrap" id="mapwrap">
       <div class="badges">
-        <div class="badge">⬆ North · ☀ Sun crosses the front (south) side</div>
+        <div class="badge" id="compassbadge"></div>
         <label class="badge"><input type="checkbox" id="shadetoggle"> Show sun and shade</label>
         <label class="badge"><input type="checkbox" id="labeltoggle" checked> Show area names</label>
         <div class="badge legend"><span class="sw" style="background:#BFD8A6"></span>Full sun <span class="sw" style="background:#7E9A73"></span>Part shade <span class="sw" style="background:#4C6249"></span>Deep shade</div>
@@ -127,103 +133,7 @@
           <pattern id="brick" width="24" height="12" patternUnits="userSpaceOnUse"><rect width="24" height="12" fill="#E3D6BE"/><path d="M0 12H24M12 0V6M0 6H24M0 0V6" stroke="#CBB995" stroke-width="1.5" fill="none"/></pattern>
           <radialGradient id="canopy"><stop offset="0" stop-color="#4E7A3E" stop-opacity=".55"/><stop offset="1" stop-color="#4E7A3E" stop-opacity=".25"/></radialGradient>
         </defs>
-        <!-- ground -->
-        <rect x="0" y="0" width="1200" height="820" fill="#BFD8A6"/>
-        <rect x="0" y="770" width="1200" height="50" fill="#8E949B" class="fixed"/>
-        <line x1="0" y1="796" x2="1200" y2="796" stroke="#F2E5A0" stroke-width="3" stroke-dasharray="30 20" class="fixed"/>
-        <text x="80" y="801" class="slabel" fill="#fff" style="fill:#fff">STREET</text>
-        <rect x="0" y="752" width="1200" height="18" fill="#E4E1D8" class="fixed"/>
-        <rect x="24" y="12" width="1152" height="738" fill="none" stroke="#8C7A62" stroke-width="2" stroke-dasharray="3 6" class="fixed"/>
-        <!-- power line -->
-        <g class="fixed">
-          <line x1="24" y1="738" x2="1176" y2="738" stroke="#333" stroke-width="2" stroke-dasharray="14 8"/>
-          <circle cx="110" cy="738" r="6" fill="#6B5A44"/><circle cx="430" cy="738" r="6" fill="#6B5A44"/><circle cx="750" cy="738" r="6" fill="#6B5A44"/><circle cx="1070" cy="738" r="6" fill="#6B5A44"/>
-          <text x="440" y="730" class="slabel">Overhead power line</text>
-        </g>
-        <!-- old oak canopy (existing) drawn under zones -->
-        <circle cx="175" cy="175" r="150" fill="url(#canopy)" class="fixed"/>
-        <!-- house, garage, drive, walk -->
-        <g class="fixed">
-          <rect x="380" y="262" width="480" height="210" fill="#D9CBB5" stroke="#8C7A62" stroke-width="3"/>
-          <line x1="380" y1="367" x2="860" y2="367" stroke="#B8A68B" stroke-width="2"/>
-          <text x="620" y="360" class="flabel">HOUSE</text>
-          <rect x="860" y="292" width="140" height="180" fill="#CDBFA8" stroke="#8C7A62" stroke-width="3"/>
-          <text x="930" y="388" class="flabel">GARAGE</text>
-          <rect x="880" y="472" width="110" height="280" fill="#D5D2CB"/>
-          <text x="935" y="640" class="slabel" text-anchor="middle" style="text-anchor:middle">DRIVEWAY</text>
-          <rect x="585" y="472" width="30" height="280" fill="#E4E1D8"/>
-          <rect x="589" y="466" width="22" height="10" fill="#7A5230"/>
-          <text x="600" y="458" class="slabel" style="text-anchor:middle" text-anchor="middle">front door</text>
-          <rect x="740" y="380" width="130" height="1" fill="none"/>
-          <!-- downspout and drainage -->
-          <circle cx="852" cy="268" r="6" fill="#6C757D"/>
-          <path d="M852 262 C 850 220, 845 190, 830 160" stroke="#4A90B8" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
-          <text x="870" y="240" class="slabel">downspout</text>
-        </g>
-        <!-- ZONES -->
-        <g id="zones">
-          <path class="zone" data-z="woodland" d="M175 55 a120 120 0 1 0 0.1 0 Z"/>
-          <rect class="zone" data-z="vine" x="330" y="16" width="520" height="24" rx="4"/>
-          <rect class="zone" data-z="vine" x="586" y="40" width="28" height="44" rx="3"/>
-          <rect class="zone" data-z="patio" x="540" y="168" width="180" height="94" rx="4" style="fill:url(#brick);fill-opacity:1"/>
-          <rect class="zone" data-z="north" x="380" y="224" width="156" height="36" rx="6"/>
-          <rect class="zone" data-z="north" x="724" y="224" width="136" height="36" rx="6"/>
-          <ellipse class="zone" data-z="wet" cx="800" cy="112" rx="78" ry="46"/>
-          <rect class="zone" data-z="meadow" x="930" y="50" width="220" height="165" rx="40"/>
-          <rect class="zone" data-z="border" x="314" y="270" width="60" height="200" rx="10"/>
-          <rect class="zone" data-z="screen" x="1100" y="240" width="58" height="470" rx="18"/>
-          <rect class="zone" data-z="slope" x="998" y="482" width="92" height="236" rx="10" style="fill:url(#hatch);fill-opacity:1"/>
-          <rect class="zone" data-z="foundation" x="380" y="476" width="200" height="46" rx="8"/>
-          <rect class="zone" data-z="foundation" x="620" y="476" width="240" height="46" rx="8"/>
-          <rect class="zone" data-z="entry" x="545" y="540" width="36" height="180" rx="8"/>
-          <rect class="zone" data-z="entry" x="619" y="540" width="36" height="180" rx="8"/>
-          <circle class="zone" data-z="specimen" cx="235" cy="625" r="58"/>
-          <circle class="zone" data-z="shade_tree" cx="775" cy="625" r="64"/>
-        </g>
-        <!-- fixed details over zones -->
-        <g class="fixed">
-          <circle cx="175" cy="175" r="16" fill="#6B4F35"/>
-          <text x="175" y="210" class="slabel" style="text-anchor:middle" text-anchor="middle">old oak</text>
-          <line x1="560" y1="180" x2="700" y2="180" stroke="#9C8566" stroke-width="3"/><line x1="560" y1="250" x2="700" y2="250" stroke="#9C8566" stroke-width="3"/>
-        </g>
-        <!-- shade overlay -->
-        <g id="shade">
-          <circle cx="175" cy="175" r="150" fill="#10241A" opacity=".38"/>
-          <rect x="372" y="150" width="496" height="112" fill="#10241A" opacity=".22"/>
-          <rect x="372" y="215" width="496" height="47" fill="#10241A" opacity=".3"/>
-          <rect x="860" y="230" width="140" height="62" fill="#10241A" opacity=".22"/>
-          <rect x="540" y="168" width="180" height="94" fill="#F2C14E" opacity=".25"/>
-          <text x="630" y="152" class="slabel" style="text-anchor:middle;fill:#fff;font-size:14px" text-anchor="middle">House shades the north side all day</text>
-          <text x="600" y="545" class="slabel" style="text-anchor:middle;fill:#7A4B00;font-size:14px" text-anchor="middle"></text>
-        </g>
-        <!-- labels -->
-        <g id="labels">
-          <text class="zlabel" x="175" y="120">Woodland bed under the oak</text>
-          <text class="zlabel" x="470" y="58">Fence &amp; arbor</text>
-          <text class="zlabel" x="630" y="205">Patio pots</text>
-          <text class="zlabel" x="630" y="225">&amp; baskets</text>
-          <text class="zlabel" x="458" y="247">North side bed</text>
-          <text class="zlabel" x="792" y="247">North side bed</text>
-          <text class="zlabel" x="800" y="108">Wet low spot</text>
-          <text class="zlabel" x="800" y="126">(rain garden)</text>
-          <text class="zlabel" x="1040" y="128">Pollinator</text>
-          <text class="zlabel" x="1040" y="146">meadow</text>
-          <text class="zlabel" x="344" y="365" transform="rotate(-90 344 365)">West border (hot sun)</text>
-          <text class="zlabel" x="1129" y="475" transform="rotate(-90 1129 475)">Privacy screen (property line)</text>
-          <text class="zlabel" x="1044" y="604" transform="rotate(-90 1044 604)">Sunny slope</text>
-          <text class="zlabel" x="480" y="504">Foundation bed</text>
-          <text class="zlabel" x="740" y="504">Foundation bed</text>
-          <text class="zlabel" x="563" y="630" transform="rotate(-90 563 630)">Entry beds</text>
-          <text class="zlabel" x="637" y="630" transform="rotate(-90 637 630)">Entry beds</text>
-          <text class="zlabel" x="235" y="620">Small tree spot</text>
-          <text class="zlabel" x="235" y="638">(under power line)</text>
-          <text class="zlabel" x="775" y="620">Shade tree spot</text>
-          <text class="zlabel" x="775" y="638">(open lawn)</text>
-        </g>
-        <!-- compass -->
-        <g class="fixed" transform="translate(1110,60)">
-          <circle r="0" />
-        </g>
+        <g id="layer"></g>
       </svg>
       <div class="tip" id="tip"></div>
     </div>
@@ -233,10 +143,12 @@
 <div class="toast" id="toast"></div>
 <div class="overlay" id="done" style="display:none"><div class="cert" id="cert"></div></div>
 
+<div class="overlay" id="credits" style="display:none;z-index:40"><div class="card"><h1 style="font-size:30px">Photo credits</h1><p class="sub">Plant photos come from Wikimedia Commons, used under the license shown for each. Photos were resized for this game. Click a photographer’s name to see the original photo, or a license name to read the license.</p><div id="creditlist" class="how" style="columns:2;column-gap:24px"></div><button class="btn" id="closecredits" style="align-self:flex-start">Close</button></div></div>
 <div class="overlay" id="start">
   <div class="card">
     <h1>Right Plant, Right Place</h1>
     <p class="sub">You’re the landscape designer. A plant card comes up. Click the spot on the plan where it belongs. Check its sun needs, its mature size, and how it’s used.</p>
+    <div><div class="turn" style="margin-bottom:6px">Choose a yard</div><div class="yards" id="yards"></div></div>
     <div><div class="turn" style="margin-bottom:6px">Choose the units to review <button class="mini" id="allunits">Select all</button></div><div class="units" id="units"></div></div>
     <div class="row2">
       <div><div class="turn" style="margin-bottom:6px">How many plants?</div><div class="seg" id="roundseg"><button data-n="8">8</button><button data-n="12" class="on">12</button><button data-n="20">20</button><button data-n="999">All</button></div></div>
@@ -248,6 +160,7 @@
     <label class="chk"><input type="checkbox" id="shuffle" checked> Shuffle the plants</label>
     <p class="how"><b>Scoring:</b> Right on the first try = 3 points, second try = 2, third try = 1. A wrong spot tells you why it doesn’t fit. Many plants work in more than one spot, and any good spot counts.</p>
     <button class="btn gold" id="go" style="font-size:21px;padding:14px">Start designing</button>
+    <div style="text-align:center"><button class="mini" id="creditsbtn">Photo credits</button></div>
   </div>
 </div>
 
@@ -409,8 +322,430 @@ const ZONES = {
 const LIGHT = {S:"Full sun",SP:"Sun to part shade",P:"Part shade",PS:"Part shade to shade",Sh:"Shade",A:"Sun or shade"};
 const PLANTS = PLANT_ROWS.map(r=>({unit:r[0],name:r[1],bot:r[2],light:r[3],size:r[4],type:r[5],ht:r[6],note:r[7],zones:r[8],why:r[9],vine:r[10].includes("v"),wetok:r[10].includes("w")}));
 
+const CLASSIC_SVG = `        <!-- ground -->
+        <rect x="0" y="0" width="1200" height="820" fill="#BFD8A6"/>
+        <rect x="0" y="770" width="1200" height="50" fill="#8E949B" class="fixed"/>
+        <line x1="0" y1="796" x2="1200" y2="796" stroke="#F2E5A0" stroke-width="3" stroke-dasharray="30 20" class="fixed"/>
+        <text x="80" y="801" class="slabel" fill="#fff" style="fill:#fff">STREET</text>
+        <rect x="0" y="752" width="1200" height="18" fill="#E4E1D8" class="fixed"/>
+        <rect x="24" y="12" width="1152" height="738" fill="none" stroke="#8C7A62" stroke-width="2" stroke-dasharray="3 6" class="fixed"/>
+        <!-- power line -->
+        <g class="fixed">
+          <line x1="24" y1="738" x2="1176" y2="738" stroke="#333" stroke-width="2" stroke-dasharray="14 8"/>
+          <circle cx="110" cy="738" r="6" fill="#6B5A44"/><circle cx="430" cy="738" r="6" fill="#6B5A44"/><circle cx="750" cy="738" r="6" fill="#6B5A44"/><circle cx="1070" cy="738" r="6" fill="#6B5A44"/>
+          <text x="440" y="730" class="slabel">Overhead power line</text>
+        </g>
+        <!-- old oak canopy (existing) drawn under zones -->
+        <circle cx="175" cy="175" r="150" fill="url(#canopy)" class="fixed"/>
+        <!-- house, garage, drive, walk -->
+        <g class="fixed">
+          <rect x="380" y="262" width="480" height="210" fill="#D9CBB5" stroke="#8C7A62" stroke-width="3"/>
+          <line x1="380" y1="367" x2="860" y2="367" stroke="#B8A68B" stroke-width="2"/>
+          <text x="620" y="360" class="flabel">HOUSE</text>
+          <rect x="860" y="292" width="140" height="180" fill="#CDBFA8" stroke="#8C7A62" stroke-width="3"/>
+          <text x="930" y="388" class="flabel">GARAGE</text>
+          <rect x="880" y="472" width="110" height="280" fill="#D5D2CB"/>
+          <text x="935" y="640" class="slabel" text-anchor="middle" style="text-anchor:middle">DRIVEWAY</text>
+          <rect x="585" y="472" width="30" height="280" fill="#E4E1D8"/>
+          <rect x="589" y="466" width="22" height="10" fill="#7A5230"/>
+          <text x="600" y="458" class="slabel" style="text-anchor:middle" text-anchor="middle">front door</text>
+          <rect x="740" y="380" width="130" height="1" fill="none"/>
+          <!-- downspout and drainage -->
+          <circle cx="852" cy="268" r="6" fill="#6C757D"/>
+          <path d="M852 262 C 850 220, 845 190, 830 160" stroke="#4A90B8" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+          <text x="870" y="240" class="slabel">downspout</text>
+        </g>
+        <!-- ZONES -->
+        <g id="zones">
+          <path class="zone" data-z="woodland" d="M175 55 a120 120 0 1 0 0.1 0 Z"/>
+          <rect class="zone" data-z="vine" x="330" y="16" width="520" height="24" rx="4"/>
+          <rect class="zone" data-z="vine" x="586" y="40" width="28" height="44" rx="3"/>
+          <rect class="zone" data-z="patio" x="540" y="168" width="180" height="94" rx="4" style="fill:url(#brick);fill-opacity:1"/>
+          <rect class="zone" data-z="north" x="380" y="224" width="156" height="36" rx="6"/>
+          <rect class="zone" data-z="north" x="724" y="224" width="136" height="36" rx="6"/>
+          <ellipse class="zone" data-z="wet" cx="800" cy="112" rx="78" ry="46"/>
+          <rect class="zone" data-z="meadow" x="930" y="50" width="220" height="165" rx="40"/>
+          <rect class="zone" data-z="border" x="314" y="270" width="60" height="200" rx="10"/>
+          <rect class="zone" data-z="screen" x="1100" y="240" width="58" height="470" rx="18"/>
+          <rect class="zone" data-z="slope" x="998" y="482" width="92" height="236" rx="10" style="fill:url(#hatch);fill-opacity:1"/>
+          <rect class="zone" data-z="foundation" x="380" y="476" width="200" height="46" rx="8"/>
+          <rect class="zone" data-z="foundation" x="620" y="476" width="240" height="46" rx="8"/>
+          <rect class="zone" data-z="entry" x="545" y="540" width="36" height="180" rx="8"/>
+          <rect class="zone" data-z="entry" x="619" y="540" width="36" height="180" rx="8"/>
+          <circle class="zone" data-z="specimen" cx="235" cy="625" r="58"/>
+          <circle class="zone" data-z="shade_tree" cx="775" cy="625" r="64"/>
+        </g>
+        <!-- fixed details over zones -->
+        <g class="fixed">
+          <circle cx="175" cy="175" r="16" fill="#6B4F35"/>
+          <text x="175" y="210" class="slabel" style="text-anchor:middle" text-anchor="middle">old oak</text>
+          <line x1="560" y1="180" x2="700" y2="180" stroke="#9C8566" stroke-width="3"/><line x1="560" y1="250" x2="700" y2="250" stroke="#9C8566" stroke-width="3"/>
+        </g>
+        <!-- shade overlay -->
+        <g id="shade">
+          <circle cx="175" cy="175" r="150" fill="#10241A" opacity=".38"/>
+          <rect x="372" y="150" width="496" height="112" fill="#10241A" opacity=".22"/>
+          <rect x="372" y="215" width="496" height="47" fill="#10241A" opacity=".3"/>
+          <rect x="860" y="230" width="140" height="62" fill="#10241A" opacity=".22"/>
+          <rect x="540" y="168" width="180" height="94" fill="#F2C14E" opacity=".25"/>
+          <text x="630" y="152" class="slabel" style="text-anchor:middle;fill:#fff;font-size:14px" text-anchor="middle">House shades the north side all day</text>
+          <text x="600" y="545" class="slabel" style="text-anchor:middle;fill:#7A4B00;font-size:14px" text-anchor="middle"></text>
+        </g>
+        <!-- labels -->
+        <g id="labels">
+          <text class="zlabel" x="175" y="120">Woodland bed under the oak</text>
+          <text class="zlabel" x="470" y="58">Fence &amp; arbor</text>
+          <text class="zlabel" x="630" y="205">Patio pots</text>
+          <text class="zlabel" x="630" y="225">&amp; baskets</text>
+          <text class="zlabel" x="458" y="247">North side bed</text>
+          <text class="zlabel" x="792" y="247">North side bed</text>
+          <text class="zlabel" x="800" y="108">Wet low spot</text>
+          <text class="zlabel" x="800" y="126">(rain garden)</text>
+          <text class="zlabel" x="1040" y="128">Pollinator</text>
+          <text class="zlabel" x="1040" y="146">meadow</text>
+          <text class="zlabel" x="344" y="365" transform="rotate(-90 344 365)">West border (hot sun)</text>
+          <text class="zlabel" x="1129" y="475" transform="rotate(-90 1129 475)">Privacy screen (property line)</text>
+          <text class="zlabel" x="1044" y="604" transform="rotate(-90 1044 604)">Sunny slope</text>
+          <text class="zlabel" x="480" y="504">Foundation bed</text>
+          <text class="zlabel" x="740" y="504">Foundation bed</text>
+          <text class="zlabel" x="563" y="630" transform="rotate(-90 563 630)">Entry beds</text>
+          <text class="zlabel" x="637" y="630" transform="rotate(-90 637 630)">Entry beds</text>
+          <text class="zlabel" x="235" y="620">Small tree spot</text>
+          <text class="zlabel" x="235" y="638">(under power line)</text>
+          <text class="zlabel" x="775" y="620">Shade tree spot</text>
+          <text class="zlabel" x="775" y="638">(open lawn)</text>
+        </g>
+`;
+/* ---------- yard layouts ----------
+   Every yard uses the same 13 kinds of planting spots (zone types), placed in
+   different spots and facing different directions. Names and conditions can be
+   changed per yard. */
+function compass(x,y,down){
+  return `<g class="fixed" transform="translate(${x},${y})"><circle r="27" fill="#F6F2E7" opacity=".9" stroke="#3D5A3A" stroke-width="2"/>`+
+    `<path d="M0 -20 L8 6 L0 1 L-8 6Z" fill="#1F3A2B" transform="rotate(${down?180:0})"/>`+
+    `<text x="0" y="${down?44:-33}" class="flabel" style="font-size:15px;letter-spacing:0">N</text></g>`;
+}
+const STREET_H = `<rect x="0" y="770" width="1200" height="50" fill="#8E949B" class="fixed"/>
+<line x1="0" y1="796" x2="1200" y2="796" stroke="#F2E5A0" stroke-width="3" stroke-dasharray="30 20" class="fixed"/>
+<text x="80" y="801" class="slabel" style="fill:#fff">STREET</text>
+<rect x="0" y="752" width="1200" height="18" fill="#E4E1D8" class="fixed"/>`;
+
+const LAYOUTS = {
+ classic:{
+  name:"Suburban home", blurb:"Faces south to the street. Big oak out back.",
+  badge:"⬆ North · ☀ Sun crosses the front (south) side",
+  svg: CLASSIC_SVG + compass(430,650,false),
+  names:{}, conds:{}
+ },
+
+ northface:{
+  name:"North-facing home", blurb:"The front of the house is the shady side.",
+  badge:"⬇ North is toward the street · ☀ Sun crosses the back (south) side",
+  svg:`<rect x="0" y="0" width="1200" height="820" fill="#BFD8A6"/>${STREET_H}
+<rect x="24" y="12" width="1152" height="738" fill="none" stroke="#8C7A62" stroke-width="2" stroke-dasharray="3 6" class="fixed"/>
+<g class="fixed">
+ <line x1="1168" y1="16" x2="1168" y2="750" stroke="#333" stroke-width="2" stroke-dasharray="14 8"/>
+ <circle cx="1168" cy="120" r="6" fill="#6B5A44"/><circle cx="1168" cy="420" r="6" fill="#6B5A44"/><circle cx="1168" cy="700" r="6" fill="#6B5A44"/>
+ <text x="1158" y="560" class="slabel" transform="rotate(-90 1158 560)" style="text-anchor:middle">Overhead power line</text>
+</g>
+<circle cx="1010" cy="590" r="135" fill="url(#canopy)" class="fixed"/>
+<g class="fixed">
+ <rect x="400" y="300" width="420" height="200" fill="#D9CBB5" stroke="#8C7A62" stroke-width="3"/>
+ <line x1="400" y1="400" x2="820" y2="400" stroke="#B8A68B" stroke-width="2"/>
+ <text x="610" y="392" class="flabel">HOUSE</text>
+ <rect x="260" y="330" width="140" height="170" fill="#CDBFA8" stroke="#8C7A62" stroke-width="3"/>
+ <text x="330" y="420" class="flabel">GARAGE</text>
+ <rect x="280" y="500" width="100" height="252" fill="#D5D2CB"/>
+ <text x="330" y="690" class="slabel" style="text-anchor:middle">DRIVEWAY</text>
+ <rect x="595" y="500" width="30" height="252" fill="#E4E1D8"/>
+ <rect x="599" y="496" width="22" height="10" fill="#7A5230"/>
+ <text x="610" y="486" class="slabel" style="text-anchor:middle">front door</text>
+ <circle cx="814" cy="305" r="6" fill="#6C757D"/>
+ <path d="M814 299 C 840 260, 880 220, 900 196" stroke="#4A90B8" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+ <text x="760" y="320" class="slabel">downspout</text>
+</g>
+<g id="zones">
+ <circle class="zone" data-z="woodland" cx="1010" cy="590" r="100"/>
+ <rect class="zone" data-z="screen" x="440" y="20" width="560" height="44" rx="16"/>
+ <rect class="zone" data-z="vine" x="690" y="712" width="170" height="24" rx="4"/>
+ <rect class="zone" data-z="vine" x="832" y="690" width="26" height="22" rx="3"/>
+ <rect class="zone" data-z="patio" x="824" y="330" width="76" height="160" rx="4" style="fill:url(#brick);fill-opacity:1"/>
+ <rect class="zone" data-z="north" x="400" y="504" width="190" height="46" rx="8"/>
+ <rect class="zone" data-z="north" x="630" y="504" width="190" height="46" rx="8"/>
+ <rect class="zone" data-z="foundation" x="400" y="252" width="420" height="44" rx="8"/>
+ <ellipse class="zone" data-z="wet" cx="950" cy="170" rx="78" ry="44"/>
+ <rect class="zone" data-z="meadow" x="130" y="80" width="250" height="150" rx="40"/>
+ <rect class="zone" data-z="border" x="40" y="80" width="62" height="520" rx="10"/>
+ <circle class="zone" data-z="shade_tree" cx="580" cy="165" r="60"/>
+ <circle class="zone" data-z="specimen" cx="1090" cy="330" r="55"/>
+ <rect class="zone" data-z="slope" x="150" y="560" width="112" height="180" rx="10" style="fill:url(#hatch);fill-opacity:1"/>
+ <rect class="zone" data-z="entry" x="555" y="610" width="36" height="130" rx="8"/>
+ <rect class="zone" data-z="entry" x="629" y="610" width="36" height="130" rx="8"/>
+</g>
+<g class="fixed"><circle cx="1050" cy="640" r="15" fill="#6B4F35"/><text x="1050" y="672" class="slabel" style="text-anchor:middle">old oak</text></g>
+<g id="shade">
+ <circle cx="1010" cy="590" r="135" fill="#10241A" opacity=".38"/>
+ <rect x="392" y="500" width="436" height="108" fill="#10241A" opacity=".32"/>
+ <rect x="824" y="330" width="76" height="160" fill="#F2C14E" opacity=".25"/>
+ <text x="610" y="598" class="slabel" style="text-anchor:middle;fill:#fff;font-size:14px">House shades the front (north) side all day</text>
+</g>
+<g id="labels">
+ <text class="zlabel" x="1000" y="556">Woodland bed</text>
+ <text class="zlabel" x="1000" y="574">under the old oak</text>
+ <text class="zlabel" x="720" y="48">Privacy screen (back lot line)</text>
+ <text class="zlabel" x="755" y="704">Fence &amp; arbor</text>
+ <text class="zlabel" x="862" y="402">Porch</text>
+ <text class="zlabel" x="862" y="420">pots</text>
+ <text class="zlabel" x="495" y="532">Front foundation bed</text>
+ <text class="zlabel" x="725" y="532">Front foundation bed</text>
+ <text class="zlabel" x="610" y="279">Back foundation bed</text>
+ <text class="zlabel" x="950" y="166">Wet low spot</text>
+ <text class="zlabel" x="950" y="184">(rain garden)</text>
+ <text class="zlabel" x="255" y="150">Pollinator</text>
+ <text class="zlabel" x="255" y="168">meadow</text>
+ <text class="zlabel" x="71" y="340" transform="rotate(-90 71 340)">West border (hot sun)</text>
+ <text class="zlabel" x="580" y="160">Shade tree spot</text>
+ <text class="zlabel" x="580" y="178">(back lawn)</text>
+ <text class="zlabel" x="1090" y="325">Small tree spot</text>
+ <text class="zlabel" x="1090" y="343">(under power line)</text>
+ <text class="zlabel" x="206" y="650" transform="rotate(-90 206 650)">Sunny bank</text>
+ <text class="zlabel" x="573" y="675" transform="rotate(-90 573 675)">Entry beds</text>
+ <text class="zlabel" x="647" y="675" transform="rotate(-90 647 675)">Entry beds</text>
+</g>` + compass(470,660,true),
+  names:{
+   north:"Front foundation bed (north face)",
+   foundation:"Back foundation bed (south face)",
+   patio:"Side porch pots",
+   vine:"Fence and arbor by the street",
+   screen:"Privacy screen (back lot line)",
+   slope:"Sunny bank by the driveway",
+   shade_tree:"Shade tree spot (back lawn)",
+   border:"West border (backyard)",
+   meadow:"Pollinator meadow (backyard)"
+  },
+  conds:{
+   north:"The front of this house faces north. The house blocks the sun here all day.",
+   foundation:"Full sun on the south face of the house, under the back windows.",
+   entry:"Out past the house’s shadow near the street. Full sun where visitors walk.",
+   patio:"East-side porch. Morning sun, afternoon shade from the house. Containers.",
+   vine:"Sunny fence out by the street. Something to climb.",
+   screen:"Full sun along the back lot line. Block the view of the houses behind you.",
+   specimen:"Full sun along the side lot line, under the power line. Needs a small tree.",
+   slope:"Hot, dry bank beside the driveway, out of the house’s shadow. Hard to mow.",
+   shade_tree:"Full sun in the open back lawn, away from the house and lines.",
+   border:"Hot afternoon sun along the west fence. A mixed flower border."
+  }
+ },
+
+ corner:{
+  name:"Corner lot", blurb:"Smaller yard with streets on two sides.",
+  badge:"⬆ North · Corner lot · ☀ Sun crosses the front (south) side",
+  svg:`<rect x="0" y="0" width="1200" height="820" fill="#BFD8A6"/>${STREET_H}
+<rect x="1110" y="0" width="90" height="770" fill="#8E949B" class="fixed"/>
+<line x1="1155" y1="0" x2="1155" y2="770" stroke="#F2E5A0" stroke-width="3" stroke-dasharray="30 20" class="fixed"/>
+<rect x="1092" y="0" width="18" height="770" fill="#E4E1D8" class="fixed"/>
+<text x="1140" y="200" class="slabel" transform="rotate(-90 1140 200)" style="fill:#fff;text-anchor:middle">SIDE STREET</text>
+<rect x="24" y="12" width="1064" height="738" fill="none" stroke="#8C7A62" stroke-width="2" stroke-dasharray="3 6" class="fixed"/>
+<g class="fixed">
+ <line x1="1101" y1="0" x2="1101" y2="760" stroke="#333" stroke-width="2" stroke-dasharray="14 8"/>
+ <circle cx="1101" cy="120" r="6" fill="#6B5A44"/><circle cx="1101" cy="440" r="6" fill="#6B5A44"/><circle cx="1101" cy="700" r="6" fill="#6B5A44"/>
+</g>
+<circle cx="140" cy="150" r="135" fill="url(#canopy)" class="fixed"/>
+<g class="fixed">
+ <rect x="330" y="300" width="430" height="200" fill="#D9CBB5" stroke="#8C7A62" stroke-width="3"/>
+ <line x1="330" y1="400" x2="760" y2="400" stroke="#B8A68B" stroke-width="2"/>
+ <text x="545" y="392" class="flabel">HOUSE</text>
+ <rect x="760" y="300" width="140" height="160" fill="#CDBFA8" stroke="#8C7A62" stroke-width="3"/>
+ <text x="830" y="385" class="flabel">GARAGE</text>
+ <rect x="900" y="330" width="192" height="100" fill="#D5D2CB"/>
+ <text x="995" y="385" class="slabel" style="text-anchor:middle">DRIVEWAY</text>
+ <rect x="530" y="500" width="30" height="252" fill="#E4E1D8"/>
+ <rect x="534" y="496" width="22" height="10" fill="#7A5230"/>
+ <text x="545" y="486" class="slabel" style="text-anchor:middle">front door</text>
+ <circle cx="894" cy="305" r="6" fill="#6C757D"/>
+ <path d="M894 299 C 905 270, 915 250, 925 236" stroke="#4A90B8" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+</g>
+<g id="zones">
+ <circle class="zone" data-z="woodland" cx="140" cy="150" r="100"/>
+ <rect class="zone" data-z="screen" x="300" y="18" width="420" height="42" rx="16"/>
+ <rect class="zone" data-z="patio" x="600" y="200" width="140" height="96" rx="4" style="fill:url(#brick);fill-opacity:1"/>
+ <rect class="zone" data-z="north" x="330" y="256" width="266" height="40" rx="6"/>
+ <rect class="zone" data-z="border" x="262" y="300" width="62" height="200" rx="10"/>
+ <rect class="zone" data-z="foundation" x="330" y="504" width="196" height="44" rx="8"/>
+ <rect class="zone" data-z="foundation" x="564" y="504" width="196" height="44" rx="8"/>
+ <rect class="zone" data-z="entry" x="490" y="566" width="36" height="170" rx="8"/>
+ <rect class="zone" data-z="entry" x="564" y="566" width="36" height="170" rx="8"/>
+ <circle class="zone" data-z="shade_tree" cx="190" cy="600" r="60"/>
+ <rect class="zone" data-z="slope" x="40" y="680" width="420" height="62" rx="10" style="fill:url(#hatch);fill-opacity:1"/>
+ <rect class="zone" data-z="meadow" x="680" y="590" width="390" height="150" rx="40"/>
+ <circle class="zone" data-z="specimen" cx="1000" cy="505" r="52"/>
+ <ellipse class="zone" data-z="wet" cx="930" cy="190" rx="80" ry="46"/>
+ <rect class="zone" data-z="vine" x="1046" y="40" width="24" height="240" rx="4"/>
+</g>
+<g class="fixed"><circle cx="85" cy="95" r="15" fill="#6B4F35"/></g>
+<g id="shade">
+ <circle cx="140" cy="150" r="135" fill="#10241A" opacity=".38"/>
+ <rect x="322" y="196" width="446" height="104" fill="#10241A" opacity=".3"/>
+ <rect x="600" y="200" width="140" height="96" fill="#F2C14E" opacity=".25"/>
+ <text x="460" y="186" class="slabel" style="text-anchor:middle;fill:#fff;font-size:14px">House shades the north side all day</text>
+</g>
+<g id="labels">
+ <text class="zlabel" x="150" y="150">Woodland bed under</text>
+ <text class="zlabel" x="150" y="168">the neighbor’s oak</text>
+ <text class="zlabel" x="510" y="44">Privacy screen (back lot line)</text>
+ <text class="zlabel" x="670" y="244">Back porch</text>
+ <text class="zlabel" x="670" y="262">pots</text>
+ <text class="zlabel" x="463" y="281">North side bed</text>
+ <text class="zlabel" x="293" y="400" transform="rotate(-90 293 400)">West border (hot sun)</text>
+ <text class="zlabel" x="428" y="531">Foundation bed</text>
+ <text class="zlabel" x="662" y="531">Foundation bed</text>
+ <text class="zlabel" x="508" y="651" transform="rotate(-90 508 651)">Entry beds</text>
+ <text class="zlabel" x="582" y="651" transform="rotate(-90 582 651)">Entry beds</text>
+ <text class="zlabel" x="190" y="595">Shade tree spot</text>
+ <text class="zlabel" x="190" y="613">(front lawn)</text>
+ <text class="zlabel" x="250" y="716">Sunny bank above the sidewalk</text>
+ <text class="zlabel" x="875" y="660">Pollinator bed</text>
+ <text class="zlabel" x="875" y="678">(street corner)</text>
+ <text class="zlabel" x="1000" y="500">Small tree spot</text>
+ <text class="zlabel" x="1000" y="518">(under power line)</text>
+ <text class="zlabel" x="930" y="186">Wet low spot</text>
+ <text class="zlabel" x="930" y="204">(rain garden)</text>
+ <text class="zlabel" x="1058" y="160" transform="rotate(-90 1058 160)">Side fence &amp; arbor</text>
+</g>` + compass(380,610,false),
+  names:{
+   woodland:"Woodland bed under the neighbor’s oak",
+   patio:"Back porch pots",
+   vine:"Side fence and arbor",
+   meadow:"Pollinator bed (street corner)",
+   slope:"Sunny bank above the sidewalk",
+   shade_tree:"Shade tree spot (front lawn)",
+   screen:"Privacy screen (back lot line)",
+   specimen:"Small tree spot (side street)"
+  },
+  conds:{
+   woodland:"Dappled shade under the neighbor’s big oak. Natural, informal look.",
+   screen:"Full sun along the back lot line. Block the neighbor’s view.",
+   patio:"North-side back porch. A little morning sun, shade the rest of the day. Containers.",
+   vine:"Sunny fence along the side street. Something to climb.",
+   meadow:"Full sun where the two streets meet. Low maintenance and informal.",
+   specimen:"Full sun by the side street, under the power line. Needs a small tree.",
+   slope:"Hot, dry bank sloping down to the sidewalk. Hard to mow.",
+   shade_tree:"Full sun in the open front lawn, away from the house and lines.",
+   wet:"Where the garage downspout drains. Soggy after every rain."
+  }
+ },
+
+ farm:{
+  name:"Country home", blurb:"Faces west to a county road. Pond and woods.",
+  badge:"⬆ North · House faces west toward the county road",
+  svg:`<rect x="0" y="0" width="1200" height="820" fill="#BFD8A6"/>
+<rect x="0" y="0" width="70" height="820" fill="#8E949B" class="fixed"/>
+<line x1="35" y1="0" x2="35" y2="820" stroke="#F2E5A0" stroke-width="3" stroke-dasharray="30 20" class="fixed"/>
+<text x="24" y="250" class="slabel" transform="rotate(-90 24 250)" style="fill:#fff;text-anchor:middle">COUNTY ROAD</text>
+<rect x="84" y="12" width="1092" height="796" fill="none" stroke="#8C7A62" stroke-width="2" stroke-dasharray="3 6" class="fixed"/>
+<g class="fixed">
+ <line x1="98" y1="0" x2="98" y2="820" stroke="#333" stroke-width="2" stroke-dasharray="14 8"/>
+ <circle cx="98" cy="120" r="6" fill="#6B5A44"/><circle cx="98" cy="520" r="6" fill="#6B5A44"/><circle cx="98" cy="760" r="6" fill="#6B5A44"/>
+ <g fill="#4E7A3E" opacity=".75"><circle cx="1070" cy="90" r="55"/><circle cx="1150" cy="170" r="60"/><circle cx="1060" cy="250" r="58"/><circle cx="1150" cy="330" r="60"/><circle cx="1065" cy="410" r="58"/><circle cx="1150" cy="490" r="58"/><circle cx="1070" cy="560" r="50"/><circle cx="1150" cy="640" r="55"/></g>
+ <text x="1112" y="720" class="flabel" style="fill:#2F4A2A">HARDWOODS</text>
+ <rect x="520" y="300" width="240" height="180" fill="#D9CBB5" stroke="#8C7A62" stroke-width="3"/>
+ <text x="640" y="395" class="flabel">HOUSE</text>
+ <rect x="512" y="380" width="10" height="22" fill="#7A5230"/>
+ <rect x="70" y="380" width="330" height="24" fill="#D5D2CB"/>
+ <rect x="400" y="380" width="112" height="22" fill="#E4E1D8"/>
+ <text x="230" y="397" class="slabel" style="text-anchor:middle">GRAVEL DRIVE</text>
+ <rect x="300" y="480" width="110" height="80" fill="#B5674A" stroke="#7A3F2A" stroke-width="3"/>
+ <text x="355" y="526" class="flabel" style="fill:#fff">BARN</text>
+</g>
+<g id="zones">
+ <rect class="zone" data-z="screen" x="200" y="24" width="760" height="46" rx="16"/>
+ <circle class="zone" data-z="shade_tree" cx="300" cy="200" r="62"/>
+ <rect class="zone" data-z="north" x="520" y="252" width="240" height="44" rx="8"/>
+ <rect class="zone" data-z="entry" x="405" y="340" width="66" height="34" rx="8"/>
+ <rect class="zone" data-z="entry" x="405" y="408" width="66" height="34" rx="8"/>
+ <rect class="zone" data-z="border" x="476" y="300" width="40" height="74" rx="8"/>
+ <rect class="zone" data-z="border" x="476" y="408" width="40" height="72" rx="8"/>
+ <rect class="zone" data-z="foundation" x="520" y="484" width="240" height="44" rx="8"/>
+ <rect class="zone" data-z="patio" x="764" y="320" width="116" height="140" rx="4" style="fill:url(#brick);fill-opacity:1"/>
+ <rect class="zone" data-z="woodland" x="930" y="110" width="80" height="450" rx="18"/>
+ <ellipse class="zone" data-z="wet" cx="760" cy="660" rx="130" ry="64"/>
+ <rect class="zone" data-z="slope" x="620" y="734" width="280" height="44" rx="8" style="fill:url(#hatch);fill-opacity:1"/>
+ <rect class="zone" data-z="meadow" x="300" y="610" width="280" height="130" rx="40"/>
+ <circle class="zone" data-z="specimen" cx="175" cy="660" r="55"/>
+ <rect class="zone" data-z="vine" x="120" y="440" width="260" height="22" rx="4"/>
+</g>
+<g class="fixed">
+ <ellipse cx="760" cy="672" rx="88" ry="34" fill="#8DBCD6" stroke="#4A90B8" stroke-width="2"/>
+ <text x="760" y="678" class="slabel" style="text-anchor:middle;fill:#1F4E6B">pond</text>
+</g>
+<g id="shade">
+ <rect x="512" y="226" width="256" height="74" fill="#10241A" opacity=".32"/>
+ <rect x="925" y="40" width="275" height="640" fill="#10241A" opacity=".25"/>
+ <rect x="764" y="320" width="116" height="140" fill="#F2C14E" opacity=".25"/>
+ <text x="640" y="218" class="slabel" style="text-anchor:middle;fill:#fff;font-size:14px">House shades the north side all day</text>
+</g>
+<g id="labels">
+ <text class="zlabel" x="580" y="53">Windbreak (north lot line)</text>
+ <text class="zlabel" x="300" y="196">Shade tree spot</text>
+ <text class="zlabel" x="300" y="214">(open yard)</text>
+ <text class="zlabel" x="640" y="279">North side bed</text>
+ <text class="zlabel" x="438" y="362">Entry</text>
+ <text class="zlabel" x="438" y="430">Entry</text>
+ <text class="zlabel" x="500" y="337" transform="rotate(-90 500 337)">Front bed</text>
+ <text class="zlabel" x="500" y="444" transform="rotate(-90 500 444)">Front bed</text>
+ <text class="zlabel" x="640" y="511">South side bed</text>
+ <text class="zlabel" x="822" y="385">Back deck</text>
+ <text class="zlabel" x="822" y="403">pots</text>
+ <text class="zlabel" x="975" y="335" transform="rotate(-90 975 335)">Woods edge bed</text>
+ <text class="zlabel" x="760" y="622">Pond edge (wet soil)</text>
+ <text class="zlabel" x="760" y="761">Pond dam bank</text>
+ <text class="zlabel" x="440" y="672">Pollinator</text>
+ <text class="zlabel" x="440" y="690">strip</text>
+ <text class="zlabel" x="175" y="655">Small tree spot</text>
+ <text class="zlabel" x="175" y="673">(under power line)</text>
+ <text class="zlabel" x="250" y="432">Board fence &amp; arbor</text>
+</g>` + compass(990,700,false),
+  names:{
+   screen:"Windbreak (north lot line)",
+   shade_tree:"Shade tree spot (open yard)",
+   entry:"Entry beds along the walk",
+   border:"Front beds (west face)",
+   foundation:"South side foundation bed",
+   patio:"Back deck pots",
+   woodland:"Woods edge bed",
+   wet:"Pond edge (wet soil)",
+   slope:"Pond dam bank",
+   meadow:"Pollinator strip",
+   specimen:"Small tree spot (by the road)",
+   vine:"Board fence and arbor"
+  },
+  conds:{
+   screen:"Full sun along the north lot line. Block winter wind and the view from the road.",
+   shade_tree:"Full sun in the open yard with lots of room, away from the house and lines.",
+   north:"North face of the house. Shade all day.",
+   entry:"Small beds along the front walk. Full sun where visitors walk.",
+   border:"The front of this house faces west: hot afternoon sun. A mixed flower border.",
+   foundation:"Full sun on the south face of the house, under the windows.",
+   patio:"East-facing deck. Morning sun, afternoon shade from the house. Containers.",
+   woodland:"Dappled shade along the edge of the hardwoods. Natural, informal look.",
+   wet:"Soggy ground around the farm pond.",
+   slope:"Hot, dry dam bank that’s hard to mow. Needs low plants to stop erosion.",
+   meadow:"Full sun in the open yard. Low maintenance and informal.",
+   specimen:"Full sun by the county road, under the power line. Needs a small tree.",
+   vine:"Board fence along the gravel drive, full sun. Something to climb."
+  }
+ }
+};
+
+const PHOTO_CREDITS = {"Floss flower": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 104684271], "Impatiens": ["Dguendel", "CC BY 4.0", 162777977], "Petunia": ["Екатерина Борисова", "CC BY-SA 4.0", 167008481], "Black-eyed Susan vine": ["Forest & Kim Starr", "CC BY 3.0", 6108067], "Coleus": ["Mokkie", "CC BY-SA 3.0", 32633954], "Cosmos": ["Syrio", "CC BY-SA 4.0", 73190445], "Hyacinth bean": ["Zenon Sych", "CC BY-SA 4.0", 101571919], "Lantana": ["Alvesgaspar", "CC BY-SA 3.0", 6068254], "Marigold": ["পাপৰি বৰা", "CC BY-SA 4.0", 157870337], "Mexican sunflower": ["Baap8969", "CC0", 166009832], "Morning glory": ["doubleknight", "Public domain", 7386947], "Pansy": ["Екатерина Борисова", "CC BY-SA 4.0", 152686689], "Sweet alyssum": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 147019831], "Joe Pye weed": ["USFWS Midwest Region", "Public domain", 142192850], "Black-eyed Susan": ["SpeedyGonsales", "CC BY-SA 3.0", 1083469], "Blue fescue": ["David J. Stang", "CC BY-SA 4.0", 60846412], "Blue flag iris": ["Cbaile19", "CC0", 192392972], "Boston ivy": ["Maxime Laterreur", "CC BY 4.0", 191236843], "Butterflyweed": ["Cbaile19", "CC0", 151673068], "Cardinal flower": ["Hardyplants", "CC0", 87588210], "Clematis": ["Missvain", "CC BY 4.0", 131415256], "Columbine": ["Danny S.", "CC BY-SA 4.0", 49070546], "Daylily": ["James St. John", "CC BY 2.0", 153286305], "Dwarf fountain grass": ["David J. Stang", "CC BY-SA 4.0", 61092761], "Foxglove": ["Bernd Haynold", "CC BY-SA 3.0", 196572], "Giant miscanthus": ["Daderot", "Public domain", 16940154], "Gayfeather": ["USFWS Mountain-Prairie", "CC BY 2.0", 47140082], "Moss phlox": ["David J. Stang", "CC BY-SA 4.0", 60997119], "Purple coneflower": ["Sixflashphoto", "CC BY-SA 4.0", 71099059], "Rose mallow": ["Stanisław Krupiński", "CC BY-SA 4.0", 108617392], "Showy sedum": ["Zefram", "CC BY 2.0 de", 3795025], "Wisteria": ["Rizka", "CC BY-SA 4.0", 125713049], "Bald cypress": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 118789731], "Cryptomeria": ["Agunduz5", "CC BY-SA 4.0", 142970025], "Dawn redwood": ["そらみみ", "CC BY-SA 4.0", 52169633], "Deodar cedar": ["Gv3101992", "CC BY-SA 4.0", 65064149], "Dwarf hinoki false-cypress": ["Michal Klajban", "CC BY-SA 4.0", 78854595], "Eastern arborvitae": ["CosmicCodex", "CC BY-SA 4.0", 195522347], "Hemlock": ["Gilles Ayotte", "CC BY-SA 4.0", 128065394], "Eastern red cedar": ["PumpkinSky", "CC BY-SA 3.0", 65690027], "Loblolly pine": ["Dcrjsr", "CC BY 3.0", 18059683], "White pine": ["Chris Light", "CC BY-SA 4.0", 67647335], "American holly": ["Judy Gallagher", "CC BY 2.0", 66901352], "Andromeda (pieris)": ["James St. John", "CC BY 2.0", 83884219], "Japanese camellia": ["Flocci Nivis", "CC BY 4.0", 186825069], "Japanese holly": ["Derek Ramsey (Ram-Man)", "CC BY-SA 3.0", 1232390], "Rhododendron": ["Tiia Monto", "CC BY 4.0", 151714912], "Sasanqua camellia": ["harum.koh", "CC BY-SA 2.0", 47465227], "Sweet bay magnolia": ["Awinch1001", "CC BY-SA 4.0", 132463409], "Azalea": ["Missvain", "CC BY 4.0", 132057404], "Boxwood": ["Fred Boehringer", "CC BY-SA 3.0 AT", 26204399], "Firethorn": ["Abraham", "CC BY 4.0", 177718404], "Glossy privet": ["David J. Stang", "CC BY-SA 4.0", 60892103], "Nandina": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 123997306], "Southern magnolia": ["DavetheMage", "CC BY 3.0", 9406594], "Black gum": ["Eric Hunt", "CC BY-SA 4.0", 74134147], "Flowering dogwood": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 135708616], "Japanese flowering crabapple": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 69305177], "Japanese maple": ["Aney", "CC BY-SA 3.0", 360735], "Kwanzan cherry": ["Myrabella", "CC BY-SA 3.0", 19378062], "Lombardy poplar": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 98958864], "Pin oak": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 137741885], "Red Sunset maple": ["David J. Stang", "CC BY-SA 4.0", 63169423], "Redbud": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 106210458], "Sweet gum": ["Pietro Voso", "CC BY-SA 4.0", 131554269], "Tulip tree": ["Bruce Marlin", "CC BY-SA 3.0", 3371959], "White oak": ["Chris Light", "CC BY-SA 4.0", 110295794], "Anthony Waterer spirea": ["David J. Stang", "CC BY-SA 4.0", 61240772], "Flame azalea": ["Derek Ramsey (Ram-Man)", "GFDL 1.2", 2559466], "Fothergilla": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 181924836], "Abelia": ["peganum", "CC BY-SA 2.0", 47473966], "Arrowwood viburnum": ["David J. Stang", "CC BY-SA 4.0", 61176689], "Border forsythia": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 86670910], "Bottlebrush buckeye": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 100044738], "Butterfly bush": ["Ryan Hodnett", "CC BY-SA 4.0", 158392230], "Cotoneaster": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 108535300], "Red leaf Japanese barberry": ["Abraham", "CC BY 4.0", 166126021], "Mock orange": ["Epibase", "CC BY 3.0", 7230025], "Oakleaf hydrangea": ["Eric in SF", "CC BY-SA 3.0", 8305895], "Vanhoutte spirea": ["Prazak", "CC BY-SA 3.0", 795117], "Winterberry": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 144967110], "Germander": ["Tournasol7", "CC BY 4.0", 155244221], "Sarcococca": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 103189374], "Bar Harbor juniper": ["Daderot", "CC0", 160105619], "Blue rug juniper": ["Agnieszka Kwiecień, Nova", "CC BY-SA 4.0", 141735486], "Bugleweed": ["Tournasol7", "CC BY 4.0", 171911995], "Creeping mahonia": ["Kenraiz", "CC BY-SA 4.0", 75979559], "Golden star": ["Krzysztof Ziarnek, Kenraiz", "CC BY-SA 4.0", 126972739], "Plantain lily (hosta)": ["Abraham", "CC BY-SA 4.0", 135126337], "Japanese spurge (pachysandra)": ["David J. Stang", "CC BY-SA 4.0", 60781274], "Partridgeberry": ["Halpaugh", "Public domain", 47694959], "Periwinkle": ["Krzysztof Golik", "CC BY-SA 4.0", 68388336], "Stonecrop": ["Encyclauteur", "CC BY-SA 4.0", 103509489], "Sweet woodruff": ["Cbaile19", "CC0", 147897083], "Calla lily": ["tracy from North Brookfield, Massachusetts", "CC BY 2.0", 1692904], "Grape hyacinth": ["Netherzone", "CC BY-SA 4.0", 130302948], "Hyacinth": ["The wub", "CC BY-SA 3.0", 20184777], "Crocus": ["Dominicus Johannes Bergsma", "CC BY-SA 4.0", 38778396], "Daffodil": ["Uberprutser", "CC BY-SA 3.0", 25581031], "Dahlia": ["Екатерина Борисова", "CC BY-SA 4.0", 196883889], "Gladiolus": ["Сарапулов", "CC BY 4.0", 155639181], "Lily": ["SKas", "CC BY-SA 4.0", 50145167], "Snowdrop": ["David Paloch", "CC BY-SA 3.0", 92696], "Tuberous begonia": ["Abraham", "CC BY 4.0", 148504322], "Tulip": ["John O'Neill", "CC BY-SA 3.0", 767393], "Saucer magnolia": ["Nino Barbieri", "CC BY 2.5", 1710859], "Zinnia": ["E. Hunter", "", 0]};
 const S={teams:[],cur:0,idx:0,order:[],tries:0,wrong:[],over:false,log:[]};
 const $=id=>document.getElementById(id);
+let L=LAYOUTS.classic;
+function zname(id){ return L.names[id]||ZONES[id].name; }
+function zcond(id){ return L.conds[id]||ZONES[id].cond; }
+function slug(n){ return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function photoHTML(p){ const f='photos/'+slug(p.name);
+  return `<div class="photo"><img src="${f}.jpg" alt="${esc(p.name)}" onerror="if(!this.dataset.png){this.dataset.png=1;this.src='${f}.png';}else{this.parentNode.remove();}"></div>`; }
 function esc(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
 function plant(){ return PLANTS[S.order[S.idx]]; }
 
@@ -430,22 +765,27 @@ function missReason(p,zid){
   }
   if(z.min && p.size<z.min){
     if(zid==="specimen"||zid==="shade_tree") return `That spot calls for a tree. ${n} is too small to fill it.`;
-    return `${n} isn’t tall enough to block the neighbor’s view.`;
+    return `${n} isn’t tall enough to block the view.`;
   }
   return `Close, but there’s a better spot for ${n}. Look at its size and how the book says it’s used.`;
 }
 
 /* ---------- map interaction ---------- */
-const zonesEls=[...document.querySelectorAll('.zone')];
+let zonesEls=[];
 function zoneEls(id){ return zonesEls.filter(z=>z.dataset.z===id); }
-zonesEls.forEach(el=>{
+function loadLayout(key){
+  L=LAYOUTS[key]; $('layer').innerHTML=L.svg; $('compassbadge').textContent=L.badge;
+  zonesEls=[...document.querySelectorAll('#layer .zone')];
+  zonesEls.forEach(bindZone);
+}
+function bindZone(el){
   const id=el.dataset.z;
   el.addEventListener('mouseenter',()=>zoneEls(id).forEach(z=>z.classList.add('hl')));
   el.addEventListener('mouseleave',()=>{ zoneEls(id).forEach(z=>z.classList.remove('hl')); $('tip').style.display='none'; });
-  el.addEventListener('mousemove',e=>{ const r=$('mapwrap').getBoundingClientRect(); const t=$('tip'); t.innerHTML=`${esc(ZONES[id].name)}<span>${esc(ZONES[id].cond)}</span>`; t.style.display='block';
+  el.addEventListener('mousemove',e=>{ const r=$('mapwrap').getBoundingClientRect(); const t=$('tip'); t.innerHTML=`${esc(zname(id))}<span>${esc(zcond(id))}</span>`; t.style.display='block';
     let x=e.clientX-r.left+16, y=e.clientY-r.top+16; if(x>r.width-290) x=e.clientX-r.left-296; if(y>r.height-90) y=e.clientY-r.top-80; t.style.left=x+'px'; t.style.top=y+'px'; });
   el.addEventListener('click',()=>guess(id));
-});
+}
 $('shadetoggle').onchange=e=>$('mapwrap').classList.toggle('showshade',e.target.checked);
 $('labeltoggle').onchange=e=>$('mapwrap').classList.toggle('nolabels',!e.target.checked);
 function paintZones(){
@@ -469,7 +809,8 @@ function renderPanel(){
   h+=`<h2>${esc(p.name)}</h2><div class="bot">${esc(p.bot)}</div>`+traitsHTML(p);
   h+=`<div class="note"><b>From the book</b>${esc(p.note)}</div>`;
   h+=`<div class="worth">Try ${S.tries+1} of 3 · worth ${points()} point${points()>1?'s':''}</div>`;
-  if(S.wrong.length) h+=`<div class="guesses">Not here: <span>${S.wrong.map(z=>ZONES[z].name).join(', ')}</span></div>`;
+  if(S.wrong.length) h+=`<div class="guesses">Not here: <span>${S.wrong.map(zname).join(', ')}</span></div>`;
+  h+=photoHTML(p);
   h+=`<div class="btnrow"><button class="btn ghost" id="giveup">Show the answer</button></div>`;
   $('panel').innerHTML=h; $('giveup').onclick=()=>reveal(false);
 }
@@ -478,14 +819,14 @@ function guess(id){
   if(S.over||S.finished||!S.order.length) return;
   const p=plant();
   if(p.zones.includes(id)){ S.teams[S.cur].score+=points(); reveal(true,id); return; }
-  if(S.wrong.includes(id)){ toast(`Already tried the ${ZONES[id].name.toLowerCase()}.`,'#6B7A70'); return; }
+  if(S.wrong.includes(id)){ toast(`Already tried the ${zname(id).toLowerCase()}.`,'#6B7A70'); return; }
   S.wrong.push(id); paintZones(); toast(missReason(p,id));
   if(S.tries>=2){ reveal(false); return; }
   S.tries++; renderPanel();
 }
 function reveal(ok,id){
   S.over=true; const p=plant(), u=UNITS[p.unit];
-  S.log.push({name:p.name,unit:p.unit,team:S.cur,ok:!!ok,pts:ok?3-S.tries:0,spot:ok?ZONES[id].name:ZONES[p.zones[0]].name});
+  S.log.push({name:p.name,unit:p.unit,team:S.cur,ok:!!ok,pts:ok?3-S.tries:0,spot:ok?zname(id):zname(p.zones[0])});
   paintZones();
   p.zones.forEach(z=>zoneEls(z).forEach(el=>el.classList.add(z===id?'right':'also')));
   if(id) zoneEls(id).forEach(el=>{el.classList.remove('also');el.classList.add('right');});
@@ -495,7 +836,7 @@ function reveal(ok,id){
          : `<div class="verdict no">Here’s where it belongs.</div>`;
   h+=`<h2>${esc(p.name)}</h2><div class="bot">${esc(p.bot)}</div>`+traitsHTML(p);
   h+=`<div class="why"><b>Why it fits</b>${esc(p.why)}</div>`;
-  h+=`<div class="spots">✅ Good spots: ${p.zones.map(z=>ZONES[z].name).join('; ')}</div>`;
+  h+=`<div class="spots">✅ Good spots: ${p.zones.map(zname).join('; ')}</div>`;
   h+=`<div class="btnrow"><button class="btn gold" id="next">${S.idx+1<S.order.length?'Next plant →':'See final scores'}</button></div>`;
   $('panel').innerHTML=h; $('next').onclick=nextRound; renderScores();
 }
@@ -517,9 +858,9 @@ function showCert(){
   const when=S.endedAt||new Date();
   const stamp=when.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'})+' at '+when.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
   const found=S.log.filter(l=>l.ok).length, max=S.order.length*3, top=Math.max(...S.teams.map(t=>t.score));
-  const code=checkCode(S.teams.map(t=>t.name+t.score).join('|')+S.unitText+when.getTime()+S.log.map(l=>l.ok?1:0).join(''));
+  const code=checkCode(L.name+S.teams.map(t=>t.name+t.score).join('|')+S.unitText+when.getTime()+S.log.map(l=>l.ok?1:0).join(''));
   let h=`<div class="certtop"><div><h1>🌿 Right Plant, Right Place: Completion Record</h1>`;
-  h+=`<div class="meta">${esc(S.unitText)} · ${S.order.length} plants · ${esc(stamp)}${S.period?' · '+esc(S.period):''}</div></div>`;
+  h+=`<div class="meta">${esc(L.name)} · ${esc(S.unitText)} · ${S.order.length} plants · ${esc(stamp)}${S.period?' · '+esc(S.period):''}</div></div>`;
   h+=`<div class="code">Check code<b>${code}</b></div></div>`;
   h+=`<div class="teamrow">${S.teams.map(t=>`<div class="teamcard ${S.teams.length>1&&t.score===top?'win':''}">${esc(t.name)}<b>${S.teams.length>1?t.score+' pts':t.score+' / '+max+' pts'}</b></div>`).join('')}</div>`;
   h+=`<div class="stats">Plants placed correctly: ${found} of ${S.order.length} · Total points: ${S.teams.reduce((a,t)=>a+t.score,0)} of ${max} possible</div>`;
@@ -531,7 +872,13 @@ function showCert(){
 }
 
 /* ---------- start screen ---------- */
-let nTeams=2, nRounds=12; const picked=new Set(["25"]);
+let nTeams=2, nRounds=12, yard='classic'; const picked=new Set(["25"]);
+function renderYards(){
+  const opts=Object.entries(LAYOUTS).map(([k,l])=>[k,l.name,l.blurb]).concat([['random','Surprise me','A random yard each game.']]);
+  $('yards').innerHTML=opts.map(([k,n,b])=>`<button data-y="${k}" class="${yard===k?'on':''}">${esc(n)}<span>${esc(b)}</span></button>`).join('');
+  $('yards').querySelectorAll('button').forEach(b=>b.onclick=()=>{ yard=b.dataset.y; renderYards(); });
+}
+renderYards();
 function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function renderUnits(){
   $('units').innerHTML=Object.entries(UNITS).map(([k,u])=>`<button data-u="${k}" class="${picked.has(k)?'on':''}"><b>Unit ${k}</b>${u.name} (${PLANTS.filter(p=>p.unit===k).length})</button>`).join('');
@@ -551,9 +898,25 @@ $('go').onclick=()=>{
   S.order=S.order.slice(0,nRounds);
   const us=[...picked].sort(); S.unitText=us.length===Object.keys(UNITS).length?'All units (25 to 32)':(us.length===1?`Unit ${us[0]}: ${UNITS[us[0]].name}`:'Units '+us.join(', '));
   Object.assign(S,{cur:0,idx:0,tries:0,wrong:[],over:false,finished:false,log:[],endedAt:null,period:$('period').value.trim()});
+  const keys=Object.keys(LAYOUTS); loadLayout(yard==='random'?keys[Math.floor(Math.random()*keys.length)]:yard);
   $('start').style.display='none'; $('done').style.display='none'; paintZones(); renderScores(); renderPanel();
 };
-$('panel').innerHTML='<p class="note">Choose your units and teams to begin.</p>';
+loadLayout('classic');
+function licLink(l){
+  let u=null; const m=l.match(/^CC (BY(?:-SA)?) ([\d.]+)(?: (\w+))?$/i);
+  if(m) u=`https://creativecommons.org/licenses/${m[1].toLowerCase()}/${m[2]}/${m[3]?m[3].toLowerCase()+'/':''}`;
+  else if(l==='CC0') u='https://creativecommons.org/publicdomain/zero/1.0/';
+  else if(/^GFDL/.test(l)) u='https://www.gnu.org/licenses/old-licenses/fdl-1.2.html';
+  return u?`<a href="${u}" target="_blank" rel="noopener" style="color:inherit">${esc(l)}</a>`:esc(l);
+}
+$('creditsbtn').onclick=()=>{
+  $('creditlist').innerHTML=PLANTS.map(p=>{const c=PHOTO_CREDITS[p.name];
+    const who=c?esc(c[0]):'Wikimedia Commons contributor'; const lic=c&&c[1]?', '+licLink(c[1]):'';
+    const link=c&&c[2]?`<a href="https://commons.wikimedia.org/?curid=${c[2]}" target="_blank" rel="noopener" style="color:inherit">${who}</a>`:who;
+    return `<div style="break-inside:avoid;margin-bottom:4px"><b>${esc(p.name)}:</b> ${link}${lic}</div>`;}).join('');
+  $('credits').style.display='flex'; };
+$('closecredits').onclick=()=>$('credits').style.display='none';
+$('panel').innerHTML='<p class="note">Choose a yard, your units, and teams to begin.</p>';
 </script>
 </body>
 </html>
