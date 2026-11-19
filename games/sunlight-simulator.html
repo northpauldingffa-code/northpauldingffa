@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunlight Simulator</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+:root{--bg:#1F3A2B;--card:#fff;--ink:#2b2b28;--muted:#66645d;--line:#dcd8cc;--green:#3b6d11;--gold:#e8b23a;--accent:#185fa5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Nunito Sans',Arial,sans-serif}
+h1,h2{font-family:'Bitter',Georgia,serif}
+.card{background:#F6F2E7!important;border-color:#E2DCCB!important}
+header{padding:18px 22px 6px}
+h1{font-size:28px;font-weight:800;margin:0 0 4px;color:#E9B949}
+.sub{color:#CFE0D2;margin:0;font-size:15px}
+.kicker{color:#CFE0D2;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;margin:0 0 2px}
+main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;padding:12px 22px 28px}
+@media (max-width:1000px){main{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card h2{font-size:15px;font-weight:600;margin:0 0 8px}
+.row{display:flex;align-items:center;gap:10px;margin:6px 0}
+.row label{min-width:78px;font-size:13px;color:var(--muted)}
+.row input[type=range]{flex:1;accent-color:var(--green)}
+.out{min-width:150px;text-align:right;font-weight:600;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+button{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:5px 10px;cursor:pointer}
+button:hover{border-color:#a9a596}
+button.on{background:#e6f1fb;border-color:#85b7eb;color:#0c447c}
+button.primary{background:var(--green);border-color:var(--green);color:#fff}
+button.primary:hover{background:#2f5a0c}
+.canvasWrap{position:relative}
+canvas#yard{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair;border:1px solid var(--line)}
+.hover{font-size:13px;color:var(--muted);min-height:20px;margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:4px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.stat{background:#f1efe8;border-radius:8px;padding:7px 9px}
+.stat .l{font-size:11px;color:var(--muted)}
+.stat .v{font-size:15px;font-weight:600}
+.plants{display:grid;grid-template-columns:1fr;gap:6px}
+.pbtn{display:flex;align-items:center;gap:8px;text-align:left;width:100%}
+.dot{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex:none}
+.need{margin-left:auto;font-size:11px;color:var(--muted)}
+.grp{font-size:12px;color:var(--muted);margin:8px 0 2px;font-weight:600}
+.list{font-size:13px;margin:8px 0 0;padding:0;list-style:none}
+.list li{display:flex;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid #eeebe2}
+.ok{color:#2f6b10;font-weight:700}.bad{color:#a32d2d;font-weight:700}
+.msg{font-size:13px;margin-top:6px;min-height:18px}
+.score{font-size:18px;font-weight:600;margin:6px 0 0}
+.note{font-size:13px;color:var(--muted);margin:6px 0 0}
+.side{display:flex;flex-direction:column;gap:14px}
+</style>
+</head>
+<body>
+<header>
+<p class="kicker">Right Plant, Right Place</p>
+<h1>Sunlight Simulator: Follow the Shade</h1>
+<p class="sub">Watch how the sun and shadows move around a whole yard at different places on Earth, then put each plant where it will get the light it needs.</p>
+</header>
+<main>
+<section>
+<div class="card">
+<div class="chips" id="modeBtns">
+<button data-m="now" class="on">Shadows at this time</button>
+<button data-m="day">Sun hours on this date</button>
+<button data-m="season">Answer key: growing-season sun</button>
+</div>
+<div class="canvasWrap"><canvas id="yard" width="800" height="576" aria-label="Top-down yard map with house, shed, trees, fences, and shadows"></canvas></div>
+<div class="hover" id="hover">Hover over the yard to read the sun hours at any spot.</div>
+<div class="legend" id="legNow"><span><span class="sw" style="background:#9ccc65"></span>Sunlit</span><span><span class="sw" style="background:#4f7a35"></span>Shadow</span><span><span class="sw" style="background:#9a8f80"></span>Buildings</span><span><span class="sw" style="background:#c9c4b6"></span>Driveway and patio</span></div>
+<div class="legend" id="legHrs" style="display:none"><span><span class="sw" style="background:#f4c95d"></span>Full sun, 6+ hrs</span><span><span class="sw" style="background:#9ccc65"></span>Part sun / part shade, 3 to 6 hrs</span><span><span class="sw" style="background:#3e6b2a"></span>Shade, under 3 hrs</span></div>
+</div>
+<div class="card" style="margin-top:14px">
+<h2>Place and time</h2>
+<div class="chips" id="locBtns"></div>
+<div class="row"><label for="lat">Latitude</label><input type="range" id="lat" min="-60" max="60" step="0.1" value="33.9"><span class="out" id="latO"></span></div>
+<div class="row"><label for="day">Date</label><input type="range" id="day" min="1" max="365" step="1" value="172"><span class="out" id="dayO"></span></div>
+<div class="chips" id="dayBtns">
+<button data-v="79">Mar 20</button><button data-v="172">Jun 21</button><button data-v="265">Sep 22</button><button data-v="355">Dec 21</button>
+</div>
+<div class="row"><label for="hr">Sun time</label><input type="range" id="hr" min="4" max="20" step="0.25" value="10"><span class="out" id="hrO"></span></div>
+<div class="chips"><button id="play">Play the day</button><button id="playYear">Play the year at noon</button></div>
+<p class="note">Longitude is left out on purpose. Moving east or west only changes what the clock reads when the sun is highest, not how much sun the yard gets. "Sun time" puts the highest sun at 12:00.</p>
+</div>
+</section>
+<aside class="side">
+<div class="card">
+<h2>Sun right now</h2>
+<div class="stats">
+<div class="stat"><div class="l">Sun height</div><div class="v" id="sAlt"></div></div>
+<div class="stat"><div class="l">Sun direction</div><div class="v" id="sAz"></div></div>
+<div class="stat"><div class="l">Daylight</div><div class="v" id="sDay"></div></div>
+<div class="stat"><div class="l">Noon sun</div><div class="v" id="sNoon"></div></div>
+</div>
+</div>
+<div class="card">
+<h2>Right plant, right place</h2>
+<p class="note" style="margin-top:0">Pick a plant, then click the yard to plant it. Click a planted spot to dig it back up. Plants are scored on their average daily sun over the <span id="seasonName">growing season</span>.</p>
+<div id="plantBtns"></div>
+<div class="msg" id="msg"></div>
+<div class="chips" style="margin-top:8px"><button class="primary" id="check">Check my yard</button><button id="clear">Clear yard</button></div>
+<div class="score" id="score"></div>
+<ul class="list" id="results"></ul>
+</div>
+</aside>
+</main>
+<script>
+const R=Math.PI/180,W=50,H=36,S=16,G=2,GW=W*G,GH=H*G;
+const cv=document.getElementById('yard'),cx=cv.getContext('2d');
+const oc=document.createElement('canvas');oc.width=GW;oc.height=GH;const ox=oc.getContext('2d',{willReadFrequently:true});
+const $=id=>document.getElementById(id);
+
+const boxes=[
+{x0:18,x1:32,y0:13,y1:23,h:7,label:'House',fill:'#9a8f80'},
+{x0:41,x1:45,y0:29,y1:33,h:3,label:'Shed',fill:'#a68a6d'},
+{x0:0,x1:0.35,y0:0,y1:36,h:2,fence:true},
+{x0:0,x1:50,y0:35.65,y1:36,h:2,fence:true}
+];
+const paved=[{x0:25,x1:31,y0:0,y1:13,label:'Driveway'},{x0:20,x1:28,y0:23,y1:27,label:'Patio'}];
+const trees=[
+{x:9,y:9,z:7,r:5,label:'Oak'},
+{x:44,y:16,z:5.5,r:3.5,label:'Maple'},
+{x:8,y:29,z:3.5,r:2.5,label:'Dogwood'}
+];
+const locs=[
+['Edmonton, Canada',53.5],['Minneapolis, MN',45.0],['Dallas, GA',33.9],['Miami, FL',25.8],
+['Quito, Ecuador',-0.2],['Sydney, Australia',-33.9],['Cape Town, South Africa',-33.9]
+];
+const PLANTS=[
+{id:'tom',name:'Tomato',need:'full',code:'To'},
+{id:'lav',name:'Lavender',need:'full',code:'La'},
+{id:'cm',name:'Crape myrtle',need:'full',code:'Cm'},
+{id:'hyd',name:'Bigleaf hydrangea',need:'part',code:'Hy'},
+{id:'az',name:'Azalea',need:'part',code:'Az'},
+{id:'cb',name:'Coral bells',need:'part',code:'Cb'},
+{id:'hos',name:'Hosta',need:'shade',code:'Ho'},
+{id:'fern',name:'Christmas fern',need:'shade',code:'Fe'},
+{id:'hel',name:'Lenten rose',need:'shade',code:'Lr'}
+];
+const NEED={full:{label:'Full sun',txt:'6+ hrs',color:'#c98a12'},part:{label:'Part sun / part shade',txt:'3 to 6 hrs',color:'#1d9e75'},shade:{label:'Shade',txt:'under 3 hrs',color:'#534ab7'}};
+let mode='now',selected=null,placed=[],checked=false,playing=null,locName='Dallas, GA';
+const cache={};
+
+const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],md=[31,28,31,30,31,30,31,31,30,31,30,31];
+function dateStr(n){let m=0;while(n>md[m]){n-=md[m];m++}return months[m]+' '+n}
+function decl(n){return 23.44*Math.sin(2*Math.PI*(284+n)/365)}
+function sunPos(lat,n,h){const d=decl(n)*R,p=lat*R,Hh=15*(h-12)*R;
+const alt=Math.asin(Math.sin(p)*Math.sin(d)+Math.cos(p)*Math.cos(d)*Math.cos(Hh));
+const A=Math.atan2(Math.sin(Hh),Math.cos(Hh)*Math.sin(p)-Math.tan(d)*Math.cos(p));
+return{alt,az:A+Math.PI}}
+function dayLen(lat,n){const c=-Math.tan(lat*R)*Math.tan(decl(n)*R);if(c<=-1)return 24;if(c>=1)return 0;return 2*Math.acos(c)/R/15}
+function latStr(l){return Math.abs(l).toFixed(1)+'° '+(l>=0?'N':'S')}
+function seasonLabel(n,lat){const near=(a)=>Math.abs(n-a)<=3;let k=null;
+if(near(79))k=0;else if(near(172))k=1;else if(near(265))k=2;else if(near(355))k=3;if(k===null)return'';
+if(Math.abs(lat)<15)return['March equinox','June solstice','September equinox','December solstice'][k];
+const N=['spring equinox','summer solstice','fall equinox','winter solstice'],Sx=['fall equinox','winter solstice','spring equinox','summer solstice'];
+return lat>=0?N[k]:Sx[k]}
+function seasonDays(lat){if(lat>=15)return{days:[80,111,141,172,203,234,265],name:'growing season (Mar 21 to Sep 22)'};
+if(lat<=-15)return{days:[265,296,326,355,20,51,80],name:'growing season (Sep 22 to Mar 21)'};
+return{days:[1,52,104,156,208,260,312],name:'whole year (the tropics grow year-round)'}}
+
+function hull(pts){pts=pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
+const lo=[],up=[];for(const p of pts){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
+for(let i=pts.length-1;i>=0;i--){const p=pts[i];while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}
+up.pop();lo.pop();return lo.concat(up)}
+function boxShadow(ctx,b,dx,dy,ta){const L=Math.min(b.h/ta,150);
+const c=[[b.x0,b.y0],[b.x1,b.y0],[b.x1,b.y1],[b.x0,b.y1]];const pts=c.concat(c.map(p=>[p[0]+dx*L,p[1]+dy*L]));
+const hp=hull(pts);ctx.beginPath();ctx.moveTo(hp[0][0],hp[0][1]);for(let i=1;i<hp.length;i++)ctx.lineTo(hp[i][0],hp[i][1]);ctx.closePath();ctx.fill()}
+function drawShadows(ctx,sp){if(sp.alt<=0){ctx.fillRect(-1,-1,W+2,H+2);return}
+const dx=-Math.sin(sp.az),dy=-Math.cos(sp.az),ta=Math.tan(sp.alt),sa=Math.sin(sp.alt);
+for(const b of boxes)boxShadow(ctx,b,dx,dy,ta);
+for(const t of trees){const off=Math.min(t.z/ta,150);const ex=t.x+dx*off,ey=t.y+dy*off;
+ctx.beginPath();ctx.ellipse(ex,ey,Math.min(t.r/sa,150),t.r,Math.atan2(dy,dx),0,2*Math.PI);ctx.fill();
+boxShadow(ctx,{x0:t.x-0.3,x1:t.x+0.3,y0:t.y-0.3,y1:t.y+0.3,h:t.z},dx,dy,ta)}}
+
+function sunGrid(lat,n){const key=lat.toFixed(1)+'|'+n;if(cache[key])return cache[key];
+const arr=new Float32Array(GW*GH),dl=dayLen(lat,n),st=0.25;
+if(dl>0){const h0=12-dl/2,h1=12+dl/2;
+for(let t=h0+st/2;t<h1;t+=st){const sp=sunPos(lat,n,t);if(sp.alt<3*R)continue;
+ox.setTransform(1,0,0,1,0,0);ox.clearRect(0,0,GW,GH);ox.setTransform(G,0,0,-G,0,GH);ox.fillStyle='#000';drawShadows(ox,sp);
+const d=ox.getImageData(0,0,GW,GH).data;for(let i=0;i<arr.length;i++)if(d[i*4+3]<128)arr[i]+=st}}
+cache[key]=arr;return arr}
+function seasonGrid(lat){const key='S'+lat.toFixed(1);if(cache[key])return cache[key];
+const sd=seasonDays(lat).days,arr=new Float32Array(GW*GH);
+for(const n of sd){const g=sunGrid(lat,n);for(let i=0;i<arr.length;i++)arr[i]+=g[i]/sd.length}
+cache[key]=arr;return arr}
+function sample(grid,x,y){const gx=Math.min(GW-1,Math.max(0,Math.floor(x*G))),r=Math.min(GH-1,Math.max(0,Math.floor((H-y)*G)));return grid[r*GW+gx]}
+function cls(h){return h>=6?'full':h>=3?'part':'shade'}
+
+function world(){cx.setTransform(S,0,0,-S,0,H*S)}
+function screen(){cx.setTransform(1,0,0,1,0,0)}
+function drawHeat(grid){screen();const c=S/G;for(let r=0;r<GH;r++)for(let gx=0;gx<GW;gx++){const h=grid[r*GW+gx];
+cx.fillStyle=h>=6?'#f4c95d':h>=3?'#9ccc65':'#3e6b2a';cx.fillRect(gx*c,r*c,c+0.5,c+0.5)}}
+function render(){
+const lat=+$('lat').value,n=+$('day').value,h=+$('hr').value,sp=sunPos(lat,n,h);
+screen();cx.fillStyle='#9ccc65';cx.fillRect(0,0,cv.width,cv.height);
+if(mode==='day')drawHeat(sunGrid(lat,n));
+if(mode==='season')drawHeat(seasonGrid(lat));
+world();
+for(const p of paved){cx.fillStyle=mode==='now'?'#c9c4b6':'rgba(201,196,182,0.85)';cx.fillRect(p.x0,p.y0,p.x1-p.x0,p.y1-p.y0)}
+if(mode==='now'){cx.fillStyle='rgba(30,60,15,0.5)';drawShadows(cx,sp)}
+for(const b of boxes){cx.fillStyle=b.fence?'#6b5a45':b.fill;cx.fillRect(b.x0,b.y0,b.x1-b.x0,b.y1-b.y0)}
+for(const t of trees){cx.beginPath();cx.arc(t.x,t.y,t.r,0,2*Math.PI);if(mode==='now'){cx.fillStyle='rgba(39,80,10,0.45)';cx.fill()}cx.lineWidth=0.12;cx.strokeStyle='#173404';cx.stroke();
+cx.beginPath();cx.arc(t.x,t.y,0.45,0,2*Math.PI);cx.fillStyle='#5b3a1e';cx.fill()}
+screen();
+cx.font='600 13px system-ui,sans-serif';cx.textAlign='center';cx.fillStyle='#fff';
+for(const b of boxes){if(b.label)cx.fillText(b.label==='Shed'?'Shed':b.label+' ('+b.h+' m)',(b.x0+b.x1)/2*S,(H-(b.y0+b.y1)/2)*S+4)}
+cx.fillStyle='#4a463d';cx.font='12px system-ui,sans-serif';
+for(const p of paved)cx.fillText(p.label,(p.x0+p.x1)/2*S,(H-(p.y0+p.y1)/2)*S+(p.label==='Patio'?4:0));
+cx.fillStyle='#173404';for(const t of trees)cx.fillText(t.label,t.x*S,(H-t.y)*S-10);
+cx.fillStyle='#fff';cx.font='11px system-ui,sans-serif';
+const hb=boxes[0];cx.fillText('north side',(hb.x0+hb.x1)/2*S-60,(H-hb.y1)*S+14);cx.fillText('south side',(hb.x0+hb.x1)/2*S-60,(H-hb.y0)*S-6);
+cx.save();cx.translate(hb.x0*S+12,(H-(hb.y0+hb.y1)/2)*S);cx.rotate(-Math.PI/2);cx.fillText('west side',0,0);cx.restore();
+cx.save();cx.translate(hb.x1*S-6,(H-(hb.y0+hb.y1)/2)*S);cx.rotate(-Math.PI/2);cx.fillText('east side',0,0);cx.restore();
+cx.textAlign='left';
+const sg=checked?seasonGrid(lat):null;
+for(const p of placed){const pl=PLANTS.find(q=>q.id===p.id),X=p.x*S,Y=(H-p.y)*S;
+cx.beginPath();cx.arc(X,Y,11,0,2*Math.PI);cx.fillStyle=NEED[pl.need].color;cx.fill();
+cx.lineWidth=checked?3:1.5;cx.strokeStyle=checked?(cls(sample(sg,p.x,p.y))===pl.need?'#2fbf2f':'#e02424'):'#fff';cx.stroke();
+cx.fillStyle='#fff';cx.font='700 10px system-ui,sans-serif';cx.textAlign='center';cx.fillText(pl.code,X,Y+3.5);cx.textAlign='left'}
+drawCompass(sp,mode==='now');
+updateStats(lat,n,h,sp)}
+function drawCompass(sp,showSun){const x=cv.width-50,y=cv.height-50;screen();cx.fillStyle='rgba(255,255,255,0.9)';cx.beginPath();cx.arc(x,y,34,0,2*Math.PI);cx.fill();
+cx.fillStyle='#2b2b28';cx.font='600 12px system-ui,sans-serif';cx.textAlign='center';cx.fillText('N',x,y-20);cx.fillText('S',x,y+29);cx.fillText('E',x+25,y+4);cx.fillText('W',x-25,y+4);cx.textAlign='left';
+if(showSun&&sp.alt>0){const dx=Math.sin(sp.az),dy=-Math.cos(sp.az),k=26*Math.cos(sp.alt);
+cx.strokeStyle='#e8a317';cx.lineWidth=2;cx.beginPath();cx.moveTo(x,y);cx.lineTo(x+dx*k,y+dy*k);cx.stroke();
+cx.fillStyle='#f5b82e';cx.beginPath();cx.arc(x+dx*k,y+dy*k,7,0,2*Math.PI);cx.fill()}}
+function updateStats(lat,n,h,sp){
+$('latO').textContent=locName?locName+' · '+latStr(lat):latStr(lat);
+const sl=seasonLabel(n,lat);$('dayO').textContent=dateStr(n)+(sl?' · '+sl:'');
+const hh=Math.floor(h),mm=Math.round((h-hh)*60);$('hrO').textContent=((hh+11)%12+1)+':'+String(mm).padStart(2,'0')+(hh<12?' am':' pm');
+const az=(sp.az/R+360)%360,dirs=['N','NE','E','SE','S','SW','W','NW'];
+$('sAlt').textContent=sp.alt>0?Math.round(sp.alt/R)+'° up':'Below horizon';
+$('sAz').textContent=sp.alt>0?'From the '+dirs[Math.round(az/45)%8]:'—';
+const dl=dayLen(lat,n);$('sDay').textContent=Math.floor(dl)+' h '+Math.round((dl%1)*60)+' m';
+const d=decl(n),noon=90-Math.abs(lat-d);
+$('sNoon').textContent=Math.round(noon)+'°, '+(Math.abs(lat-d)<0.5?'overhead':(d>lat?'north sky':'south sky'));
+$('seasonName').textContent=seasonDays(lat).name}
+
+function buildUI(){
+const lb=$('locBtns');for(const [nm,l] of locs){const b=document.createElement('button');b.textContent=nm;b.dataset.v=l;b.dataset.n=nm;lb.appendChild(b)}
+lb.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('lat').value=b.dataset.v;locName=b.dataset.n;markLoc();resetCheck();render()});
+const pb=$('plantBtns');for(const k of ['full','part','shade']){const g=document.createElement('div');g.className='grp';g.textContent=NEED[k].label+' ('+NEED[k].txt+')';pb.appendChild(g);
+const wrap=document.createElement('div');wrap.className='plants';
+for(const p of PLANTS.filter(q=>q.need===k)){const b=document.createElement('button');b.className='pbtn';b.dataset.id=p.id;
+b.innerHTML='<span class="dot" style="background:'+NEED[k].color+'">'+p.code+'</span>'+p.name+'<span class="need" data-c="'+p.id+'"></span>';wrap.appendChild(b)}
+pb.appendChild(wrap)}
+pb.addEventListener('click',e=>{const b=e.target.closest('.pbtn');if(!b)return;selected=selected===b.dataset.id?null:b.dataset.id;
+document.querySelectorAll('.pbtn').forEach(x=>x.classList.toggle('on',x.dataset.id===selected));
+$('msg').textContent=selected?'Click the yard to plant '+PLANTS.find(q=>q.id===selected).name.toLowerCase()+'.':''});
+markLoc();updateCounts()}
+function markLoc(){document.querySelectorAll('#locBtns button').forEach(b=>b.classList.toggle('on',b.dataset.n===locName))}
+function updateCounts(){for(const p of PLANTS){const c=placed.filter(q=>q.id===p.id).length;const el=document.querySelector('[data-c="'+p.id+'"]');if(el)el.textContent=c?c+' planted':''}}
+function resetCheck(){if(checked){checked=false;$('score').textContent='';$('results').innerHTML=''}}
+function blocked(x,y){for(const b of boxes)if(x>b.x0-0.4&&x<b.x1+0.4&&y>b.y0-0.4&&y<b.y1+0.4)return true;
+for(const p of paved)if(x>p.x0&&x<p.x1&&y>p.y0&&y<p.y1)return true;
+for(const t of trees)if(Math.hypot(x-t.x,y-t.y)<0.9)return true;return x<0.5||y>35.3}
+function toWorld(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,H-(e.clientY-r.top)/r.height*H]}
+cv.addEventListener('click',e=>{const [x,y]=toWorld(e);
+const hit=placed.findIndex(p=>Math.hypot(p.x-x,p.y-y)<0.9);
+if(hit>=0){const nm=PLANTS.find(q=>q.id===placed[hit].id).name;placed.splice(hit,1);$('msg').textContent='Dug up the '+nm.toLowerCase()+'.';resetCheck();updateCounts();render();return}
+if(!selected){$('msg').textContent='Pick a plant first.';return}
+if(blocked(x,y)){$('msg').textContent='You can\'t plant there. Try open ground.';return}
+placed.push({id:selected,x,y});$('msg').textContent='Planted. Pick another or keep clicking to add more.';resetCheck();updateCounts();render()});
+cv.addEventListener('mousemove',e=>{const [x,y]=toWorld(e);const lat=+$('lat').value,n=+$('day').value;
+const dh=sample(sunGrid(lat,n),x,y);let s='This spot: '+dh.toFixed(1)+' hrs of direct sun on '+dateStr(n);
+if(mode==='season'||checked)s+=' · '+sample(seasonGrid(lat),x,y).toFixed(1)+' hrs average over the '+seasonDays(lat).name.split(' (')[0];
+$('hover').textContent=s});
+cv.addEventListener('mouseleave',()=>{$('hover').textContent='Hover over the yard to read the sun hours at any spot.'});
+$('check').addEventListener('click',()=>{if(!placed.length){$('msg').textContent='Plant something first, then check.';return}
+const lat=+$('lat').value,sg=seasonGrid(lat);checked=true;let good=0;const ul=$('results');ul.innerHTML='';
+for(const p of placed){const pl=PLANTS.find(q=>q.id===p.id),hrs=sample(sg,p.x,p.y),ok=cls(hrs)===pl.need;if(ok)good++;
+const li=document.createElement('li');
+li.innerHTML='<span class="'+(ok?'ok':'bad')+'">'+(ok?'✓':'✗')+'</span>'+pl.name+'<span style="margin-left:auto;color:#66645d">'+hrs.toFixed(1)+' hrs · needs '+NEED[pl.need].txt+'</span>';ul.appendChild(li)}
+$('score').textContent=good+' of '+placed.length+' in the right spot';
+$('msg').textContent='Green rings are good fits, red rings need to move. Try a different location and check again.';render()});
+$('clear').addEventListener('click',()=>{placed=[];resetCheck();updateCounts();$('msg').textContent='';render()});
+$('modeBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mode=b.dataset.m;
+document.querySelectorAll('#modeBtns button').forEach(x=>x.classList.toggle('on',x===b));
+$('legNow').style.display=mode==='now'?'flex':'none';$('legHrs').style.display=mode==='now'?'none':'flex';render()});
+$('dayBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('day').value=b.dataset.v;render()});
+$('lat').addEventListener('input',()=>{locName=null;const v=+$('lat').value;const m=locs.find(l=>Math.abs(l[1]-v)<0.05);if(m&&m[1]!==-33.9)locName=m[0];markLoc();resetCheck();render()});
+$('day').addEventListener('input',render);$('hr').addEventListener('input',render);
+function stop(){if(playing){clearInterval(playing);playing=null;$('play').textContent='Play the day';$('playYear').textContent='Play the year at noon'}}
+$('play').addEventListener('click',()=>{if(playing){stop();return}
+if(mode!=='now')$('modeBtns').querySelector('[data-m=now]').click();$('play').textContent='Pause';
+playing=setInterval(()=>{const lat=+$('lat').value,n=+$('day').value,dl=dayLen(lat,n);const a=Math.max(4,12-dl/2),z=Math.min(20,12+dl/2);
+let t=+$('hr').value+0.25;if(t>z||t<a)t=a;$('hr').value=t;render()},110)});
+$('playYear').addEventListener('click',()=>{if(playing){stop();return}
+if(mode!=='now')$('modeBtns').querySelector('[data-m=now]').click();$('hr').value=12;$('playYear').textContent='Pause';
+playing=setInterval(()=>{let n=+$('day').value+3;if(n>365)n=1;$('day').value=n;render()},90)});
+buildUI();render();
+</script>
+</body>
+</html>
